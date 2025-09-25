@@ -1,7 +1,6 @@
+from datetime import datetime
 import logging
 import asyncio
-
-from legit_social_client import build_client, login_user, create_post, paginate_user_feed, get_user_feed
 
 from notifiers.discord_webhook_sender import send_discord_message_webhook
 
@@ -15,22 +14,8 @@ async def run(worker):
 
     try:
         logger.info(f"Running {task_id}")
-        client = build_client("https://social.legitreal.com")
 
-        login_user(
-            client,
-            user_key="daniel_james",
-            username="daniel_james",
-            password="gH9$wK3&rP6!yQ2"
-        )
-
-        posts = get_user_feed(
-            client=client,
-            feed_key="trending",
-            user_key="daniel_james"
-        )
-
-        send_discord_message_webhook(content=f"{posts}")
+        send_discord_message_webhook(content=f"")
 
         # giả lập xử lý async
         await _process_data()
