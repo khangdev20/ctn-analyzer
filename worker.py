@@ -11,7 +11,7 @@ from typing import List, Dict, Any
 import requests
 from config import Config
 from llms.llm_models import LLMModels
-from notifiers.discord import send_discord_notification
+from notifiers.discord_bot_sender import send_discord_notification
 
 # Setup logging
 logging.basicConfig(

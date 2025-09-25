@@ -3,7 +3,7 @@ import asyncio
 
 from legit_social_client import build_client, login_user, create_post, paginate_user_feed, get_user_feed
 
-from notifiers.discord_sender import send_discord_message_webhook
+from notifiers.discord_webhook_sender import send_discord_message_webhook
 
 logger = logging.getLogger(__name__)
 
