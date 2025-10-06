@@ -1,0 +1,39 @@
+{
+  "embeds": [
+    {
+      "title": "🚀 Trending Intelligence Report",
+      "description": "Analysis completed for batch `20251005T0315Z`",
+      "color": 16753920,
+      "fields": [
+        {
+          "name": "📊 Analysis Summary",
+          "value": "**Posts Analyzed:** 243\n**Avg Engagement:** 41.8%\n**Top Tags:** #tideturning, #votehawthorne, #castillo2025",
+          "inline": false
+        },
+        {
+          "name": "🎯 Top Strategies",
+          "value": "• **Political Debate Amplification** (82%)\n• **Optimal Timing Windows** (76%)",
+          "inline": true
+        },
+        {
+          "name": "📈 Growth Metrics",
+          "value": "**Velocity:** 2.41/min\n**Trending Candidates:** 3\n**High Engagement:** 3",
+          "inline": true
+        },
+        {
+          "name": "🏆 Top Performers",
+          "value": "• **@politicalinsider** - 92.1 pts\n• **@trendsetter** - 89.4 pts",
+          "inline": false
+        },
+        {
+          "name": "🧠 Key Insights",
+          "value": "💡 Political content with debate hashtags shows 82% higher engagement rates. Short posts (<=280 chars) ...\n💡 Peak engagement hours (01-03 UTC) continue to dominate with 2.3x higher interaction rates. Weekend p...",
+          "inline": false
+        }
+      ],
+      "footer": {
+        "text": "Generated at 2025-10-05T03:00:39.040393+00:00"
+      }
+    }
+  ]
+}

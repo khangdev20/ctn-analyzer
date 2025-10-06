@@ -1,0 +1,42 @@
+{
+  "test_timestamp": "2025-10-04T18:51:08.014114+00:00",
+  "summary": {
+    "total_tests": 4,
+    "passed_tests": 3,
+    "failed_tests": 1,
+    "success_rate": 75.0
+  },
+  "detailed_results": {
+    "enhanced_content_suggestions": {
+      "success": true,
+      "suggestion_count": 0,
+      "high_priority_count": 0,
+      "ready_to_use_count": 0,
+      "sample_suggestions": []
+    },
+    "advanced_prompt_suggestions": {
+      "success": true,
+      "suggestion_count": 0,
+      "calendar_items": 0,
+      "strategic_items": 0,
+      "sample_suggestions": []
+    },
+    "full_content_package": {
+      "success": false,
+      "package_components": [],
+      "total_suggestions": 0,
+      "immediate_actions": 0,
+      "calendar_days": 0,
+      "high_confidence_items": 0
+    },
+    "complete_pipeline": {
+      "success": true,
+      "total_insights": 0,
+      "content_suggestions": 0,
+      "calendar_items": 0,
+      "strategic_items": 0,
+      "actionable_items": 0,
+      "high_priority_items": 0
+    }
+  }
+}

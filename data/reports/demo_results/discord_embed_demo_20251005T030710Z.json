@@ -1,0 +1,34 @@
+{
+  "embeds": [
+    {
+      "title": "🚀 Trending Intelligence Report Report",
+      "description": "Analysis completed for batch `demo_20251005T030710Z`",
+      "color": 16739179,
+      "fields": [
+        {
+          "name": "📊 Analysis Summary",
+          "value": "**Posts Analyzed:** 6\n**Avg Engagement:** 0.0%\n**Top Tags:** ",
+          "inline": false
+        },
+        {
+          "name": "🎯 Top Strategies",
+          "value": "• **CONTENT_SUGGESTION_1** (0%)\n• **WEEKLY_CONTENT_STRATEGY** (0%)",
+          "inline": true
+        },
+        {
+          "name": "📈 Growth Metrics",
+          "value": "**Velocity:** 0.00/min\n**Trending Candidates:** 0\n**High Engagement:** 0",
+          "inline": true
+        },
+        {
+          "name": "🧠 Key Insights",
+          "value": "💡 Ready-to-post content: \"1. Shares and retweets\" | Hashtags:  | Performance prediction: 70/100\n💡 Complete 7-day content calendar generated with 11 pieces. Focus areas: viral, engagement, educationa...",
+          "inline": false
+        }
+      ],
+      "footer": {
+        "text": "Generated at 2025-10-05T03:26:20.309246+00:00"
+      }
+    }
+  ]
+}

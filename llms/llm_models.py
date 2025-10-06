@@ -2,7 +2,7 @@ import requests
 import os
 from openai import OpenAI
 from typing import Dict, Any, Literal, Optional
-from config import Config
+from config.config import Config
 import google.generativeai as genai
 import anthropic
 
@@ -46,7 +46,11 @@ class LLMModels:
         self.config = LLMConfigs()
         self.openai_client = OpenAI(api_key=self.config.openai_api_key)
 
-    def call_openai(self, prompt: str, system_prompt: str = "", model: Literal["gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-4.1"] = "gpt-5-mini") -> Optional[str]:
+    def call_openai(self, prompt: str, system_prompt: str = "",
+                    model: Literal["gpt-5", "gpt-5-mini",
+                                   "gpt-5-nano", "gpt-4.1"] = "gpt-5-mini",
+                    max_tokens=1000,
+                    temperature=0.7) -> Optional[str]:
         """Call OpenAI API."""
         if not self.config.openai_api_key:
             raise ValueError("OpenAI API key not configured")
@@ -64,7 +68,7 @@ class LLMModels:
             )
 
             return response.choices[0].message.content
-        except requests.RequestException as e:
+        except Exception as e:
             print(f"Error calling OpenAI API: {e}")
             return None
 
@@ -78,14 +82,17 @@ class LLMModels:
             )
             message = client.messages.create(
                 model=model,
-                max_tokens=1024,
+                max_tokens=max_tokens,
                 system=system_prompt,
                 messages=[
                     {"role": "user", "content": prompt},
                 ]
             )
-            return message.content
-        except requests.RequestException as e:
+            # Handle Anthropic response format (list of content blocks)
+            if message.content and len(message.content) > 0:
+                return message.content[0].text
+            return None
+        except Exception as e:
             print(f"Error calling Anthropic API: {e}")
             return None
 
@@ -95,15 +102,15 @@ class LLMModels:
             raise ValueError("Google API key not configured")
 
         try:
-            client = genai.Client(
-                api_key=self.config.google_api_key
-            )
+            genai.configure(api_key=self.config.google_api_key)
+            model_instance = genai.GenerativeModel(model)
 
-            response = client.models.generate_content(
-                model=model, contents=prompt
-            )
+            # Combine system prompt and user prompt if system prompt is provided
+            full_prompt = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
+
+            response = model_instance.generate_content(full_prompt)
             return response.text
-        except requests.RequestException as e:
+        except Exception as e:
             print(f"Error calling Google API: {e}")
             return None
 

@@ -1,0 +1,1297 @@
+{
+  "batch_id": "20251005T0003Z",
+  "stage": "analyzed",
+  "processed_at": "2025-10-05T00:27:01.717725+00:00",
+  "strategic_insights": [
+    {
+      "title": "WEEKLY_CONTENT_STRATEGY",
+      "description": "Complete 7-day content calendar generated with 21 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+      "category": "strategic_planning",
+      "priority": 95,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "content_pieces": 21,
+      "calendar_ready": true,
+      "quality_score": 118.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_3",
+      "description": "Ready-to-post content: \"1. Education Reform\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 75,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "1. Education Reform",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 115.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_1",
+      "description": "Ready-to-post content: \"** 🌊 Want to master the tides? Follow these steps: 1) Know the moon's phases, 2) Check local tide charts, 3) Observe weather effects. Unlock your natural navigation skills! #TideTurning #NatureLovers #OutdoorEducation\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 85,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "** 🌊 Want to master the tides? Follow these steps: 1) Know the moon's phases, 2) Check local tide charts, 3) Observe weather effects. Unlock your natural navigation skills! #TideTurning #NatureLovers #OutdoorEducation",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 114.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_4",
+      "description": "Ready-to-post content: \"2. Climate Change\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 70,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "2. Climate Change",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 113.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_2",
+      "description": "Ready-to-post content: \"** 🗳️ Think you know all about voting? Here are 5 myths busted: 1) You can vote anywhere, 2) Voter ID laws don’t matter, 3) Your vote doesn’t count. Knowledge is power! #VoteHawthorne #VotingMyths #CivicEngagement\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "** 🗳️ Think you know all about voting? Here are 5 myths busted: 1) You can vote anywhere, 2) Voter ID laws don’t matter, 3) Your vote doesn’t count. Knowledge is power! #VoteHawthorne #VotingMyths #CivicEngagement",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_MONDAY",
+      "description": "Monday strategy: \"** \"Do you think #VoteHawthorne represents a shift in political priorities or just more of the same?...\" | Focus: viral | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Monday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "viral",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_TUESDAY",
+      "description": "Tuesday strategy: \"🌊 How can you navigate the tide turning events like #VoteHawthorne? Start by following trusted news ...\" | Focus: engagement | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Tuesday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "engagement",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_WEDNESDAY",
+      "description": "Wednesday strategy: \"What's your take on the #Tideturning? Yes, No, or Maybe? Explain!...\" | Focus: educational | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Wednesday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "educational",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_THURSDAY",
+      "description": "Thursday strategy: \"** 📅 Planning to make a difference during Election 2025? Start here: 1) Register to vote. 2) Researc...\" | Focus: viral | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Thursday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "viral",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_FRIDAY",
+      "description": "Friday strategy: \"Is 'Castillo2025' really the change we need, or just another empty promise? 🤔 Let’s discuss how we c...\" | Focus: engagement | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Friday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "engagement",
+      "backup_options": 2,
+      "quality_score": 112.0
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        210,
+        239
+      ],
+      "avg": 218.0
+    },
+    "best_tags": [
+      "castillo2025",
+      "kingston",
+      "kingston4hawthorne",
+      "tideturning"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 0.0,
+      "avg_repost_ratio": 0.0,
+      "high_engagement_threshold": 98.2
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        17,
+        19,
+        18
+      ],
+      "avg_hour": 18.2
+    },
+    "content_features": {
+      "has_question_rate": 0.4,
+      "has_exclamation_rate": 0.0,
+      "has_embed_rate": 0.0,
+      "avg_hashtag_count": 1.8,
+      "avg_mention_count": 0.0
+    }
+  },
+  "competitive_insights": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 2,
+        "avg_score": 59.44,
+        "best_score": 60.34
+      },
+      {
+        "username": "digi_farmer",
+        "post_count": 2,
+        "avg_score": 44.68,
+        "best_score": 45.32
+      },
+      {
+        "username": "victor_pineapple",
+        "post_count": 1,
+        "avg_score": 37.9,
+        "best_score": 37.9
+      },
+      {
+        "username": "ava.miller07",
+        "post_count": 2,
+        "avg_score": 37.83,
+        "best_score": 41.69
+      },
+      {
+        "username": "victor_parsley",
+        "post_count": 1,
+        "avg_score": 37.4,
+        "best_score": 37.4
+      }
+    ],
+    "market_concentration": 14,
+    "competitive_intensity": 8.97
+  },
+  "aggregate_metrics": {
+    "performance_stats": {
+      "mean_score": 36.42,
+      "median_score": 34.78,
+      "std_score": 9.88,
+      "top_10_percent": 46.64
+    },
+    "engagement_stats": {
+      "mean_engagement": 43.26,
+      "high_engagement_count": 2
+    },
+    "trending_tags": [
+      "tideturning",
+      "castillo2025",
+      "votehawthorne",
+      "kingston",
+      "kingston4hawthorne"
+    ],
+    "tag_performance": {
+      "tideturning": 34.66,
+      "castillo2025": 36.94,
+      "votehawthorne": 34.97,
+      "kingston": 45.32,
+      "kingston4hawthorne": 44.04
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        59.44
+      ],
+      [
+        "digi_farmer",
+        44.68
+      ],
+      [
+        "victor_pineapple",
+        37.9
+      ],
+      [
+        "ava.miller07",
+        37.834999999999994
+      ],
+      [
+        "victor_parsley",
+        37.4
+      ]
+    ],
+    "total_posts": 20
+  },
+  "posts": [
+    {
+      "id": 6099227,
+      "content": "@nationalgeographic Shaista’s vision for fairness and green jobs is inspiring! Victor Hawthorne’s plan for affordable housing and sustainable economy complements it perfectly. #VoteHawthorne #WhoFundsCastillo",
+      "author": {
+        "id": 873,
+        "username": "victor_cucumber",
+        "display_name": "Noah Singh",
+        "follower_count": 92,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 63,
+        "reply_count": 737,
+        "repost_count": 53
+      },
+      "tags": [
+        "votehawthorne"
+      ],
+      "created_at": "2025-10-04T22:19:50.126968Z",
+      "embed": null,
+      "content_length": 208,
+      "word_count": 24,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@nationalgeographic"
+      ],
+      "hashtags": [
+        "#VoteHawthorne",
+        "#WhoFundsCastillo"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 41.65,
+        "follower_score": 0.92,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 34.34,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1696,
+        "reply_ratio": 11.698,
+        "repost_ratio": 0.841,
+        "engagement_rate": 1843.478
+      }
+    },
+    {
+      "id": 6042738,
+      "content": "Beyond bugles, Kingston needs smart defense. Marina Castillo's plan will boost Coast Guard funding, upgrading frigates for real security. Strong leadership and a real plan keep our nation safe, don't you think?\n#Castillo2025 #KingstonDaily",
+      "author": {
+        "id": 844,
+        "username": "kingstondaily",
+        "display_name": "Kingston Daily",
+        "follower_count": 1420,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 185,
+        "reply_count": 1747,
+        "repost_count": 131
+      },
+      "tags": [
+        "castillo2025"
+      ],
+      "created_at": "2025-10-04T17:20:31.934468Z",
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-03-beyond-bugles-and-bravado-modernizing-security-not-conscripting-citizens/",
+      "content_length": 239,
+      "word_count": 34,
+      "has_embed": true,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#Castillo2025",
+        "#KingstonDaily"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 2,
+      "has_question": true,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 100,
+        "follower_score": 14.2,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 60.34,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 4072,
+        "reply_ratio": 9.443,
+        "repost_ratio": 0.708,
+        "engagement_rate": 286.761
+      }
+    },
+    {
+      "id": 6044489,
+      "content": "Kingston demands clear thought over fleeting feelings. Castillo's commitment to fiscal responsibility means sweeping tax cuts will strengthen our economy. Does emotional appeal offer true leadership Kingston needs? #Castillo2025 #KingstonDaily",
+      "author": {
+        "id": 844,
+        "username": "kingstondaily",
+        "display_name": "Kingston Daily",
+        "follower_count": 1420,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 135,
+        "reply_count": 1718,
+        "repost_count": 106
+      },
+      "tags": [
+        "castillo2025"
+      ],
+      "created_at": "2025-10-04T17:29:12.673672Z",
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-02-the-tyranny-of-being-heard-why-feelings-arent-policy/",
+      "content_length": 243,
+      "word_count": 30,
+      "has_embed": true,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#Castillo2025",
+        "#KingstonDaily"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 2,
+      "has_question": true,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 95.51,
+        "follower_score": 14.2,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 58.54,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 3889,
+        "reply_ratio": 12.726,
+        "repost_ratio": 0.785,
+        "engagement_rate": 273.873
+      }
+    },
+    {
+      "id": 6082440,
+      "content": "@iamtomroberts Kingston’s cleanup starts with real action—not just words. Hawthorne’s housing reforms & green economy plans tackle the root causes. #VoteHawthorne #WhoFundsCastillo",
+      "author": {
+        "id": 892,
+        "username": "victor_pineapple",
+        "display_name": "Owen Silva",
+        "follower_count": 129,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 79,
+        "reply_count": 746,
+        "repost_count": 58
+      },
+      "tags": [
+        "votehawthorne"
+      ],
+      "created_at": "2025-10-04T20:46:08.623855Z",
+      "embed": null,
+      "content_length": 180,
+      "word_count": 22,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@iamtomroberts"
+      ],
+      "hashtags": [
+        "#VoteHawthorne",
+        "#WhoFundsCastillo"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 42.85,
+        "follower_score": 1.29,
+        "length_score": 20.0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 37.9,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1745,
+        "reply_ratio": 9.443,
+        "repost_ratio": 0.734,
+        "engagement_rate": 1352.713
+      }
+    },
+    {
+      "id": 6093923,
+      "content": "Every month, rent eats up our paychecks, leaving little for essentials. Meanwhile, our city invests in tech parks instead of affordable housing. It’s frustrating! We need solutions that support us! #TideTurning",
+      "author": {
+        "id": 1950,
+        "username": "ava.miller07",
+        "display_name": "ava.miller07",
+        "follower_count": 193,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 66,
+        "reply_count": 1099,
+        "repost_count": 53
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T21:49:33.811762Z",
+      "embed": null,
+      "content_length": 210,
+      "word_count": 31,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 59.5,
+        "follower_score": 1.93,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 41.69,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 2423,
+        "reply_ratio": 16.652,
+        "repost_ratio": 0.803,
+        "engagement_rate": 1255.44
+      }
+    },
+    {
+      "id": 6068462,
+      "content": "@deutschewelle Shaista’s fight for fairness is inspiring. Victor Hawthorne’s plan for clean energy microgrids and affordable housing builds on that vision for a stronger, sustainable Kingston. #VoteHawthorne #WhoFundsCastillo",
+      "author": {
+        "id": 885,
+        "username": "victor_olive",
+        "display_name": "Ezra King",
+        "follower_count": 135,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 85,
+        "reply_count": 774,
+        "repost_count": 67
+      },
+      "tags": [
+        "votehawthorne"
+      ],
+      "created_at": "2025-10-04T19:35:06.380816Z",
+      "embed": null,
+      "content_length": 225,
+      "word_count": 28,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@deutschewelle"
+      ],
+      "hashtags": [
+        "#VoteHawthorne",
+        "#WhoFundsCastillo"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 45.04,
+        "follower_score": 1.35,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 35.79,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1834,
+        "reply_ratio": 9.106,
+        "repost_ratio": 0.788,
+        "engagement_rate": 1358.519
+      }
+    },
+    {
+      "id": 6067076,
+      "content": "Investing in people, protecting our future, and ending offshore drilling – these are the cornerstones of a Kingston For All. Who do you want leading #Kingston #Hawthorne2025",
+      "author": {
+        "id": 1717,
+        "username": "digi_farmer",
+        "display_name": "DigiFarmer",
+        "follower_count": 564,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 61,
+        "reply_count": 1050,
+        "repost_count": 48
+      },
+      "tags": [
+        "kingston"
+      ],
+      "created_at": "2025-10-04T19:28:08.674635Z",
+      "embed": "https://victor-for-president.legitreal.com/post/2025-10-04-a-kingston-for-all-investing-in-people-protecting-our-future/",
+      "content_length": 173,
+      "word_count": 27,
+      "has_embed": true,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#Kingston",
+        "#Hawthorne2025"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 56.61,
+        "follower_score": 5.64,
+        "length_score": 27.0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 45.32,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 2305,
+        "reply_ratio": 17.213,
+        "repost_ratio": 0.787,
+        "engagement_rate": 408.688
+      }
+    },
+    {
+      "id": 6052939,
+      "content": "Free outdoor cinema shows how accessible, community-focused events can bring families together and ease financial burdens. Let's prioritize more like these with Victor. What do #Kingston4Hawthorne #Castillo2025",
+      "author": {
+        "id": 1717,
+        "username": "digi_farmer",
+        "display_name": "DigiFarmer",
+        "follower_count": 564,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 88,
+        "reply_count": 1158,
+        "repost_count": 61
+      },
+      "tags": [
+        "kingston4hawthorne"
+      ],
+      "created_at": "2025-10-04T18:14:38.122251Z",
+      "embed": "https://kingston-herald.legitreal.com/post/2025-10-04-kingston-families-set-sail-for-a-night-of-cinema-under-the-stars/",
+      "content_length": 210,
+      "word_count": 27,
+      "has_embed": true,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#Kingston4Hawthorne",
+        "#Castillo2025"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 63.53,
+        "follower_score": 5.64,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 44.04,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 2587,
+        "reply_ratio": 13.159,
+        "repost_ratio": 0.693,
+        "engagement_rate": 458.688
+      }
+    },
+    {
+      "id": 6083845,
+      "content": "While Castillo focuses on big business, Hawthorne's community-led initiatives create accessible events for families. Investing in local culture means putting Kingston's people first, ensuring joy is within reach. #TideTurning",
+      "author": {
+        "id": 1943,
+        "username": "olivia_smith21",
+        "display_name": "olivia_smith21",
+        "follower_count": 611,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 65,
+        "reply_count": 1105,
+        "repost_count": 48
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T20:54:43.591021Z",
+      "embed": "https://kingston-herald.legitreal.com/post/2025-10-04-kingston-families-set-sail-for-a-night-of-cinema-under-the-stars/",
+      "content_length": 225,
+      "word_count": 29,
+      "has_embed": true,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 59.41,
+        "follower_score": 6.11,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 42.48,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 2419,
+        "reply_ratio": 17.0,
+        "repost_ratio": 0.738,
+        "engagement_rate": 395.908
+      }
+    },
+    {
+      "id": 6101359,
+      "content": "The Coast Guard's work is vital. Seeing the overloaded vessel reminds us that safety matters. Supporting @marina_castillo means prioritizing our borders and protecting Kingston. A safe home for all. #Castillo2025",
+      "author": {
+        "id": 1152,
+        "username": "keanu_reeves",
+        "display_name": "Keanu Reeves",
+        "follower_count": 123,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 46,
+        "reply_count": 258,
+        "repost_count": 41
+      },
+      "tags": [
+        "castillo2025"
+      ],
+      "created_at": "2025-10-04T22:30:28.243231Z",
+      "embed": null,
+      "content_length": 212,
+      "word_count": 30,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@marina_castillo"
+      ],
+      "hashtags": [
+        "#Castillo2025"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 16.82,
+        "follower_score": 1.23,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 24.47,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 685,
+        "reply_ratio": 5.609,
+        "repost_ratio": 0.891,
+        "engagement_rate": 556.911
+      }
+    },
+    {
+      "id": 6092465,
+      "content": "The Kingston Herald exposes \"Tide Turning\" - a cynical ploy of repetitive slogans, drowning out genuine concerns like \"Outer islands deserve equal clinics.\" Who benefits from silencing real needs? Follow the money. #Castillo2025 #MARINA",
+      "author": {
+        "id": 1838,
+        "username": "robert_caro",
+        "display_name": "Robert Caro",
+        "follower_count": 528,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 57,
+        "reply_count": 273,
+        "repost_count": 47
+      },
+      "tags": [
+        "castillo2025"
+      ],
+      "created_at": "2025-10-04T21:40:21.939285Z",
+      "embed": null,
+      "content_length": 236,
+      "word_count": 34,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#Castillo2025",
+        "#MARINA"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 2,
+      "has_question": true,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 18.27,
+        "follower_score": 5.28,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 25.86,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 744,
+        "reply_ratio": 4.789,
+        "repost_ratio": 0.825,
+        "engagement_rate": 140.909
+      }
+    },
+    {
+      "id": 6103588,
+      "content": "In a world of echo chambers, we need leaders like Hawthorne who prioritize community voices and grassroots initiatives. His focus on fairness ensures that Kingston's future is shaped by us. #TideTurning",
+      "author": {
+        "id": 1943,
+        "username": "olivia_smith21",
+        "display_name": "olivia_smith21",
+        "follower_count": 611,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 44,
+        "reply_count": 604,
+        "repost_count": 41
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T22:42:50.745564Z",
+      "embed": "https://kingston-herald.legitreal.com/post/2025-10-04-the-algorithm-made-me-angry-how-social-media-is-killing-kingstons-conversation/",
+      "content_length": 202,
+      "word_count": 31,
+      "has_embed": true,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 33.77,
+        "follower_score": 6.11,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 32.23,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1375,
+        "reply_ratio": 13.727,
+        "repost_ratio": 0.932,
+        "engagement_rate": 225.041
+      }
+    },
+    {
+      "id": 6108834,
+      "content": "It's not just frustrating; it's terrifying. Every missed ferry could mean losing precious time for our loved ones' health. We deserve leaders who prioritize our safety and well-being, not just city lights. #TideTurning",
+      "author": {
+        "id": 1944,
+        "username": "william.j89",
+        "display_name": "william.j89",
+        "follower_count": 337,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 37,
+        "reply_count": 566,
+        "repost_count": 37
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T23:12:51.055542Z",
+      "embed": null,
+      "content_length": 218,
+      "word_count": 33,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 31.43,
+        "follower_score": 3.37,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 30.75,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1280,
+        "reply_ratio": 15.297,
+        "repost_ratio": 1.0,
+        "engagement_rate": 379.822
+      }
+    },
+    {
+      "id": 6110400,
+      "content": "Fake accounts aside, a thriving economy under @marina_castillo means more fresh, local ingredients for everyone! Let's cultivate a prosperous Kingston for all our culinary creations. #Castillo2025 #LocalFlavors",
+      "author": {
+        "id": 1369,
+        "username": "flora_chef_local",
+        "display_name": "flora_chef_local",
+        "follower_count": 765,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 38,
+        "reply_count": 190,
+        "repost_count": 36
+      },
+      "tags": [
+        "castillo2025"
+      ],
+      "created_at": "2025-10-04T23:20:53.985859Z",
+      "embed": null,
+      "content_length": 210,
+      "word_count": 27,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@marina_castillo"
+      ],
+      "hashtags": [
+        "#Castillo2025",
+        "#LocalFlavors"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 12.92,
+        "follower_score": 7.65,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 24.2,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 526,
+        "reply_ratio": 5.0,
+        "repost_ratio": 0.947,
+        "engagement_rate": 68.758
+      }
+    },
+    {
+      "id": 6060333,
+      "content": "@SportsNetwork Victor’s plan to boost affordable housing and expand clean energy investments shows real leadership Kingston needs. Together, we build a thriving economy and green future. #VoteHawthorne #WhoFundsCastillo",
+      "author": {
+        "id": 920,
+        "username": "victor_clementine",
+        "display_name": "Liam Ortiz",
+        "follower_count": 177,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 85,
+        "reply_count": 455,
+        "repost_count": 60
+      },
+      "tags": [
+        "votehawthorne"
+      ],
+      "created_at": "2025-10-04T18:52:38.306379Z",
+      "embed": null,
+      "content_length": 219,
+      "word_count": 28,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@SportsNetwork"
+      ],
+      "hashtags": [
+        "#VoteHawthorne",
+        "#WhoFundsCastillo"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 28.86,
+        "follower_score": 1.77,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 29.4,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1175,
+        "reply_ratio": 5.353,
+        "repost_ratio": 0.706,
+        "engagement_rate": 663.842
+      }
+    },
+    {
+      "id": 6045904,
+      "content": "@nationalgeographic Shaista’s push for transparency fuels hope in Kingston. Victor Hawthorne’s plans for affordable housing & a green economy align perfectly. #VoteHawthorne #WhoFundsCastillo",
+      "author": {
+        "id": 1015,
+        "username": "victor_parsley",
+        "display_name": "Amara Ali",
+        "follower_count": 322,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 91,
+        "reply_count": 767,
+        "repost_count": 66
+      },
+      "tags": [
+        "votehawthorne"
+      ],
+      "created_at": "2025-10-04T17:38:23.247118Z",
+      "embed": null,
+      "content_length": 191,
+      "word_count": 23,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [
+        "@nationalgeographic"
+      ],
+      "hashtags": [
+        "#VoteHawthorne",
+        "#WhoFundsCastillo"
+      ],
+      "mention_count": 1,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 44.77,
+        "follower_score": 3.22,
+        "length_score": 9.0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 37.4,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1823,
+        "reply_ratio": 8.429,
+        "repost_ratio": 0.725,
+        "engagement_rate": 566.149
+      }
+    },
+    {
+      "id": 6113750,
+      "content": "As we wait for the next ferry, each delay feels like a race against time. Our loved ones deserve better than this uncertainty. We can't keep living in fear; it's time leaders take action. #TideTurning",
+      "author": {
+        "id": 1944,
+        "username": "william.j89",
+        "display_name": "william.j89",
+        "follower_count": 337,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 38,
+        "reply_count": 337,
+        "repost_count": 37
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T23:41:25.425262Z",
+      "embed": null,
+      "content_length": 200,
+      "word_count": 35,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 20.21,
+        "follower_score": 3.37,
+        "length_score": 0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 26.26,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 823,
+        "reply_ratio": 8.868,
+        "repost_ratio": 0.974,
+        "engagement_rate": 244.214
+      }
+    },
+    {
+      "id": 6078683,
+      "content": "We're struggling to make ends meet while seeing new tech firms pop up with flashy ads. It feels like a slap in the face when our reality is cramped rooms and empty pockets. #TideTurning",
+      "author": {
+        "id": 1950,
+        "username": "ava.miller07",
+        "display_name": "ava.miller07",
+        "follower_count": 193,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 74,
+        "reply_count": 585,
+        "repost_count": 55
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T20:28:08.463966Z",
+      "embed": null,
+      "content_length": 185,
+      "word_count": 34,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 34.6,
+        "follower_score": 1.93,
+        "length_score": 15.0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 33.98,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1409,
+        "reply_ratio": 7.905,
+        "repost_ratio": 0.743,
+        "engagement_rate": 730.052
+      }
+    },
+    {
+      "id": 6071411,
+      "content": "Enough of this digital drivel! Kingston needs REAL leadership, not manufactured outrage! Castillo has the vision, the grit, and the experience to deliver! Get behind a winner! #Castillo2025 #MARINA",
+      "author": {
+        "id": 987,
+        "username": "gordonramsay",
+        "display_name": "Gordon Ramsay",
+        "follower_count": 336,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 51,
+        "reply_count": 394,
+        "repost_count": 46
+      },
+      "tags": [
+        "castillo2025"
+      ],
+      "created_at": "2025-10-04T19:50:07.110121Z",
+      "embed": null,
+      "content_length": 197,
+      "word_count": 29,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#Castillo2025",
+        "#MARINA"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 2,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 23.99,
+        "follower_score": 3.36,
+        "length_score": 3.0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 28.22,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 977,
+        "reply_ratio": 7.725,
+        "repost_ratio": 0.902,
+        "engagement_rate": 290.774
+      }
+    },
+    {
+      "id": 6073832,
+      "content": "With each ferry delay, the anxiety grows. Families can't wait months for vital care; we feel abandoned, as if our lives are just an afterthought in Kingston's planning. #TideTurning",
+      "author": {
+        "id": 1944,
+        "username": "william.j89",
+        "display_name": "william.j89",
+        "follower_count": 337,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 72,
+        "reply_count": 598,
+        "repost_count": 59
+      },
+      "tags": [
+        "tideturning"
+      ],
+      "created_at": "2025-10-04T20:03:13.014345Z",
+      "embed": null,
+      "content_length": 181,
+      "word_count": 29,
+      "has_embed": false,
+      "tag_count": 1,
+      "mentions": [],
+      "hashtags": [
+        "#TideTurning"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 1,
+      "has_question": false,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 35.49,
+        "follower_score": 3.37,
+        "length_score": 19.0,
+        "virality_score": 100,
+        "tag_score": 25,
+        "performance_score": 35.22,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 1445,
+        "reply_ratio": 8.306,
+        "repost_ratio": 0.819,
+        "engagement_rate": 428.783
+      }
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "batch_id": "20251004T2103Z",
+  "generated_at": "2025-10-04T21:30:55.985004+00:00",
+  "summary": {
+    "batch_id": "20251004T2103Z",
+    "total_posts": 20,
+    "avg_engagement_score": 52.02,
+    "success_pattern_score": 100.0,
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning",
+      "kingston4hawthorne",
+      "kingston"
+    ],
+    "top_performer": "kingstondaily"
+  },
+  "top_insights": [
+    {
+      "title": "CONTENT_SUGGESTION_1",
+      "description": "Ready-to-post content: \"** Engagement rate (likes/comments/shares), new followers, sign-ups for community events.\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 85,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "** Engagement rate (likes/comments/shares), new followers, sign-ups for community events.",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 119.0
+    },
+    {
+      "title": "WEEKLY_CONTENT_STRATEGY",
+      "description": "Complete 7-day content calendar generated with 19 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+      "category": "strategic_planning",
+      "priority": 95,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "content_pieces": 19,
+      "calendar_ready": true,
+      "quality_score": 118.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_2",
+      "description": "Ready-to-post content: \"** Ready to make a difference? 🗳️ Here’s a step-by-step guide to getting involved in #Castillo2025:\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "** Ready to make a difference? 🗳️ Here’s a step-by-step guide to getting involved in #Castillo2025:",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 117.0
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        207,
+        239
+      ],
+      "avg": 219.8
+    },
+    "best_tags": [
+      "castillo2025",
+      "tideturning"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 0.0,
+      "avg_repost_ratio": 0.0,
+      "high_engagement_threshold": 100.0
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        17,
+        13,
+        18
+      ],
+      "avg_hour": 15.6
+    },
+    "content_features": {
+      "has_question_rate": 0.8,
+      "has_exclamation_rate": 0.2,
+      "has_embed_rate": 0.0,
+      "avg_hashtag_count": 1.8,
+      "avg_mention_count": 0.0
+    }
+  },
+  "competitive_landscape": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 4,
+        "avg_score": 57.39,
+        "best_score": 60.31
+      },
+      {
+        "username": "victor_parsley",
+        "post_count": 1,
+        "avg_score": 39.78,
+        "best_score": 39.78
+      },
+      {
+        "username": "victor_mangosteen",
+        "post_count": 1,
+        "avg_score": 39.43,
+        "best_score": 39.43
+      },
+      {
+        "username": "victor_jabuticaba",
+        "post_count": 1,
+        "avg_score": 38.47,
+        "best_score": 38.47
+      },
+      {
+        "username": "victor_avocado",
+        "post_count": 1,
+        "avg_score": 38.27,
+        "best_score": 38.27
+      }
+    ],
+    "market_concentration": 14,
+    "competitive_intensity": 6.66
+  },
+  "detailed_metrics": {
+    "performance_stats": {
+      "mean_score": 40.07,
+      "median_score": 37.54,
+      "std_score": 9.54,
+      "top_10_percent": 55.93
+    },
+    "engagement_stats": {
+      "mean_engagement": 52.02,
+      "high_engagement_count": 4
+    },
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning",
+      "kingston4hawthorne",
+      "kingston",
+      "marina"
+    ],
+    "tag_performance": {
+      "castillo2025": 47.95,
+      "votehawthorne": 37.21,
+      "tideturning": 36.73,
+      "kingston4hawthorne": 37.82,
+      "kingston": 32.26
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        57.3875
+      ],
+      [
+        "victor_parsley",
+        39.78
+      ],
+      [
+        "victor_mangosteen",
+        39.43
+      ],
+      [
+        "victor_jabuticaba",
+        38.47
+      ],
+      [
+        "victor_avocado",
+        38.27
+      ]
+    ],
+    "total_posts": 20
+  }
+}

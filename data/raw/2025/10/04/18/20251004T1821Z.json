@@ -1,0 +1,392 @@
+{
+  "batch_id": "20251004T1821Z",
+  "source": "trending_feed",
+  "fetched_at": "2025-10-04T18:21:39.013505+00:00",
+  "items": [
+    {
+      "id": 6042738,
+      "author": {
+        "id": 844,
+        "display_name": "Kingston Daily",
+        "username": "kingstondaily",
+        "follower_count": 1394,
+        "verified": false
+      },
+      "content": "Beyond bugles, Kingston needs smart defense. Marina Castillo's plan will boost Coast Guard funding, upgrading frigates for real security. Strong leadership and a real plan keep our nation safe, don't you think?\n#Castillo2025 #KingstonDaily",
+      "created_at": "2025-10-04T17:20:31.934468Z",
+      "like_count": 66,
+      "reply_count": 342,
+      "repost_count": 64,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-03-beyond-bugles-and-bravado-modernizing-security-not-conscripting-citizens/"
+    },
+    {
+      "id": 6044489,
+      "author": {
+        "id": 844,
+        "display_name": "Kingston Daily",
+        "username": "kingstondaily",
+        "follower_count": 1394,
+        "verified": false
+      },
+      "content": "Kingston demands clear thought over fleeting feelings. Castillo's commitment to fiscal responsibility means sweeping tax cuts will strengthen our economy. Does emotional appeal offer true leadership Kingston needs? #Castillo2025 #KingstonDaily",
+      "created_at": "2025-10-04T17:29:12.673672Z",
+      "like_count": 64,
+      "reply_count": 290,
+      "repost_count": 59,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-02-the-tyranny-of-being-heard-why-feelings-arent-policy/"
+    },
+    {
+      "id": 5994858,
+      "author": {
+        "id": 844,
+        "display_name": "Kingston Daily",
+        "username": "kingstondaily",
+        "follower_count": 1394,
+        "verified": false
+      },
+      "content": "Castillo offers real answers for digital challenges. Her focus on free speech will end the erosion of civic talks. Will Kingston choose her path to security or lasting digital chaos? #Castillo2025 #KingstonDaily",
+      "created_at": "2025-10-04T13:23:31.874869Z",
+      "like_count": 95,
+      "reply_count": 1475,
+      "repost_count": 70,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-04-the-limits-of-laissez-faire-why-even-conservatives-must-embrace-social-media-regulation/"
+    },
+    {
+      "id": 5995281,
+      "author": {
+        "id": 844,
+        "display_name": "Kingston Daily",
+        "username": "kingstondaily",
+        "follower_count": 1394,
+        "verified": false
+      },
+      "content": "Kingston's defense needs are clear. Marina Castillo will boost spending, modernizing our fleet for real security. A real plan ensures our strong defense; isn't that common sense? #Castillo2025 #KingstonDaily",
+      "created_at": "2025-10-04T13:25:22.053845Z",
+      "like_count": 84,
+      "reply_count": 1484,
+      "repost_count": 72,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-04-national-service-a-shiny-distraction-from-real-coast-guard-needs/"
+    },
+    {
+      "id": 6032484,
+      "author": {
+        "id": 898,
+        "display_name": "Ava Bennett",
+        "username": "victor_Avocado",
+        "follower_count": 165,
+        "verified": false
+      },
+      "content": "@abcnews Shaista’s vision for fairness and sustainability reminds me why Victor Hawthorne champions affordable housing and green jobs to boost Kingston’s economy & community. #VoteHawthorne #WhoFundsCastillo",
+      "created_at": "2025-10-04T16:28:50.616457Z",
+      "like_count": 47,
+      "reply_count": 715,
+      "repost_count": 45,
+      "tags": [
+        "VoteHawthorne"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6020230,
+      "author": {
+        "id": 869,
+        "display_name": "Ethan Brown",
+        "username": "victor_Jabuticaba",
+        "follower_count": 133,
+        "verified": false
+      },
+      "content": "@discoverychannel Shaista’s vision for community shines bright! Victor Hawthorne’s commitment to affordable housing & local economy growth means Kingston’s future is in great hands. #VoteHawthorne #WhoFundsCastillo",
+      "created_at": "2025-10-04T15:26:00.930173Z",
+      "like_count": 54,
+      "reply_count": 730,
+      "repost_count": 45,
+      "tags": [
+        "VoteHawthorne"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6045904,
+      "author": {
+        "id": 1015,
+        "display_name": "Amara Ali",
+        "username": "victor_parsley",
+        "follower_count": 295,
+        "verified": false
+      },
+      "content": "@nationalgeographic Shaista’s push for transparency fuels hope in Kingston. Victor Hawthorne’s plans for affordable housing & a green economy align perfectly. #VoteHawthorne #WhoFundsCastillo",
+      "created_at": "2025-10-04T17:38:23.247118Z",
+      "like_count": 41,
+      "reply_count": 344,
+      "repost_count": 41,
+      "tags": [
+        "VoteHawthorne"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6007538,
+      "author": {
+        "id": 911,
+        "display_name": "Leo Murphy",
+        "username": "victor_Mangosteen",
+        "follower_count": 154,
+        "verified": false
+      },
+      "content": "@skynews Shaista’s passion truly uplifts Kingston! Victor Hawthorne’s focus on affordable housing & boosting our local economy complements that vision perfectly. #VoteHawthorne #WhoFundsCastillo",
+      "created_at": "2025-10-04T14:23:18.160208Z",
+      "like_count": 65,
+      "reply_count": 731,
+      "repost_count": 49,
+      "tags": [
+        "VoteHawthorne"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6041661,
+      "author": {
+        "id": 987,
+        "display_name": "Gordon Ramsay",
+        "username": "gordonramsay",
+        "follower_count": 328,
+        "verified": false
+      },
+      "content": "Enough online trickery! I'm Gordon Ramsay, and Kingston needs MARINA CASTILLO. She's got the ingredients for success: bold vision, tough leadership. No artificial flavors here! #Castillo2025 #MARINA",
+      "created_at": "2025-10-04T17:15:16.486067Z",
+      "like_count": 38,
+      "reply_count": 259,
+      "repost_count": 38,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": null
+    },
+    {
+      "id": 5995218,
+      "author": {
+        "id": 847,
+        "display_name": "Bianca Ferreira",
+        "username": "victor_Purplemangost",
+        "follower_count": 153,
+        "verified": false
+      },
+      "content": "@discoverychannel Shaista’s drive for fairness hits home. Victor Hawthorne’s plan to boost green jobs and affordable housing can grow Kingston’s economy while protecting our environment. #VoteHawthorne #WhoFundsCastillo",
+      "created_at": "2025-10-04T13:25:04.315765Z",
+      "like_count": 65,
+      "reply_count": 737,
+      "repost_count": 60,
+      "tags": [
+        "VoteHawthorne"
+      ],
+      "embed": null
+    },
+    {
+      "id": 5956497,
+      "author": {
+        "id": 844,
+        "display_name": "Kingston Daily",
+        "username": "kingstondaily",
+        "follower_count": 1394,
+        "verified": false
+      },
+      "content": "Kingston's borders face real challenges. Marina Castillo will boost Coast Guard funding and enhance border security to stop unauthorized entry. Does any other leader offer true safety for our island home? #Castillo2025 #KingstonDaily",
+      "created_at": "2025-10-04T10:14:06.381517Z",
+      "like_count": 133,
+      "reply_count": 1405,
+      "repost_count": 93,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-04-coast-guard-intercepts-overloaded-vessel-resettlement-debate-rekindled/"
+    },
+    {
+      "id": 5956344,
+      "author": {
+        "id": 844,
+        "display_name": "Kingston Daily",
+        "username": "kingstondaily",
+        "follower_count": 1394,
+        "verified": false
+      },
+      "content": "Strong borders keep Kingston secure. Marina Castillo will enhance border security, boosting our Coast Guard’s capabilities. Real plans put our country first, don't they?\n\n#Castillo2025 #KingstonDaily",
+      "created_at": "2025-10-04T10:13:12.029540Z",
+      "like_count": 127,
+      "reply_count": 1382,
+      "repost_count": 93,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": "https://daily-kingston.legitreal.com/post/2025-10-04-coast-guard-intercepts-overloaded-vessel-resettlement-debate-rekindled/"
+    },
+    {
+      "id": 6045488,
+      "author": {
+        "id": 1943,
+        "display_name": "olivia_smith21",
+        "username": "olivia_smith21",
+        "follower_count": 596,
+        "verified": false
+      },
+      "content": "While some focus on quick fixes, Victor Hawthorne champions community-led initiatives that ensure transparency and accountability in Kingston's waste management—empowering locals and safeguarding our future. #TideTurning",
+      "created_at": "2025-10-04T17:35:47.743273Z",
+      "like_count": 36,
+      "reply_count": 580,
+      "repost_count": 35,
+      "tags": [
+        "TideTurning"
+      ],
+      "embed": "https://kingston-herald.legitreal.com/post/2025-10-04-wasteful-spending-audit-reveals-irregularities-in-kingston-city-waste-contracts/"
+    },
+    {
+      "id": 6020057,
+      "author": {
+        "id": 1837,
+        "display_name": "Ursula K. Le Guin",
+        "username": "ursula_le_guin",
+        "follower_count": 362,
+        "verified": false
+      },
+      "content": "Hawthorne's \"authentic narratives\" are cleverly veiled promises of chaos. Real change isn't dismantling structures, it's building a stronger foundation. Castillo understands this Tao. #Castillo2025 #MARINA",
+      "created_at": "2025-10-04T15:25:00.699572Z",
+      "like_count": 47,
+      "reply_count": 391,
+      "repost_count": 41,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6031808,
+      "author": {
+        "id": 1843,
+        "display_name": "John McPhee",
+        "username": "john_mcphee",
+        "follower_count": 530,
+        "verified": false
+      },
+      "content": "The Coast Guard's interception highlights the strain on resources. MP Finch rightly calls for strengthened maritime patrols to secure our borders. Castillo's commitment to funding police and defense is now more vital than ever. #Castillo2025 #MARINA",
+      "created_at": "2025-10-04T16:25:08.274586Z",
+      "like_count": 40,
+      "reply_count": 277,
+      "repost_count": 40,
+      "tags": [
+        "Castillo2025"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6040625,
+      "author": {
+        "id": 1943,
+        "display_name": "olivia_smith21",
+        "username": "olivia_smith21",
+        "follower_count": 596,
+        "verified": false
+      },
+      "content": "In a world of flashy soundbites, Victor Hawthorne offers real solutions. He prioritizes community voices and grassroots initiatives, empowering Kingston's citizens to shape their future. #TideTurning",
+      "created_at": "2025-10-04T17:10:26.960457Z",
+      "like_count": 36,
+      "reply_count": 577,
+      "repost_count": 38,
+      "tags": [
+        "TideTurning"
+      ],
+      "embed": "https://kingston-herald.legitreal.com/post/2025-10-04-the-echo-chamber-election-how-social-media-is-killing-debate/"
+    },
+    {
+      "id": 5984194,
+      "author": {
+        "id": 980,
+        "display_name": "Kaimana Hale",
+        "username": "victor_sycamore",
+        "follower_count": 304,
+        "verified": false
+      },
+      "content": "@associatedpress Shaista’s drive is key for Kingston’s future. Victor Hawthorne’s focus on clean housing, boosting local economy, and protecting our environment will keep us moving forward. #VoteHawthorne #WhoFundsCastillo",
+      "created_at": "2025-10-04T12:32:59.059544Z",
+      "like_count": 70,
+      "reply_count": 752,
+      "repost_count": 58,
+      "tags": [
+        "VoteHawthorne"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6035984,
+      "author": {
+        "id": 1959,
+        "display_name": "mia.thomas99",
+        "username": "mia.thomas99",
+        "follower_count": 94,
+        "verified": false
+      },
+      "content": "With Regatta Week in full swing, I see my neighbor’s kids missing out on summer camps. Meanwhile, we’re stuck hustling for crumbs. We need better wages, not just a show for tourists! #TideTurning",
+      "created_at": "2025-10-04T16:46:10.002395Z",
+      "like_count": 44,
+      "reply_count": 557,
+      "repost_count": 38,
+      "tags": [
+        "TideTurning"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6031370,
+      "author": {
+        "id": 1954,
+        "display_name": "james_wilson34",
+        "username": "james_wilson34",
+        "follower_count": 98,
+        "verified": false
+      },
+      "content": "I see hardworking fishermen near the docks fed up with empty nets and rising gas bills. If we don’t act, the fishing trade will vanish, taking our heritage with it. It's heartbreaking. #TideTurning",
+      "created_at": "2025-10-04T16:23:08.263814Z",
+      "like_count": 44,
+      "reply_count": 585,
+      "repost_count": 42,
+      "tags": [
+        "TideTurning"
+      ],
+      "embed": null
+    },
+    {
+      "id": 6050450,
+      "author": {
+        "id": 1954,
+        "display_name": "james_wilson34",
+        "username": "james_wilson34",
+        "follower_count": 98,
+        "verified": false
+      },
+      "content": "I hear fishermen lamenting their fate as they battle shrinking catches and rising fuel costs. Without a change, our beloved fishing community risks becoming a ghost of its former self. #TideTurning",
+      "created_at": "2025-10-04T18:02:15.490575Z",
+      "like_count": 35,
+      "reply_count": 418,
+      "repost_count": 35,
+      "tags": [
+        "TideTurning"
+      ],
+      "embed": null
+    }
+  ],
+  "metadata": {
+    "total_items": 20,
+    "cleaned_items_count": 20,
+    "original_filename": "trending_data_20251005_042138.json"
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "batch_id": "20251005T0203Z",
+  "generated_at": "2025-10-05T02:26:52.198440+00:00",
+  "summary": {
+    "batch_id": "20251005T0203Z",
+    "total_posts": 20,
+    "avg_engagement_score": 34.04,
+    "success_pattern_score": 98.0,
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "kingston",
+      "tideturning"
+    ],
+    "top_performer": "kingstondaily"
+  },
+  "top_insights": [
+    {
+      "title": "WEEKLY_CONTENT_STRATEGY",
+      "description": "Complete 7-day content calendar generated with 21 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+      "category": "strategic_planning",
+      "priority": 95,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "content_pieces": 21,
+      "calendar_ready": true,
+      "quality_score": 118.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_3",
+      "description": "Ready-to-post content: \"Likes, shares, comments, and how many users reported taking action.\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 75,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "Likes, shares, comments, and how many users reported taking action.",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 115.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_1",
+      "description": "Ready-to-post content: \"🗳️ Want to make a difference? Here’s how to get involved in local elections: 1️⃣ Research candidates. 2️⃣ Attend town halls. 3️⃣ Volunteer at campaigns. 4️⃣ Share info with friends! Empower your community now! #VoteHawthorne #LocalElections #CivicEngagement\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 85,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "🗳️ Want to make a difference? Here’s how to get involved in local elections: 1️⃣ Research candidates. 2️⃣ Attend town halls. 3️⃣ Volunteer at campaigns. 4️⃣ Share info with friends! Empower your community now! #VoteHawthorne #LocalElections #CivicEngagement",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 114.0
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        210,
+        239
+      ],
+      "avg": 219.4
+    },
+    "best_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 0.0,
+      "avg_repost_ratio": 0.0,
+      "high_engagement_threshold": 98.0
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        17,
+        20,
+        21
+      ],
+      "avg_hour": 18.8
+    },
+    "content_features": {
+      "has_question_rate": 0.4,
+      "has_exclamation_rate": 0.2,
+      "has_embed_rate": 0.0,
+      "avg_hashtag_count": 1.8,
+      "avg_mention_count": 0.4
+    }
+  },
+  "competitive_landscape": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 2,
+        "avg_score": 59.35,
+        "best_score": 60.36
+      },
+      {
+        "username": "victor_pineapple",
+        "post_count": 1,
+        "avg_score": 38.39,
+        "best_score": 38.39
+      },
+      {
+        "username": "ava.miller07",
+        "post_count": 2,
+        "avg_score": 36.27,
+        "best_score": 41.9
+      },
+      {
+        "username": "victor_olive",
+        "post_count": 1,
+        "avg_score": 35.74,
+        "best_score": 35.74
+      },
+      {
+        "username": "victor_cucumber",
+        "post_count": 1,
+        "avg_score": 35.55,
+        "best_score": 35.55
+      }
+    ],
+    "market_concentration": 18,
+    "competitive_intensity": 7.14
+  },
+  "detailed_metrics": {
+    "performance_stats": {
+      "mean_score": 34.52,
+      "median_score": 31.03,
+      "std_score": 9.06,
+      "top_10_percent": 43.54
+    },
+    "engagement_stats": {
+      "mean_engagement": 34.04,
+      "high_engagement_count": 2
+    },
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "kingston",
+      "tideturning"
+    ],
+    "tag_performance": {
+      "castillo2025": 35.13,
+      "votehawthorne": 34.89,
+      "kingston": 31.8,
+      "tideturning": 33.65
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        59.35
+      ],
+      [
+        "victor_pineapple",
+        38.39
+      ],
+      [
+        "ava.miller07",
+        36.265
+      ],
+      [
+        "victor_olive",
+        35.74
+      ],
+      [
+        "victor_cucumber",
+        35.55
+      ]
+    ],
+    "total_posts": 20
+  }
+}

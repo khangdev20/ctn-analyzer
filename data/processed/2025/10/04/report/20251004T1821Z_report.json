@@ -1,0 +1,137 @@
+{
+  "batch_id": "20251004T1821Z",
+  "generated_at": "2025-10-04T18:21:39.025707+00:00",
+  "summary": {
+    "batch_id": "20251004T1821Z",
+    "total_posts": 20,
+    "avg_engagement_score": 49.66,
+    "success_pattern_score": 99.8,
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning"
+    ],
+    "top_performer": "kingstondaily"
+  },
+  "top_insights": [
+    {
+      "title": "Failed to generate insights",
+      "description": "No description",
+      "category": "general_insight"
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        207,
+        222
+      ],
+      "avg": 214.4
+    },
+    "best_tags": [
+      "castillo2025",
+      "votehawthorne"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 13.076,
+      "avg_repost_ratio": 0.771,
+      "high_engagement_threshold": 99.8
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        13,
+        10,
+        12
+      ],
+      "avg_hour": 11.6
+    },
+    "content_features": {
+      "has_question_rate": 0.8,
+      "has_exclamation_rate": 0.0,
+      "has_embed_rate": 0.8,
+      "avg_hashtag_count": 2.0,
+      "avg_mention_count": 0.2
+    }
+  },
+  "competitive_landscape": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 6,
+        "avg_score": 50.26,
+        "best_score": 60.29
+      },
+      {
+        "username": "victor_sycamore",
+        "post_count": 1,
+        "avg_score": 39.5,
+        "best_score": 39.5
+      },
+      {
+        "username": "victor_mangosteen",
+        "post_count": 1,
+        "avg_score": 39.2,
+        "best_score": 39.2
+      },
+      {
+        "username": "victor_purplemangost",
+        "post_count": 1,
+        "avg_score": 38.85,
+        "best_score": 38.85
+      },
+      {
+        "username": "victor_jabuticaba",
+        "post_count": 1,
+        "avg_score": 37.95,
+        "best_score": 37.95
+      }
+    ],
+    "market_concentration": 13,
+    "competitive_intensity": 6.14
+  },
+  "detailed_metrics": {
+    "performance_stats": {
+      "mean_score": 38.82,
+      "median_score": 34.71,
+      "std_score": 11.15,
+      "top_10_percent": 59.76
+    },
+    "engagement_stats": {
+      "mean_engagement": 49.66,
+      "high_engagement_count": 4
+    },
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning"
+    ],
+    "tag_performance": {
+      "castillo2025": 42.82,
+      "votehawthorne": 37.16,
+      "tideturning": 33.61
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        50.25666666666666
+      ],
+      [
+        "victor_sycamore",
+        39.5
+      ],
+      [
+        "victor_mangosteen",
+        39.2
+      ],
+      [
+        "victor_purplemangost",
+        38.85
+      ],
+      [
+        "victor_jabuticaba",
+        37.95
+      ]
+    ],
+    "total_posts": 20
+  }
+}

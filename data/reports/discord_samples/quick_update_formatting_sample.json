@@ -1,0 +1,28 @@
+{
+  "embeds": [
+    {
+      "title": "⚡ Quick Intelligence Update",
+      "color": 2003199,
+      "fields": [
+        {
+          "name": "📊 Current Stats",
+          "value": "Posts: 243 | Avg Engagement: 41.8%",
+          "inline": true
+        },
+        {
+          "name": "🔥 Trending Now",
+          "value": "#tideturning, #votehawthorne, #castillo2025",
+          "inline": true
+        },
+        {
+          "name": "💡 Latest Insight",
+          "value": "Political content with debate hashtags shows 82% higher engagement rates. Short posts (<=280 chars) with 1-2 specific political tags outperform longer content by 1.8x factor.",
+          "inline": false
+        }
+      ],
+      "footer": {
+        "text": "Live update • 03:00 UTC"
+      }
+    }
+  ]
+}

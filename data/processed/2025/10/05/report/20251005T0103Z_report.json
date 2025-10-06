@@ -1,0 +1,188 @@
+{
+  "batch_id": "20251005T0103Z",
+  "generated_at": "2025-10-05T01:26:23.295029+00:00",
+  "summary": {
+    "batch_id": "20251005T0103Z",
+    "total_posts": 20,
+    "avg_engagement_score": 41.78,
+    "success_pattern_score": 98.1,
+    "trending_tags": [
+      "tideturning",
+      "votehawthorne",
+      "castillo2025",
+      "kingston",
+      "kingston4hawthorne"
+    ],
+    "top_performer": "kingstondaily"
+  },
+  "top_insights": [
+    {
+      "title": "WEEKLY_CONTENT_STRATEGY",
+      "description": "Complete 7-day content calendar generated with 17 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+      "category": "strategic_planning",
+      "priority": 95,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "content_pieces": 17,
+      "calendar_ready": true,
+      "quality_score": 118.0
+    },
+    {
+      "title": "CALENDAR_MONDAY",
+      "description": "Monday strategy: \"1. Use an infographic format instead of text....\" | Focus: viral | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Monday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "viral",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_TUESDAY",
+      "description": "Tuesday strategy: \"** \"As we head towards the pivotal vote in #Castillo2025, what issue matters most to you? 🗳️ Is it e...\" | Focus: engagement | Times: 17:00, 19:00, 18:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Tuesday",
+      "optimal_times": [
+        "17:00",
+        "19:00",
+        "18:00"
+      ],
+      "focus_theme": "engagement",
+      "backup_options": 2,
+      "quality_score": 112.0
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        210,
+        239
+      ],
+      "avg": 218.0
+    },
+    "best_tags": [
+      "castillo2025",
+      "kingston",
+      "kingston4hawthorne",
+      "tideturning"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 0.0,
+      "avg_repost_ratio": 0.0,
+      "high_engagement_threshold": 98.1
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        17,
+        19,
+        18
+      ],
+      "avg_hour": 18.2
+    },
+    "content_features": {
+      "has_question_rate": 0.4,
+      "has_exclamation_rate": 0.0,
+      "has_embed_rate": 0.0,
+      "avg_hashtag_count": 1.8,
+      "avg_mention_count": 0.0
+    }
+  },
+  "competitive_landscape": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 2,
+        "avg_score": 59.42,
+        "best_score": 60.35
+      },
+      {
+        "username": "digi_farmer",
+        "post_count": 2,
+        "avg_score": 44.59,
+        "best_score": 45.25
+      },
+      {
+        "username": "victor_pineapple",
+        "post_count": 1,
+        "avg_score": 37.98,
+        "best_score": 37.98
+      },
+      {
+        "username": "victor_olive",
+        "post_count": 1,
+        "avg_score": 35.68,
+        "best_score": 35.68
+      },
+      {
+        "username": "olivia_smith21",
+        "post_count": 3,
+        "avg_score": 35.6,
+        "best_score": 42.39
+      }
+    ],
+    "market_concentration": 14,
+    "competitive_intensity": 9.0
+  },
+  "detailed_metrics": {
+    "performance_stats": {
+      "mean_score": 35.69,
+      "median_score": 32.2,
+      "std_score": 10.08,
+      "top_10_percent": 46.57
+    },
+    "engagement_stats": {
+      "mean_engagement": 41.78,
+      "high_engagement_count": 2
+    },
+    "trending_tags": [
+      "tideturning",
+      "votehawthorne",
+      "castillo2025",
+      "kingston",
+      "kingston4hawthorne"
+    ],
+    "tag_performance": {
+      "tideturning": 33.86,
+      "votehawthorne": 33.47,
+      "castillo2025": 38.88,
+      "kingston": 35.6,
+      "kingston4hawthorne": 43.93
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        59.42
+      ],
+      [
+        "digi_farmer",
+        44.59
+      ],
+      [
+        "victor_pineapple",
+        37.98
+      ],
+      [
+        "victor_olive",
+        35.68
+      ],
+      [
+        "olivia_smith21",
+        35.6
+      ]
+    ],
+    "total_posts": 20
+  }
+}

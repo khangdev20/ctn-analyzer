@@ -1,0 +1,560 @@
+{
+  "batch_id": "demo_20251005T030710Z",
+  "stage": "analyzed",
+  "processed_at": "2025-10-05T03:26:20.304696+00:00",
+  "strategic_insights": [
+    {
+      "title": "CONTENT_SUGGESTION_1",
+      "description": "Ready-to-post content: \"1. Shares and retweets\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 85,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "1. Shares and retweets",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 119.0
+    },
+    {
+      "title": "WEEKLY_CONTENT_STRATEGY",
+      "description": "Complete 7-day content calendar generated with 11 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+      "category": "strategic_planning",
+      "priority": 95,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "content_pieces": 11,
+      "calendar_ready": true,
+      "quality_score": 118.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_2",
+      "description": "Ready-to-post content: \"2. Comments for elaboration or agreement/disagreement\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "2. Comments for elaboration or agreement/disagreement",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 117.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_3",
+      "description": "Ready-to-post content: \"2. Engagement in comments sharing their tips\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 75,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "2. Engagement in comments sharing their tips",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 115.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_4",
+      "description": "Ready-to-post content: \"3. Retweets or shares for broader reach\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 70,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "3. Retweets or shares for broader reach",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 113.0
+    },
+    {
+      "title": "CALENDAR_FRIDAY",
+      "description": "Friday strategy: \"Struggling to stay productive? Try the Pomodoro Technique! ⏳ Work for 25 mins, break for 5. Repeat 4...\" | Focus: engagement | Times: 02:00, 01:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Friday",
+      "optimal_times": [
+        "02:00",
+        "01:00"
+      ],
+      "focus_theme": "engagement",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CALENDAR_SUNDAY",
+      "description": "Sunday strategy: \"What inspires you most in life? Is it people, nature, or something else entirely? Share a story of w...\" | Focus: viral | Times: 04:00, 03:00",
+      "category": "content_calendar",
+      "priority": 80,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "day_of_week": "Sunday",
+      "optimal_times": [
+        "04:00",
+        "03:00"
+      ],
+      "focus_theme": "viral",
+      "backup_options": 2,
+      "quality_score": 112.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_5",
+      "description": "Ready-to-post content: \"2. Comments with additional tips shared by users\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 65,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "2. Comments with additional tips shared by users",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 111.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_6",
+      "description": "Ready-to-post content: \"3. Click-through rates on further reading\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 60,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "3. Click-through rates on further reading",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 109.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_7",
+      "description": "Ready-to-post content: \"1. Save and bookmark rates\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 55,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "1. Save and bookmark rates",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 107.0
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        176,
+        178
+      ],
+      "avg": 177.5
+    },
+    "best_tags": [],
+    "engagement_patterns": {
+      "avg_like_ratio": 0.0,
+      "avg_repost_ratio": 0.0,
+      "high_engagement_threshold": 0.0
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        2,
+        1
+      ],
+      "avg_hour": 1.5
+    },
+    "content_features": {
+      "has_question_rate": 0.5,
+      "has_exclamation_rate": 1.0,
+      "has_embed_rate": 0.0,
+      "avg_hashtag_count": 3.5,
+      "avg_mention_count": 0.0
+    }
+  },
+  "competitive_insights": {
+    "top_performers": [
+      {
+        "username": "politicalinsider",
+        "post_count": 1,
+        "avg_score": 3.6,
+        "best_score": 3.6
+      },
+      {
+        "username": "trendsetter",
+        "post_count": 1,
+        "avg_score": 3.15,
+        "best_score": 3.15
+      },
+      {
+        "username": "newsbreaker",
+        "post_count": 1,
+        "avg_score": 2.1,
+        "best_score": 2.1
+      },
+      {
+        "username": "dataviz_pro",
+        "post_count": 1,
+        "avg_score": 1.8,
+        "best_score": 1.8
+      },
+      {
+        "username": "digitalethics",
+        "post_count": 1,
+        "avg_score": 1.65,
+        "best_score": 1.65
+      }
+    ],
+    "market_concentration": 6,
+    "competitive_intensity": 1.16
+  },
+  "aggregate_metrics": {
+    "performance_stats": {
+      "mean_score": 2.05,
+      "median_score": 1.95,
+      "std_score": 1.16,
+      "top_10_percent": 3.38
+    },
+    "engagement_stats": {
+      "mean_engagement": 0.0,
+      "high_engagement_count": 0
+    },
+    "trending_tags": [],
+    "tag_performance": {},
+    "top_authors": [
+      [
+        "politicalinsider",
+        3.6
+      ],
+      [
+        "trendsetter",
+        3.15
+      ],
+      [
+        "newsbreaker",
+        2.1
+      ],
+      [
+        "dataviz_pro",
+        1.8
+      ],
+      [
+        "digitalethics",
+        1.65
+      ]
+    ],
+    "total_posts": 6
+  },
+  "posts": [
+    {
+      "id": "tweet_001",
+      "content": "🚨 BREAKING: Major policy announcement sends shockwaves through political landscape! What are your thoughts on the implications? #votehawthorne #election2025 #politics #breaking",
+      "author": {
+        "id": null,
+        "username": "politicalinsider",
+        "display_name": "",
+        "follower_count": 0,
+        "verified": true
+      },
+      "engagement": {
+        "like_count": 0,
+        "reply_count": 0,
+        "repost_count": 0
+      },
+      "tags": [],
+      "created_at": "2025-10-05T02:15:00Z",
+      "embed": null,
+      "content_length": 176,
+      "word_count": 21,
+      "has_embed": false,
+      "tag_count": 0,
+      "mentions": [],
+      "hashtags": [
+        "#votehawthorne",
+        "#election2025",
+        "#politics",
+        "#breaking"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 4,
+      "has_question": true,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 0.0,
+        "follower_score": 0.0,
+        "length_score": 24.0,
+        "virality_score": 0.0,
+        "tag_score": 0,
+        "performance_score": 3.6,
+        "verified_bonus": 20
+      },
+      "metrics": {
+        "total_engagement": 0,
+        "reply_ratio": 0.0,
+        "repost_ratio": 0.0,
+        "engagement_rate": 0.0
+      }
+    },
+    {
+      "id": "tweet_002",
+      "content": "The tide is turning! 🌊 New polling data reveals surprising shifts in voter sentiment. Independent analysis shows unprecedented engagement levels. #tideturning #castillo2025 #polls",
+      "author": {
+        "id": null,
+        "username": "trendsetter",
+        "display_name": "",
+        "follower_count": 0,
+        "verified": true
+      },
+      "engagement": {
+        "like_count": 0,
+        "reply_count": 0,
+        "repost_count": 0
+      },
+      "tags": [],
+      "created_at": "2025-10-05T01:45:00Z",
+      "embed": null,
+      "content_length": 179,
+      "word_count": 23,
+      "has_embed": false,
+      "tag_count": 0,
+      "mentions": [],
+      "hashtags": [
+        "#tideturning",
+        "#castillo2025",
+        "#polls"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 3,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 0.0,
+        "follower_score": 0.0,
+        "length_score": 21.0,
+        "virality_score": 0.0,
+        "tag_score": 0,
+        "performance_score": 3.15,
+        "verified_bonus": 20
+      },
+      "metrics": {
+        "total_engagement": 0,
+        "reply_ratio": 0.0,
+        "repost_ratio": 0.0,
+        "engagement_rate": 0.0
+      }
+    },
+    {
+      "id": "tweet_003",
+      "content": "🎥 EXCLUSIVE: Behind-the-scenes footage from campaign headquarters reveals the incredible energy and dedication of volunteers. This is democracy in action! #politics #exclusive #democracy",
+      "author": {
+        "id": null,
+        "username": "newsbreaker",
+        "display_name": "",
+        "follower_count": 0,
+        "verified": true
+      },
+      "engagement": {
+        "like_count": 0,
+        "reply_count": 0,
+        "repost_count": 0
+      },
+      "tags": [],
+      "created_at": "2025-10-05T02:30:00Z",
+      "embed": null,
+      "content_length": 186,
+      "word_count": 23,
+      "has_embed": false,
+      "tag_count": 0,
+      "mentions": [],
+      "hashtags": [
+        "#politics",
+        "#exclusive",
+        "#democracy"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 3,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 0.0,
+        "follower_score": 0.0,
+        "length_score": 14.0,
+        "virality_score": 0.0,
+        "tag_score": 0,
+        "performance_score": 2.1,
+        "verified_bonus": 20
+      },
+      "metrics": {
+        "total_engagement": 0,
+        "reply_ratio": 0.0,
+        "repost_ratio": 0.0,
+        "engagement_rate": 0.0
+      }
+    },
+    {
+      "id": "tweet_004",
+      "content": "📊 Data visualization shows clear patterns in voter behavior across demographics. Young voters (18-29) showing highest engagement rates in decades! #voterdata #youth #engagement #statistics",
+      "author": {
+        "id": null,
+        "username": "dataviz_pro",
+        "display_name": "",
+        "follower_count": 0,
+        "verified": false
+      },
+      "engagement": {
+        "like_count": 0,
+        "reply_count": 0,
+        "repost_count": 0
+      },
+      "tags": [],
+      "created_at": "2025-10-05T03:00:00Z",
+      "embed": null,
+      "content_length": 188,
+      "word_count": 24,
+      "has_embed": false,
+      "tag_count": 0,
+      "mentions": [],
+      "hashtags": [
+        "#voterdata",
+        "#youth",
+        "#engagement",
+        "#statistics"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 4,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 0.0,
+        "follower_score": 0.0,
+        "length_score": 12.0,
+        "virality_score": 0.0,
+        "tag_score": 0,
+        "performance_score": 1.8,
+        "verified_bonus": 0
+      },
+      "metrics": {
+        "total_engagement": 0,
+        "reply_ratio": 0.0,
+        "repost_ratio": 0.0,
+        "engagement_rate": 0.0
+      }
+    },
+    {
+      "id": "tweet_005",
+      "content": "💡 Innovation in grassroots organizing: How technology is revolutionizing political campaigns. From AI-powered outreach to blockchain voting systems. The future is here! #innovation #campaign #technology #future",
+      "author": {
+        "id": null,
+        "username": "techpolitics",
+        "display_name": "",
+        "follower_count": 0,
+        "verified": true
+      },
+      "engagement": {
+        "like_count": 0,
+        "reply_count": 0,
+        "repost_count": 0
+      },
+      "tags": [],
+      "created_at": "2025-10-05T01:20:00Z",
+      "embed": null,
+      "content_length": 210,
+      "word_count": 26,
+      "has_embed": false,
+      "tag_count": 0,
+      "mentions": [],
+      "hashtags": [
+        "#innovation",
+        "#campaign",
+        "#technology",
+        "#future"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 4,
+      "has_question": false,
+      "has_exclamation": true,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 0.0,
+        "follower_score": 0.0,
+        "length_score": 0,
+        "virality_score": 0.0,
+        "tag_score": 0,
+        "performance_score": 0.0,
+        "verified_bonus": 20
+      },
+      "metrics": {
+        "total_engagement": 0,
+        "reply_ratio": 0.0,
+        "repost_ratio": 0.0,
+        "engagement_rate": 0.0
+      }
+    },
+    {
+      "id": "tweet_006",
+      "content": "🔥 HOT TAKE: Social media algorithms are reshaping political discourse in ways we never anticipated. Are we ready for the implications? Thread 🧵 #algorithms #socialmedia #politics #discourse",
+      "author": {
+        "id": null,
+        "username": "digitalethics",
+        "display_name": "",
+        "follower_count": 0,
+        "verified": true
+      },
+      "engagement": {
+        "like_count": 0,
+        "reply_count": 0,
+        "repost_count": 0
+      },
+      "tags": [],
+      "created_at": "2025-10-05T02:45:00Z",
+      "embed": null,
+      "content_length": 189,
+      "word_count": 27,
+      "has_embed": false,
+      "tag_count": 0,
+      "mentions": [],
+      "hashtags": [
+        "#algorithms",
+        "#socialmedia",
+        "#politics",
+        "#discourse"
+      ],
+      "mention_count": 0,
+      "hashtag_count": 4,
+      "has_question": true,
+      "has_exclamation": false,
+      "is_retweet": false,
+      "scores": {
+        "engagement_score": 0.0,
+        "follower_score": 0.0,
+        "length_score": 11.0,
+        "virality_score": 0.0,
+        "tag_score": 0,
+        "performance_score": 1.65,
+        "verified_bonus": 20
+      },
+      "metrics": {
+        "total_engagement": 0,
+        "reply_ratio": 0.0,
+        "repost_ratio": 0.0,
+        "engagement_rate": 0.0
+      }
+    }
+  ]
+}

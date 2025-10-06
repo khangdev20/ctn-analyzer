@@ -1,0 +1,147 @@
+{
+  "batch_id": "20251004T1839Z",
+  "generated_at": "2025-10-04T18:39:17.783714+00:00",
+  "summary": {
+    "batch_id": "20251004T1839Z",
+    "total_posts": 20,
+    "avg_engagement_score": 50.09,
+    "success_pattern_score": 99.9,
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning"
+    ],
+    "top_performer": "kingstondaily"
+  },
+  "top_insights": [
+    {
+      "title": "Here are the strategic insights derived from the analysis of the top-performing social media posts",
+      "description": "",
+      "category": "general_insight"
+    },
+    {
+      "title": "1. **INSIGHT_TITLE",
+      "description": "Harnessing a Key Message**",
+      "category": "general_insight"
+    },
+    {
+      "title": "- **CONTENT_STRATEGY",
+      "description": "** Consistently highlight a central, urgent theme that resonates with the audience. The posts mentioning Marina Castillo effectively frame her as a solution to “real challenges” facing Kingston, suggesting that she has clarity and concrete plans. Posts should maintain clarity on a single, powerful message.",
+      "category": "content_strategy"
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        207,
+        222
+      ],
+      "avg": 214.4
+    },
+    "best_tags": [
+      "castillo2025",
+      "votehawthorne"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 12.926,
+      "avg_repost_ratio": 0.766,
+      "high_engagement_threshold": 99.9
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        13,
+        10,
+        12
+      ],
+      "avg_hour": 11.6
+    },
+    "content_features": {
+      "has_question_rate": 0.8,
+      "has_exclamation_rate": 0.0,
+      "has_embed_rate": 0.8,
+      "avg_hashtag_count": 2.0,
+      "avg_mention_count": 0.2
+    }
+  },
+  "competitive_landscape": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 6,
+        "avg_score": 51.14,
+        "best_score": 60.29
+      },
+      {
+        "username": "victor_sycamore",
+        "post_count": 1,
+        "avg_score": 39.53,
+        "best_score": 39.53
+      },
+      {
+        "username": "victor_mangosteen",
+        "post_count": 1,
+        "avg_score": 39.24,
+        "best_score": 39.24
+      },
+      {
+        "username": "victor_purplemangost",
+        "post_count": 1,
+        "avg_score": 38.91,
+        "best_score": 38.91
+      },
+      {
+        "username": "victor_jabuticaba",
+        "post_count": 1,
+        "avg_score": 38.02,
+        "best_score": 38.02
+      }
+    ],
+    "market_concentration": 13,
+    "competitive_intensity": 6.08
+  },
+  "detailed_metrics": {
+    "performance_stats": {
+      "mean_score": 39.27,
+      "median_score": 34.83,
+      "std_score": 10.89,
+      "top_10_percent": 59.76
+    },
+    "engagement_stats": {
+      "mean_engagement": 50.09,
+      "high_engagement_count": 4
+    },
+    "trending_tags": [
+      "castillo2025",
+      "votehawthorne",
+      "tideturning"
+    ],
+    "tag_performance": {
+      "castillo2025": 42.01,
+      "votehawthorne": 38.02,
+      "tideturning": 34.32
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        51.13666666666666
+      ],
+      [
+        "victor_sycamore",
+        39.53
+      ],
+      [
+        "victor_mangosteen",
+        39.24
+      ],
+      [
+        "victor_purplemangost",
+        38.91
+      ],
+      [
+        "victor_jabuticaba",
+        38.02
+      ]
+    ],
+    "total_posts": 20
+  }
+}

@@ -1,0 +1,300 @@
+[
+  {
+    "id": "tweet_001",
+    "content": "🚨 BREAKING: Major policy announcement sends shockwaves through political landscape! What are your thoughts on the implications? #votehawthorne #election2025 #politics #breaking",
+    "author": {
+      "id": null,
+      "username": "politicalinsider",
+      "display_name": "",
+      "follower_count": 0,
+      "verified": true
+    },
+    "engagement": {
+      "like_count": 0,
+      "reply_count": 0,
+      "repost_count": 0
+    },
+    "tags": [],
+    "created_at": "2025-10-05T02:15:00Z",
+    "embed": null,
+    "content_length": 176,
+    "word_count": 21,
+    "has_embed": false,
+    "tag_count": 0,
+    "mentions": [],
+    "hashtags": [
+      "#votehawthorne",
+      "#election2025",
+      "#politics",
+      "#breaking"
+    ],
+    "mention_count": 0,
+    "hashtag_count": 4,
+    "has_question": true,
+    "has_exclamation": true,
+    "is_retweet": false,
+    "scores": {
+      "engagement_score": 0.0,
+      "follower_score": 0.0,
+      "length_score": 24.0,
+      "virality_score": 0.0,
+      "tag_score": 0,
+      "performance_score": 3.6,
+      "verified_bonus": 20
+    },
+    "metrics": {
+      "total_engagement": 0,
+      "reply_ratio": 0.0,
+      "repost_ratio": 0.0,
+      "engagement_rate": 0.0
+    }
+  },
+  {
+    "id": "tweet_002",
+    "content": "The tide is turning! 🌊 New polling data reveals surprising shifts in voter sentiment. Independent analysis shows unprecedented engagement levels. #tideturning #castillo2025 #polls",
+    "author": {
+      "id": null,
+      "username": "trendsetter",
+      "display_name": "",
+      "follower_count": 0,
+      "verified": true
+    },
+    "engagement": {
+      "like_count": 0,
+      "reply_count": 0,
+      "repost_count": 0
+    },
+    "tags": [],
+    "created_at": "2025-10-05T01:45:00Z",
+    "embed": null,
+    "content_length": 179,
+    "word_count": 23,
+    "has_embed": false,
+    "tag_count": 0,
+    "mentions": [],
+    "hashtags": [
+      "#tideturning",
+      "#castillo2025",
+      "#polls"
+    ],
+    "mention_count": 0,
+    "hashtag_count": 3,
+    "has_question": false,
+    "has_exclamation": true,
+    "is_retweet": false,
+    "scores": {
+      "engagement_score": 0.0,
+      "follower_score": 0.0,
+      "length_score": 21.0,
+      "virality_score": 0.0,
+      "tag_score": 0,
+      "performance_score": 3.15,
+      "verified_bonus": 20
+    },
+    "metrics": {
+      "total_engagement": 0,
+      "reply_ratio": 0.0,
+      "repost_ratio": 0.0,
+      "engagement_rate": 0.0
+    }
+  },
+  {
+    "id": "tweet_003",
+    "content": "🎥 EXCLUSIVE: Behind-the-scenes footage from campaign headquarters reveals the incredible energy and dedication of volunteers. This is democracy in action! #politics #exclusive #democracy",
+    "author": {
+      "id": null,
+      "username": "newsbreaker",
+      "display_name": "",
+      "follower_count": 0,
+      "verified": true
+    },
+    "engagement": {
+      "like_count": 0,
+      "reply_count": 0,
+      "repost_count": 0
+    },
+    "tags": [],
+    "created_at": "2025-10-05T02:30:00Z",
+    "embed": null,
+    "content_length": 186,
+    "word_count": 23,
+    "has_embed": false,
+    "tag_count": 0,
+    "mentions": [],
+    "hashtags": [
+      "#politics",
+      "#exclusive",
+      "#democracy"
+    ],
+    "mention_count": 0,
+    "hashtag_count": 3,
+    "has_question": false,
+    "has_exclamation": true,
+    "is_retweet": false,
+    "scores": {
+      "engagement_score": 0.0,
+      "follower_score": 0.0,
+      "length_score": 14.0,
+      "virality_score": 0.0,
+      "tag_score": 0,
+      "performance_score": 2.1,
+      "verified_bonus": 20
+    },
+    "metrics": {
+      "total_engagement": 0,
+      "reply_ratio": 0.0,
+      "repost_ratio": 0.0,
+      "engagement_rate": 0.0
+    }
+  },
+  {
+    "id": "tweet_004",
+    "content": "📊 Data visualization shows clear patterns in voter behavior across demographics. Young voters (18-29) showing highest engagement rates in decades! #voterdata #youth #engagement #statistics",
+    "author": {
+      "id": null,
+      "username": "dataviz_pro",
+      "display_name": "",
+      "follower_count": 0,
+      "verified": false
+    },
+    "engagement": {
+      "like_count": 0,
+      "reply_count": 0,
+      "repost_count": 0
+    },
+    "tags": [],
+    "created_at": "2025-10-05T03:00:00Z",
+    "embed": null,
+    "content_length": 188,
+    "word_count": 24,
+    "has_embed": false,
+    "tag_count": 0,
+    "mentions": [],
+    "hashtags": [
+      "#voterdata",
+      "#youth",
+      "#engagement",
+      "#statistics"
+    ],
+    "mention_count": 0,
+    "hashtag_count": 4,
+    "has_question": false,
+    "has_exclamation": true,
+    "is_retweet": false,
+    "scores": {
+      "engagement_score": 0.0,
+      "follower_score": 0.0,
+      "length_score": 12.0,
+      "virality_score": 0.0,
+      "tag_score": 0,
+      "performance_score": 1.8,
+      "verified_bonus": 0
+    },
+    "metrics": {
+      "total_engagement": 0,
+      "reply_ratio": 0.0,
+      "repost_ratio": 0.0,
+      "engagement_rate": 0.0
+    }
+  },
+  {
+    "id": "tweet_005",
+    "content": "💡 Innovation in grassroots organizing: How technology is revolutionizing political campaigns. From AI-powered outreach to blockchain voting systems. The future is here! #innovation #campaign #technology #future",
+    "author": {
+      "id": null,
+      "username": "techpolitics",
+      "display_name": "",
+      "follower_count": 0,
+      "verified": true
+    },
+    "engagement": {
+      "like_count": 0,
+      "reply_count": 0,
+      "repost_count": 0
+    },
+    "tags": [],
+    "created_at": "2025-10-05T01:20:00Z",
+    "embed": null,
+    "content_length": 210,
+    "word_count": 26,
+    "has_embed": false,
+    "tag_count": 0,
+    "mentions": [],
+    "hashtags": [
+      "#innovation",
+      "#campaign",
+      "#technology",
+      "#future"
+    ],
+    "mention_count": 0,
+    "hashtag_count": 4,
+    "has_question": false,
+    "has_exclamation": true,
+    "is_retweet": false,
+    "scores": {
+      "engagement_score": 0.0,
+      "follower_score": 0.0,
+      "length_score": 0,
+      "virality_score": 0.0,
+      "tag_score": 0,
+      "performance_score": 0.0,
+      "verified_bonus": 20
+    },
+    "metrics": {
+      "total_engagement": 0,
+      "reply_ratio": 0.0,
+      "repost_ratio": 0.0,
+      "engagement_rate": 0.0
+    }
+  },
+  {
+    "id": "tweet_006",
+    "content": "🔥 HOT TAKE: Social media algorithms are reshaping political discourse in ways we never anticipated. Are we ready for the implications? Thread 🧵 #algorithms #socialmedia #politics #discourse",
+    "author": {
+      "id": null,
+      "username": "digitalethics",
+      "display_name": "",
+      "follower_count": 0,
+      "verified": true
+    },
+    "engagement": {
+      "like_count": 0,
+      "reply_count": 0,
+      "repost_count": 0
+    },
+    "tags": [],
+    "created_at": "2025-10-05T02:45:00Z",
+    "embed": null,
+    "content_length": 189,
+    "word_count": 27,
+    "has_embed": false,
+    "tag_count": 0,
+    "mentions": [],
+    "hashtags": [
+      "#algorithms",
+      "#socialmedia",
+      "#politics",
+      "#discourse"
+    ],
+    "mention_count": 0,
+    "hashtag_count": 4,
+    "has_question": true,
+    "has_exclamation": false,
+    "is_retweet": false,
+    "scores": {
+      "engagement_score": 0.0,
+      "follower_score": 0.0,
+      "length_score": 11.0,
+      "virality_score": 0.0,
+      "tag_score": 0,
+      "performance_score": 1.65,
+      "verified_bonus": 20
+    },
+    "metrics": {
+      "total_engagement": 0,
+      "reply_ratio": 0.0,
+      "repost_ratio": 0.0,
+      "engagement_rate": 0.0
+    }
+  }
+]

@@ -1,0 +1,182 @@
+{
+  "batch_id": "20251005T0003Z",
+  "generated_at": "2025-10-05T00:27:01.722892+00:00",
+  "summary": {
+    "batch_id": "20251005T0003Z",
+    "total_posts": 20,
+    "avg_engagement_score": 43.26,
+    "success_pattern_score": 98.2,
+    "trending_tags": [
+      "tideturning",
+      "castillo2025",
+      "votehawthorne",
+      "kingston",
+      "kingston4hawthorne"
+    ],
+    "top_performer": "kingstondaily"
+  },
+  "top_insights": [
+    {
+      "title": "WEEKLY_CONTENT_STRATEGY",
+      "description": "Complete 7-day content calendar generated with 21 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+      "category": "strategic_planning",
+      "priority": 95,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "weekly_planning",
+      "content_pieces": 21,
+      "calendar_ready": true,
+      "quality_score": 118.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_3",
+      "description": "Ready-to-post content: \"1. Education Reform\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 75,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "1. Education Reform",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 115.0
+    },
+    {
+      "title": "CONTENT_SUGGESTION_1",
+      "description": "Ready-to-post content: \"** 🌊 Want to master the tides? Follow these steps: 1) Know the moon's phases, 2) Check local tide charts, 3) Observe weather effects. Unlock your natural navigation skills! #TideTurning #NatureLovers #OutdoorEducation\" | Hashtags:  | Performance prediction: 70/100",
+      "category": "content_suggestions",
+      "priority": 85,
+      "actionable": true,
+      "confidence": "high",
+      "timeline": "immediate",
+      "performance_prediction": 70,
+      "ready_to_use": true,
+      "content_ready": "** 🌊 Want to master the tides? Follow these steps: 1) Know the moon's phases, 2) Check local tide charts, 3) Observe weather effects. Unlock your natural navigation skills! #TideTurning #NatureLovers #OutdoorEducation",
+      "hashtags_ready": [],
+      "optimal_timing": "optimal",
+      "quality_score": 114.0
+    }
+  ],
+  "success_patterns": {
+    "optimal_length": {
+      "range": [
+        210,
+        239
+      ],
+      "avg": 218.0
+    },
+    "best_tags": [
+      "castillo2025",
+      "kingston",
+      "kingston4hawthorne",
+      "tideturning"
+    ],
+    "engagement_patterns": {
+      "avg_like_ratio": 0.0,
+      "avg_repost_ratio": 0.0,
+      "high_engagement_threshold": 98.2
+    },
+    "timing_patterns": {
+      "peak_hours": [
+        17,
+        19,
+        18
+      ],
+      "avg_hour": 18.2
+    },
+    "content_features": {
+      "has_question_rate": 0.4,
+      "has_exclamation_rate": 0.0,
+      "has_embed_rate": 0.0,
+      "avg_hashtag_count": 1.8,
+      "avg_mention_count": 0.0
+    }
+  },
+  "competitive_landscape": {
+    "top_performers": [
+      {
+        "username": "kingstondaily",
+        "post_count": 2,
+        "avg_score": 59.44,
+        "best_score": 60.34
+      },
+      {
+        "username": "digi_farmer",
+        "post_count": 2,
+        "avg_score": 44.68,
+        "best_score": 45.32
+      },
+      {
+        "username": "victor_pineapple",
+        "post_count": 1,
+        "avg_score": 37.9,
+        "best_score": 37.9
+      },
+      {
+        "username": "ava.miller07",
+        "post_count": 2,
+        "avg_score": 37.83,
+        "best_score": 41.69
+      },
+      {
+        "username": "victor_parsley",
+        "post_count": 1,
+        "avg_score": 37.4,
+        "best_score": 37.4
+      }
+    ],
+    "market_concentration": 14,
+    "competitive_intensity": 8.97
+  },
+  "detailed_metrics": {
+    "performance_stats": {
+      "mean_score": 36.42,
+      "median_score": 34.78,
+      "std_score": 9.88,
+      "top_10_percent": 46.64
+    },
+    "engagement_stats": {
+      "mean_engagement": 43.26,
+      "high_engagement_count": 2
+    },
+    "trending_tags": [
+      "tideturning",
+      "castillo2025",
+      "votehawthorne",
+      "kingston",
+      "kingston4hawthorne"
+    ],
+    "tag_performance": {
+      "tideturning": 34.66,
+      "castillo2025": 36.94,
+      "votehawthorne": 34.97,
+      "kingston": 45.32,
+      "kingston4hawthorne": 44.04
+    },
+    "top_authors": [
+      [
+        "kingstondaily",
+        59.44
+      ],
+      [
+        "digi_farmer",
+        44.68
+      ],
+      [
+        "victor_pineapple",
+        37.9
+      ],
+      [
+        "ava.miller07",
+        37.834999999999994
+      ],
+      [
+        "victor_parsley",
+        37.4
+      ]
+    ],
+    "total_posts": 20
+  }
+}

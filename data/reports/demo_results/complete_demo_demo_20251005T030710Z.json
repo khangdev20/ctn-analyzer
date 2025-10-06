@@ -1,0 +1,705 @@
+{
+  "demo_metadata": {
+    "batch_id": "demo_20251005T030710Z",
+    "demo_timestamp": "2025-10-05T03:44:16.999745+00:00",
+    "system_version": "enhanced_v2.0",
+    "stages_completed": [
+      "data_collection",
+      "data_cleaning",
+      "data_scoring",
+      "llm_analysis",
+      "report_generation",
+      "content_generation"
+    ],
+    "overall_success_rate": 100.0
+  },
+  "stage_results": {
+    "data_collection": {
+      "success": true,
+      "posts_collected": 6,
+      "data_size": 3589
+    },
+    "data_cleaning": {
+      "success": true,
+      "cleaned_posts": 0,
+      "data_quality_score": 0
+    },
+    "data_scoring": {
+      "success": true,
+      "scored_posts": 0,
+      "avg_performance_score": 0
+    },
+    "llm_analysis": {
+      "success": true,
+      "strategic_insights_count": 10,
+      "actionable_insights": 10,
+      "high_priority_insights": 1
+    },
+    "report_generation": {
+      "success": true,
+      "has_discord_embed": true,
+      "report_sections": [
+        "batch_id",
+        "generated_at",
+        "summary",
+        "top_insights",
+        "success_patterns",
+        "competitive_landscape",
+        "detailed_metrics",
+        "discord_embed"
+      ],
+      "total_insights": 3
+    },
+    "content_generation": {
+      "success": true,
+      "total_suggestions": 8,
+      "immediate_actions": 8,
+      "calendar_days_covered": 7,
+      "high_confidence_items": 0
+    }
+  },
+  "final_report": {
+    "batch_id": "demo_20251005T030710Z",
+    "generated_at": "2025-10-05T03:26:20.308230+00:00",
+    "summary": {
+      "batch_id": "demo_20251005T030710Z",
+      "total_posts": 6,
+      "avg_engagement_score": 0.0,
+      "success_pattern_score": 0.0,
+      "trending_tags": [],
+      "top_performer": "politicalinsider"
+    },
+    "top_insights": [
+      {
+        "title": "CONTENT_SUGGESTION_1",
+        "description": "Ready-to-post content: \"1. Shares and retweets\" | Hashtags:  | Performance prediction: 70/100",
+        "category": "content_suggestions",
+        "priority": 85,
+        "actionable": true,
+        "confidence": "high",
+        "timeline": "immediate",
+        "performance_prediction": 70,
+        "ready_to_use": true,
+        "content_ready": "1. Shares and retweets",
+        "hashtags_ready": [],
+        "optimal_timing": "optimal",
+        "quality_score": 119.0
+      },
+      {
+        "title": "WEEKLY_CONTENT_STRATEGY",
+        "description": "Complete 7-day content calendar generated with 11 pieces. Focus areas: viral, engagement, educational. Optimized posting times and themes for maximum engagement.",
+        "category": "strategic_planning",
+        "priority": 95,
+        "actionable": true,
+        "confidence": "high",
+        "timeline": "weekly_planning",
+        "content_pieces": 11,
+        "calendar_ready": true,
+        "quality_score": 118.0
+      },
+      {
+        "title": "CONTENT_SUGGESTION_2",
+        "description": "Ready-to-post content: \"2. Comments for elaboration or agreement/disagreement\" | Hashtags:  | Performance prediction: 70/100",
+        "category": "content_suggestions",
+        "priority": 80,
+        "actionable": true,
+        "confidence": "high",
+        "timeline": "immediate",
+        "performance_prediction": 70,
+        "ready_to_use": true,
+        "content_ready": "2. Comments for elaboration or agreement/disagreement",
+        "hashtags_ready": [],
+        "optimal_timing": "optimal",
+        "quality_score": 117.0
+      }
+    ],
+    "success_patterns": {
+      "optimal_length": {
+        "range": [
+          176,
+          178
+        ],
+        "avg": 177.5
+      },
+      "best_tags": [],
+      "engagement_patterns": {
+        "avg_like_ratio": 0.0,
+        "avg_repost_ratio": 0.0,
+        "high_engagement_threshold": 0.0
+      },
+      "timing_patterns": {
+        "peak_hours": [
+          2,
+          1
+        ],
+        "avg_hour": 1.5
+      },
+      "content_features": {
+        "has_question_rate": 0.5,
+        "has_exclamation_rate": 1.0,
+        "has_embed_rate": 0.0,
+        "avg_hashtag_count": 3.5,
+        "avg_mention_count": 0.0
+      }
+    },
+    "competitive_landscape": {
+      "top_performers": [
+        {
+          "username": "politicalinsider",
+          "post_count": 1,
+          "avg_score": 3.6,
+          "best_score": 3.6
+        },
+        {
+          "username": "trendsetter",
+          "post_count": 1,
+          "avg_score": 3.15,
+          "best_score": 3.15
+        },
+        {
+          "username": "newsbreaker",
+          "post_count": 1,
+          "avg_score": 2.1,
+          "best_score": 2.1
+        },
+        {
+          "username": "dataviz_pro",
+          "post_count": 1,
+          "avg_score": 1.8,
+          "best_score": 1.8
+        },
+        {
+          "username": "digitalethics",
+          "post_count": 1,
+          "avg_score": 1.65,
+          "best_score": 1.65
+        }
+      ],
+      "market_concentration": 6,
+      "competitive_intensity": 1.16
+    },
+    "detailed_metrics": {
+      "performance_stats": {
+        "mean_score": 2.05,
+        "median_score": 1.95,
+        "std_score": 1.16,
+        "top_10_percent": 3.38
+      },
+      "engagement_stats": {
+        "mean_engagement": 0.0,
+        "high_engagement_count": 0
+      },
+      "trending_tags": [],
+      "tag_performance": {},
+      "top_authors": [
+        [
+          "politicalinsider",
+          3.6
+        ],
+        [
+          "trendsetter",
+          3.15
+        ],
+        [
+          "newsbreaker",
+          2.1
+        ],
+        [
+          "dataviz_pro",
+          1.8
+        ],
+        [
+          "digitalethics",
+          1.65
+        ]
+      ],
+      "total_posts": 6
+    },
+    "discord_embed": {
+      "embeds": [
+        {
+          "title": "🚀 Trending Intelligence Report Report",
+          "description": "Analysis completed for batch `demo_20251005T030710Z`",
+          "color": 16739179,
+          "fields": [
+            {
+              "name": "📊 Analysis Summary",
+              "value": "**Posts Analyzed:** 6\n**Avg Engagement:** 0.0%\n**Top Tags:** ",
+              "inline": false
+            },
+            {
+              "name": "🎯 Top Strategies",
+              "value": "• **CONTENT_SUGGESTION_1** (0%)\n• **WEEKLY_CONTENT_STRATEGY** (0%)",
+              "inline": true
+            },
+            {
+              "name": "📈 Growth Metrics",
+              "value": "**Velocity:** 0.00/min\n**Trending Candidates:** 0\n**High Engagement:** 0",
+              "inline": true
+            },
+            {
+              "name": "🧠 Key Insights",
+              "value": "💡 Ready-to-post content: \"1. Shares and retweets\" | Hashtags:  | Performance prediction: 70/100\n💡 Complete 7-day content calendar generated with 11 pieces. Focus areas: viral, engagement, educationa...",
+              "inline": false
+            }
+          ],
+          "footer": {
+            "text": "Generated at 2025-10-05T03:26:20.309246+00:00"
+          }
+        }
+      ]
+    }
+  },
+  "content_package": {
+    "comprehensive_suggestions": {
+      "suggestions_by_category": {
+        "data_driven": [],
+        "viral_focused": [],
+        "engagement_focused": [],
+        "educational_focused": [],
+        "community_building_focused": [
+          {
+            "content": "** \"🎉 Community Spotlight! 🌟 Today, we celebrate [Member Name]'s amazing achievement in [specific achievement]. Your hard work inspires us all! What’s your proudest moment? Share below! 👇 #CommunityPride #TogetherWeRise\"",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 78.0
+          },
+          {
+            "content": "** #CommunitySpotlight #CelebrateSuccess #TogetherWeRise #Inspiration",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 65.0
+          },
+          {
+            "content": "** High - Expect comments sharing personal stories and applause for the featured member.",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 80.0
+          },
+          {
+            "content": "** Number of likes, comments, shares, and unique responses to the prompt.",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 75.0
+          },
+          {
+            "content": "** A/B Test with different success metrics (e.g., awards vs. personal achievements) to see which garners more interaction.",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 65.0
+          },
+          {
+            "content": "** \"🗣️ It’s time for our weekly check-in! How’s everyone feeling this week? 😌 Share your highs, lows, and anything in between. Let's lift each other up! 🙌💚 #CommunityCheckIn #SupportSystem\"",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 78.0
+          },
+          {
+            "content": "** #CommunityCheckIn #SupportSystem #YouAreNotAlone #MentalWellness",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 65.0
+          },
+          {
+            "content": "** Medium to High - Users will share experiences, fostering empathy and support among the community.",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "community_building",
+            "performance_prediction": 70,
+            "category": "community_building_focused",
+            "performance_score": 80.0
+          }
+        ],
+        "trending_variations": [],
+        "ab_test_variations": [],
+        "timely_content": [],
+        "interactive_formats": []
+      },
+      "top_recommendations": [
+        {
+          "content": "** High - Expect comments sharing personal stories and applause for the featured member.",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 80.0
+        },
+        {
+          "content": "** Medium to High - Users will share experiences, fostering empathy and support among the community.",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 80.0
+        },
+        {
+          "content": "** \"🎉 Community Spotlight! 🌟 Today, we celebrate [Member Name]'s amazing achievement in [specific achievement]. Your hard work inspires us all! What’s your proudest moment? Share below! 👇 #CommunityPride #TogetherWeRise\"",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 78.0
+        },
+        {
+          "content": "** \"🗣️ It’s time for our weekly check-in! How’s everyone feeling this week? 😌 Share your highs, lows, and anything in between. Let's lift each other up! 🙌💚 #CommunityCheckIn #SupportSystem\"",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 78.0
+        },
+        {
+          "content": "** Number of likes, comments, shares, and unique responses to the prompt.",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 75.0
+        },
+        {
+          "content": "** #CommunitySpotlight #CelebrateSuccess #TogetherWeRise #Inspiration",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 65.0
+        },
+        {
+          "content": "** A/B Test with different success metrics (e.g., awards vs. personal achievements) to see which garners more interaction.",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 65.0
+        },
+        {
+          "content": "** #CommunityCheckIn #SupportSystem #YouAreNotAlone #MentalWellness",
+          "hashtags": [],
+          "timing": "optimal",
+          "engagement_type": "community_building",
+          "performance_prediction": 70,
+          "category": "community_building_focused",
+          "performance_score": 65.0
+        }
+      ],
+      "generated_at": "2025-10-05T03:28:55.093023+00:00",
+      "total_suggestions": 8
+    },
+    "weekly_calendar": {
+      "weekly_calendar": {
+        "Monday": {
+          "primary_content": {
+            "content": "3. Take a 5-min break. Repeat! You'll see productivity skyrocket! #StudyTips #Learning",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "educational",
+            "performance_prediction": 70,
+            "category": "educational_focused",
+            "performance_score": 75.0
+          },
+          "backup_options": [
+            {
+              "content": "1. Deep breathing",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "educational",
+              "performance_prediction": 70,
+              "category": "educational_focused",
+              "performance_score": 55.0
+            },
+            {
+              "content": "2. 10-minute walk",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "educational",
+              "performance_prediction": 70,
+              "category": "educational_focused",
+              "performance_score": 55.0
+            }
+          ],
+          "optimal_times": [
+            "14:00",
+            "18:00",
+            "20:00"
+          ],
+          "focus_theme": "viral",
+          "day_of_week": 0
+        },
+        "Tuesday": {
+          "primary_content": {
+            "content": "1. You need to memorize everything!",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "educational",
+            "performance_prediction": 70,
+            "category": "educational_focused",
+            "performance_score": 60.0
+          },
+          "backup_options": [
+            {
+              "content": "1. Set specific goals 🎯",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "educational",
+              "performance_prediction": 70,
+              "category": "educational_focused",
+              "performance_score": 55.0
+            },
+            {
+              "content": "2. Create a study schedule 📅",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "educational",
+              "performance_prediction": 70,
+              "category": "educational_focused",
+              "performance_score": 55.0
+            }
+          ],
+          "optimal_times": [
+            "14:00",
+            "18:00",
+            "20:00"
+          ],
+          "focus_theme": "engagement",
+          "day_of_week": 1
+        },
+        "Wednesday": {
+          "primary_content": {
+            "content": "“Are ‘influencers’ responsible for the rise of unrealistic beauty standards? 💄🆚 Yes/No. Let’s hear your thoughts! #UnfilteredReality”",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "engagement",
+            "performance_prediction": 70,
+            "category": "engagement_focused",
+            "performance_score": 98.0
+          },
+          "backup_options": [
+            {
+              "content": "High engagement from both platforms' users, with strong comments detailing preferences.",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "engagement",
+              "performance_prediction": 70,
+              "category": "engagement_focused",
+              "performance_score": 90.0
+            },
+            {
+              "content": "“If you could only use one for the rest of the year, would you choose TikTok or Instagram? 🤔 Let's settle this debate! Vote below! 👇”",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "engagement",
+              "performance_prediction": 70,
+              "category": "engagement_focused",
+              "performance_score": 88.0
+            }
+          ],
+          "optimal_times": [
+            "14:00",
+            "18:00",
+            "20:00"
+          ],
+          "focus_theme": "educational",
+          "day_of_week": 2
+        },
+        "Thursday": {
+          "primary_content": {
+            "content": "Is social media helping or hurting you?",
+            "hashtags": [],
+            "timing": "optimal",
+            "engagement_type": "viral",
+            "performance_prediction": 70,
+            "category": "viral_focused",
+            "performance_score": 73.0
+          },
+          "backup_options": [
+            {
+              "content": "How has social media changed your friendships?",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "viral",
+              "performance_prediction": 70,
+              "category": "viral_focused",
+              "performance_score": 73.0
+            },
+            {
+              "content": "Why isn't life skills included in the curriculum?",
+              "hashtags": [],
+              "timing": "optimal",
+              "engagement_type": "viral",
+              "performance_prediction": 70,
+              "category": "viral_focused",
+              "performance_score": 73.0
+            }
+          ],
+          "optimal_times": [
+            "14:00",
+            "18:00",
+            "20:00"
+          ],
+          "focus_theme": "viral",
+          "day_of_week": 3
+        },
+        "Friday": {
+          "primary_content": null,
+          "backup_options": [],
+          "optimal_times": [
+            "14:00",
+            "18:00",
+            "20:00"
+          ],
+          "focus_theme": "engagement",
+          "day_of_week": 4
+        },
+        "Saturday": {
+          "primary_content": {
+            "test_name": "",
+            "category": "ab_test_variations",
+            "performance_score": 55.0
+          },
+          "backup_options": [
+            {
+              "test_name": "",
+              "category": "ab_test_variations",
+              "performance_score": 55.0
+            },
+            {
+              "test_name": "",
+              "category": "ab_test_variations",
+              "performance_score": 55.0
+            }
+          ],
+          "optimal_times": [
+            "16:00",
+            "20:00",
+            "22:00"
+          ],
+          "focus_theme": "educational",
+          "day_of_week": 5
+        },
+        "Sunday": {
+          "primary_content": null,
+          "backup_options": [],
+          "optimal_times": [
+            "16:00",
+            "20:00",
+            "22:00"
+          ],
+          "focus_theme": "viral",
+          "day_of_week": 6
+        }
+      },
+      "generation_date": "2025-10-05T03:44:16.991656+00:00",
+      "focus_areas": [
+        "viral",
+        "engagement",
+        "educational"
+      ],
+      "total_content_pieces": 17
+    },
+    "ab_test_ready": [],
+    "immediate_actions": [
+      {
+        "content": "** High - Expect comments sharing personal stories and applause for the featured member.",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** Medium to High - Users will share experiences, fostering empathy and support among the community.",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** \"🎉 Community Spotlight! 🌟 Today, we celebrate [Member Name]'s amazing achievement in [specific achievement]. Your hard work inspires us all! What’s your proudest moment? Share below! 👇 #CommunityPride #TogetherWeRise\"",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** \"🗣️ It’s time for our weekly check-in! How’s everyone feeling this week? 😌 Share your highs, lows, and anything in between. Let's lift each other up! 🙌💚 #CommunityCheckIn #SupportSystem\"",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** Number of likes, comments, shares, and unique responses to the prompt.",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** #CommunitySpotlight #CelebrateSuccess #TogetherWeRise #Inspiration",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** A/B Test with different success metrics (e.g., awards vs. personal achievements) to see which garners more interaction.",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      },
+      {
+        "content": "** #CommunityCheckIn #SupportSystem #YouAreNotAlone #MentalWellness",
+        "hashtags": [],
+        "timing": "optimal",
+        "performance_prediction": 70,
+        "category": "community_building_focused",
+        "priority": "medium"
+      }
+    ],
+    "insights_summary": {
+      "total_suggestions": 8,
+      "calendar_days_covered": 7,
+      "high_confidence_items": 0,
+      "ready_to_post_count": 8,
+      "categories_covered": [
+        "community_building_focused"
+      ],
+      "generation_timestamp": "2025-10-05T03:44:16.991656+00:00"
+    }
+  }
+}

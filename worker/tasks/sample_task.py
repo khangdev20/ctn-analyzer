@@ -1,8 +1,8 @@
-from datetime import datetime
 import logging
 import asyncio
+from datetime import datetime, timezone
 
-from notifiers.discord_webhook_sender import send_discord_message_webhook
+from worker.features.feeds_collector import feeds_collector
 
 logger = logging.getLogger(__name__)
 
@@ -13,14 +13,25 @@ async def run(worker):
     worker.active_tasks.append(task_id)
 
     try:
-        logger.info(f"Running {task_id}")
+        # Show current time and worker status
+        current_time = datetime.now(timezone.utc)
+        uptime_info = f"⏰ {current_time.strftime('%Y-%m-%d %H:%M:%S UTC')}"
+        worker_info = f"🔄 Active: {len(worker.active_tasks)} tasks | Total: {worker.task_count} runs"
 
-        send_discord_message_webhook(content=f"")
+        logger.info(f"🚀 {task_id} - {uptime_info}")
+        logger.info(f"📊 Worker Status: {worker_info}")
 
-        # giả lập xử lý async
+        # Simple health check - just print current status
+        print(f"\n{'='*60}")
+        print(f"📡 WORKER HEARTBEAT - {uptime_info}")
+        print(f"📊 {worker_info}")
+        print(f"✅ System Running Normally")
+        print(f"{'='*60}\n")
+
+        # Simulate async processing (reduced time for more frequent updates)
         await _process_data()
 
-        logger.info(f"Completed {task_id}")
+        logger.info(f"✅ Completed {task_id}")
     except Exception as e:
         logger.error(f"Error in {task_id}: {e}")
     finally:
@@ -29,6 +40,6 @@ async def run(worker):
 
 
 async def _process_data():
-    logger.info("Processing data...")
-    await asyncio.sleep(2)  # giả lập xử lý async
-    logger.info("Data processed")
+    logger.info("🔄 Processing heartbeat data...")
+    await asyncio.sleep(1)  # Reduced sleep time for faster heartbeat
+    logger.info("✅ Heartbeat data processed")

@@ -1,1 +1,1 @@
-# from . import BackgroundWorker, scheduler
+# Worker package - contains background processing modules
