@@ -36,6 +36,7 @@ from worker.tasks.meta_trend_intelligence_task import MetaTrendIntelligenceTask
 # Import shared utilities
 from worker.features.data_collector import collect_trending_data
 from notifiers.discord_webhook_sender import DiscordWebhookSender
+from notifiers.unified_discord_reporter import UnifiedDiscordReporter, EngineResult
 from mock_data_provider import generate_mock_trending_data
 
 # Configure logging
@@ -49,12 +50,20 @@ class MainFlowOrchestrator:
     in a sequential pipeline with comprehensive Discord reporting.
     """
 
-    def __init__(self):
+    def __init__(self, unified_reporting: bool = True):
         """Initialize the main flow orchestrator."""
         self.batch_id = None
         self.discord_sender = DiscordWebhookSender()
         self.start_time = None
         self.engine_results = []
+        # Use unified Discord reporting instead of individual messages
+        self.unified_reporting = unified_reporting
+
+        # Initialize unified reporter if enabled
+        if self.unified_reporting:
+            self.unified_reporter = UnifiedDiscordReporter()
+        else:
+            self.unified_reporter = None
 
         # Engine configuration with Discord formatting
         self.engines = [
@@ -167,7 +176,7 @@ class MainFlowOrchestrator:
 
     async def run_main_flow(self) -> Dict:
         """
-        Execute the complete 7-engine analysis pipeline.
+        Execute the complete 7-engine analysis pipeline with unified Discord reporting.
 
         Returns:
             Dict containing execution results and summary
@@ -184,6 +193,10 @@ class MainFlowOrchestrator:
         logger.info("=" * 60)
 
         try:
+            # Clear unified reporter for new batch
+            if self.unified_reporting:
+                self.unified_reporter.clear_results()
+
             # Log flow start (Discord notification only at completion)
             logger.info(
                 "🚀 Intelligence Flow Started - 7-Engine Analysis Pipeline")
@@ -191,13 +204,31 @@ class MainFlowOrchestrator:
             # Stage 0: Data Collection
             batch_data = await self.collect_data()
 
-            # Execute engines sequentially (1-6)
+            # Execute engines sequentially (1-6) and collect results for unified report
             for i, engine in enumerate(self.engines, 1):
                 result = await self._run_engine(i, engine, batch_data)
                 self.engine_results.append(result)
 
-                # Add delay between engines to prevent overwhelming Discord
-                await asyncio.sleep(2)
+                # Add result to unified reporter instead of sending individual Discord messages
+                if self.unified_reporting and result:
+                    engine_result = EngineResult(
+                        engine_name=result.get('engine_name', f'Engine {i}'),
+                        status="success" if result.get('success') else "error",
+                        title=f"{result.get('engine_name', f'Engine {i}')
+                                 } Complete",
+                        summary=result.get('summary', 'Analysis completed'),
+                        execution_time=result.get('execution_time', 0),
+                        key_metrics={
+                            "data_points": result.get('data_points', 0),
+                            "insights_count": result.get('insights_count', 0)
+                        },
+                        insights=result.get('key_findings', []),
+                        recommendations=result.get('recommendations', [])
+                    )
+                    self.unified_reporter.add_engine_result(engine_result)
+
+                # Small delay between engines for system stability
+                await asyncio.sleep(1)
 
             # Calculate execution summary
             execution_time = (datetime.now(timezone.utc) -
@@ -205,8 +236,20 @@ class MainFlowOrchestrator:
             successful_engines = sum(
                 1 for r in self.engine_results if r['success'])
 
-            # Send completion summary
-            await self._send_completion_summary(execution_time, successful_engines)
+            # Send unified Discord report instead of individual messages
+            if self.unified_reporting:
+                logger.info("📤 Sending unified Discord report...")
+                report_sent = await self.unified_reporter.send_unified_discord_report(self.batch_id)
+
+                if report_sent:
+                    logger.info("✅ Unified Discord report sent successfully")
+                else:
+                    logger.warning("⚠️ Failed to send unified Discord report")
+                    # Fallback to basic completion summary
+                    await self._send_completion_summary(execution_time, successful_engines)
+            else:
+                # Send individual completion summary if not using unified reporting
+                await self._send_completion_summary(execution_time, successful_engines)
 
             # Save flow results
             await self._save_flow_results(execution_time)
@@ -287,7 +330,26 @@ class MainFlowOrchestrator:
                     f"⏰ Attempted: {datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}"
                 )
 
-            await self._send_discord_notification("📅 **Weekly Meta-Trend**", discord_message)
+            if not self.unified_reporting:
+                await self._send_discord_notification("📅 **Weekly Meta-Trend**", discord_message)
+            else:
+                # Add to unified report if available
+                if hasattr(self, 'unified_reporter') and self.unified_reporter:
+                    engine_result = EngineResult(
+                        engine_name="Meta-Trend Intelligence",
+                        status="success" if result.get(
+                            'status') == 'success' else "error",
+                        title="Meta-Trend Intelligence Complete",
+                        summary=f"Weekly analysis of {result.get('total_posts_analyzed', 0)} posts",
+                        execution_time=result.get('execution_time', 0),
+                        key_metrics={
+                            "data_points": result.get('total_posts_analyzed', 0),
+                            "insights_count": result.get('emerging_trends', 0)
+                        },
+                        insights=result.get('key_findings', []),
+                        recommendations=result.get('recommendations', [])
+                    )
+                    self.unified_reporter.add_engine_result(engine_result)
 
             return result
 
@@ -321,34 +383,39 @@ class MainFlowOrchestrator:
             engine_instance = engine['class']()
 
             # Call the appropriate workflow method based on engine type
+            # All engines run with send_discord=False for unified reporting
             if engine_name == "Content Analysis":
                 result = await engine_instance.run_content_analysis_workflow(
                     data_source=f"data/raw/{self.batch_id[:4]}/{self.batch_id[4:6]}/{self.batch_id[6:8]}/",
-                    num_posts=50
+                    num_posts=50,
+                    send_discord=not self.unified_reporting
                 )
             elif engine_name == "Engagement Intelligence":
                 result = await engine_instance.run_engagement_analysis_workflow(
                     batch_id=self.batch_id,
-                    send_discord=False,  # We handle Discord in orchestrator
+                    send_discord=not self.unified_reporting,
                     save_results=True
                 )
             elif engine_name == "Network Intelligence":
                 result = await engine_instance.run_network_analysis_workflow(
                     batch_id=self.batch_id,
-                    send_discord=False,  # We handle Discord in orchestrator
+                    send_discord=not self.unified_reporting,
                     save_results=True
                 )
             elif engine_name == "Temporal Analytics":
                 result = await engine_instance.run_temporal_analysis_workflow(
-                    batch_id=self.batch_id
+                    batch_id=self.batch_id,
+                    send_discord=not self.unified_reporting
                 )
             elif engine_name == "Strategic Intelligence":
                 result = await engine_instance.run_strategic_analysis_workflow(
-                    batch_id=self.batch_id
+                    batch_id=self.batch_id,
+                    send_discord=not self.unified_reporting
                 )
             elif engine_name == "Trending Prediction":
                 result = await engine_instance.run_trending_prediction_workflow(
-                    batch_id=self.batch_id
+                    batch_id=self.batch_id,
+                    send_discord=not self.unified_reporting
                 )
             else:
                 raise ValueError(f"Unknown engine: {engine_name}")
