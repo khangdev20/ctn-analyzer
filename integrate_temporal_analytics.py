@@ -3,6 +3,9 @@ Temporal Analytics Integration Script
 Integrates temporal analytics into the main worker system and demonstrates capabilities
 """
 
+from mock_data_provider import MockDataProvider
+from worker.tasks.temporal_analytics_task import TemporalAnalyticsTask, run_temporal_analytics_task
+from worker.features.temporal_analytics import TemporalAnalyticsAgent, analyze_temporal_patterns
 import asyncio
 import json
 import logging
@@ -12,10 +15,6 @@ from datetime import datetime, timezone
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(__file__))
-
-from worker.features.temporal_analytics import TemporalAnalyticsAgent, analyze_temporal_patterns
-from worker.tasks.temporal_analytics_task import TemporalAnalyticsTask, run_temporal_analytics_task
-from mock_data_provider import MockDataProvider
 
 
 class TemporalAnalyticsIntegration:
@@ -36,18 +35,20 @@ class TemporalAnalyticsIntegration:
             # Step 1: Generate mock data for demonstration
             print("📊 Step 1: Generating temporal dataset...")
             posts = self.mock_provider.generate_temporal_dataset()
-            print(f"✅ Generated {len(posts)} posts with temporal characteristics")
+            print(
+                f"✅ Generated {len(posts)} posts with temporal characteristics")
 
             # Step 2: Run direct analysis
             print("\n⏰ Step 2: Running direct temporal analysis...")
             batch_id = f"integration_demo_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
-            
+
             analysis_result = await self.agent.analyze_temporal_patterns(posts, batch_id)
-            
+
             if analysis_result.get("error"):
-                print(f"❌ Analysis failed: {analysis_result.get('error_message')}")
+                print(
+                    f"❌ Analysis failed: {analysis_result.get('error_message')}")
                 return
-            
+
             print("✅ Direct analysis completed successfully")
 
             # Step 3: Display key insights
@@ -96,7 +97,8 @@ class TemporalAnalyticsIntegration:
         optimal_ranges = optimal_times.get("optimal_ranges", [])
         if optimal_ranges:
             best_range = optimal_ranges[0]
-            print(f"🕐 Optimal Hours: {best_range['range_label']} ({best_range['duration']}h window)")
+            print(
+                f"🕐 Optimal Hours: {best_range['range_label']} ({best_range['duration']}h window)")
 
         # Trend analysis
         trend_analysis = analysis_result.get("trend_analysis", {})
@@ -114,7 +116,8 @@ class TemporalAnalyticsIntegration:
         recommendations = analysis_result.get("posting_recommendations", {})
         rec_count = recommendations.get("total_recommendations", 0)
         high_conf = recommendations.get("high_confidence_count", 0)
-        print(f"💡 Recommendations: {rec_count} total ({high_conf} high confidence)")
+        print(
+            f"💡 Recommendations: {rec_count} total ({high_conf} high confidence)")
 
         print("-" * 40)
 
@@ -122,18 +125,22 @@ class TemporalAnalyticsIntegration:
         """Save demo results for reference"""
         try:
             # Create demo reports directory
-            demo_dir = os.path.join("data", "reports", "temporal_analytics", "demo_results")
+            demo_dir = os.path.join(
+                "data", "reports", "temporal_analytics", "demo_results")
             os.makedirs(demo_dir, exist_ok=True)
 
             # Save full analysis
             timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-            full_file = os.path.join(demo_dir, f"temporal_demo_{timestamp}.json")
-            
+            full_file = os.path.join(
+                demo_dir, f"temporal_demo_{timestamp}.json")
+
             with open(full_file, 'w', encoding='utf-8') as f:
-                json.dump(analysis_result, f, indent=2, ensure_ascii=False, default=str)
+                json.dump(analysis_result, f, indent=2,
+                          ensure_ascii=False, default=str)
 
             # Save Discord message sample
-            discord_file = os.path.join(demo_dir, f"discord_message_{timestamp}.txt")
+            discord_file = os.path.join(
+                demo_dir, f"discord_message_{timestamp}.txt")
             with open(discord_file, 'w', encoding='utf-8') as f:
                 f.write(analysis_result.get("discord_message", ""))
 
@@ -147,15 +154,15 @@ class TemporalAnalyticsIntegration:
         try:
             # Mock the data collection to use our generated data
             from unittest.mock import patch
-            
+
             async def mock_collect_data(bid):
                 return self.mock_provider.generate_temporal_dataset()
-            
+
             with patch.object(self.task, '_collect_temporal_data', side_effect=mock_collect_data):
                 with patch.object(self.task, '_save_analysis_results', return_value=True):
                     with patch.object(self.task, '_send_discord_notification', return_value=True):
                         result = await self.task.run_temporal_analysis_workflow(batch_id)
-            
+
             return result
 
         except Exception as e:
@@ -202,7 +209,7 @@ class TemporalAnalyticsIntegration:
             # Save integration report
             report_dir = os.path.join("data", "reports", "temporal_analytics")
             os.makedirs(report_dir, exist_ok=True)
-            
+
             report_file = os.path.join(report_dir, "integration_report.json")
             with open(report_file, 'w', encoding='utf-8') as f:
                 json.dump(report, f, indent=2, ensure_ascii=False)
@@ -250,7 +257,7 @@ print("⏰ Temporal Analytics scheduled every 30 minutes")
     # Show scheduler status example
     print("📋 Suggested Scheduler Configuration:")
     print("• Content Analysis: Every 15 minutes")
-    print("• Engagement Intelligence: Every 20 minutes") 
+    print("• Engagement Intelligence: Every 20 minutes")
     print("• Network Intelligence: Every 30 minutes")
     print("• Temporal Analytics: Every 30 minutes")
     print("• Cleanup Tasks: Every 30 minutes")
@@ -259,7 +266,7 @@ print("⏰ Temporal Analytics scheduled every 30 minutes")
 def update_mock_data_provider():
     """Update mock data provider with temporal analysis support"""
     print("\n🔄 Updating Mock Data Provider...")
-    
+
     try:
         # Check if temporal method exists
         mock_provider = MockDataProvider()
@@ -267,11 +274,11 @@ def update_mock_data_provider():
             print("✅ Mock provider already supports temporal data")
         else:
             print("⚠️ Mock provider needs temporal dataset method")
-            
+
         # Generate sample to verify
         sample = mock_provider.generate_temporal_dataset()
         print(f"✅ Generated {len(sample)} temporal posts for testing")
-        
+
     except Exception as e:
         print(f"❌ Mock provider update failed: {e}")
 
@@ -293,10 +300,10 @@ async def main():
     if success:
         # Show scheduler integration
         await integrate_with_scheduler()
-        
+
         # Update mock data provider
         update_mock_data_provider()
-        
+
         print("\n" + "=" * 60)
         print("🎉 TEMPORAL ANALYTICS INTEGRATION COMPLETE")
         print("=" * 60)

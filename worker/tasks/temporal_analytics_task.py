@@ -17,7 +17,7 @@ from notifiers.discord_webhook_sender import DiscordWebhookSender
 class TemporalAnalyticsTask:
     """
     Task class for running temporal analytics analysis workflow
-    
+
     Integrates with the worker system to:
     1. Collect post data for temporal analysis
     2. Run temporal analytics analysis
@@ -33,10 +33,10 @@ class TemporalAnalyticsTask:
     async def run_temporal_analysis_workflow(self, batch_id: str = None) -> Dict:
         """
         Run complete temporal analytics workflow
-        
+
         Args:
             batch_id: Optional batch identifier
-            
+
         Returns:
             Dict with workflow results and status
         """
@@ -44,21 +44,23 @@ class TemporalAnalyticsTask:
             batch_id = f"temporal_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 
         try:
-            self.logger.info(f"⏰ Starting temporal analytics workflow for batch {batch_id}")
+            self.logger.info(
+                f"⏰ Starting temporal analytics workflow for batch {batch_id}")
 
             # Step 1: Collect post data
             posts_data = await self._collect_temporal_data(batch_id)
-            
+
             if not posts_data or len(posts_data) == 0:
                 return self._create_workflow_result(
                     batch_id, False, "No posts data available for temporal analysis", {}
                 )
 
-            self.logger.info(f"📊 Collected {len(posts_data)} posts for temporal analysis")
+            self.logger.info(
+                f"📊 Collected {len(posts_data)} posts for temporal analysis")
 
             # Step 2: Run temporal analytics analysis
             analysis_results = await self.agent.analyze_temporal_patterns(posts_data, batch_id)
-            
+
             if analysis_results.get("error"):
                 return self._create_workflow_result(
                     batch_id, False, f"Temporal analysis failed: {analysis_results.get('error_message')}", analysis_results
@@ -74,17 +76,21 @@ class TemporalAnalyticsTask:
             workflow_result = self._create_workflow_result(
                 batch_id, True, "Temporal analytics workflow completed successfully", analysis_results
             )
-            
+
             workflow_result["discord_notification_sent"] = discord_sent
             workflow_result["posts_analyzed"] = len(posts_data)
-            workflow_result["optimal_times"] = analysis_results.get("optimal_times", {})
-            workflow_result["trend_insights"] = analysis_results.get("trend_analysis", {})
+            workflow_result["optimal_times"] = analysis_results.get(
+                "optimal_times", {})
+            workflow_result["trend_insights"] = analysis_results.get(
+                "trend_analysis", {})
 
-            self.logger.info(f"✅ Temporal analytics workflow completed successfully for batch {batch_id}")
+            self.logger.info(
+                f"✅ Temporal analytics workflow completed successfully for batch {batch_id}")
             return workflow_result
 
         except Exception as e:
-            self.logger.error(f"❌ Temporal analytics workflow failed for batch {batch_id}: {e}")
+            self.logger.error(
+                f"❌ Temporal analytics workflow failed for batch {batch_id}: {e}")
             return self._create_workflow_result(
                 batch_id, False, f"Workflow error: {str(e)}", {}
             )
@@ -93,16 +99,17 @@ class TemporalAnalyticsTask:
         """Collect post data for temporal analysis"""
         try:
             posts = []
-            
+
             # Try to load from recent data files
             data_dir = os.path.join("data", "processed")
-            
+
             # Look for recent processed data
             today = datetime.now(timezone.utc)
             for days_back in range(7):  # Check last 7 days
                 date = today - timedelta(days=days_back)
-                date_path = os.path.join(data_dir, str(date.year), f"{date.month:02d}", f"{date.day:02d}")
-                
+                date_path = os.path.join(data_dir, str(
+                    date.year), f"{date.month:02d}", f"{date.day:02d}")
+
                 if os.path.exists(date_path):
                     # Find scored data files
                     scored_path = os.path.join(date_path, "scored")
@@ -120,7 +127,8 @@ class TemporalAnalyticsTask:
                                         elif isinstance(batch_data, dict) and "data" in batch_data:
                                             posts.extend(batch_data["data"])
                                 except Exception as e:
-                                    self.logger.warning(f"Failed to load {file_path}: {e}")
+                                    self.logger.warning(
+                                        f"Failed to load {file_path}: {e}")
                                     continue
 
             # If no processed data found, try raw data
@@ -128,8 +136,9 @@ class TemporalAnalyticsTask:
                 raw_dir = os.path.join("data", "raw")
                 for days_back in range(3):  # Check last 3 days of raw data
                     date = today - timedelta(days=days_back)
-                    date_path = os.path.join(raw_dir, str(date.year), f"{date.month:02d}", f"{date.day:02d}")
-                    
+                    date_path = os.path.join(raw_dir, str(
+                        date.year), f"{date.month:02d}", f"{date.day:02d}")
+
                     if os.path.exists(date_path):
                         for filename in os.listdir(date_path):
                             if filename.endswith(".json"):
@@ -142,7 +151,8 @@ class TemporalAnalyticsTask:
                                         elif isinstance(batch_data, dict) and "posts" in batch_data:
                                             posts.extend(batch_data["posts"])
                                 except Exception as e:
-                                    self.logger.warning(f"Failed to load raw data {file_path}: {e}")
+                                    self.logger.warning(
+                                        f"Failed to load raw data {file_path}: {e}")
                                     continue
 
             # If still no data, try to use mock data provider for development
@@ -151,9 +161,11 @@ class TemporalAnalyticsTask:
                     from mock_data_provider import MockDataProvider
                     mock_provider = MockDataProvider()
                     posts = mock_provider.generate_temporal_dataset()
-                    self.logger.info(f"Using mock data for temporal analysis: {len(posts)} posts")
+                    self.logger.info(
+                        f"Using mock data for temporal analysis: {len(posts)} posts")
                 except ImportError:
-                    self.logger.error("No real data found and mock data provider not available")
+                    self.logger.error(
+                        "No real data found and mock data provider not available")
                 except Exception as e:
                     self.logger.error(f"Failed to generate mock data: {e}")
 
@@ -162,10 +174,12 @@ class TemporalAnalyticsTask:
                 if not post.get("created_at") and not post.get("metadata", {}).get("created_at"):
                     # Generate a timestamp within the last 24 hours
                     hours_ago = np.random.uniform(0, 24)
-                    timestamp = datetime.now(timezone.utc) - timedelta(hours=hours_ago)
+                    timestamp = datetime.now(
+                        timezone.utc) - timedelta(hours=hours_ago)
                     post["created_at"] = timestamp.isoformat()
 
-            self.logger.info(f"Collected {len(posts)} posts for temporal analysis")
+            self.logger.info(
+                f"Collected {len(posts)} posts for temporal analysis")
             return posts
 
         except Exception as e:
@@ -178,16 +192,19 @@ class TemporalAnalyticsTask:
             # Create reports directory
             reports_dir = os.path.join("data", "reports", "temporal_analytics")
             os.makedirs(reports_dir, exist_ok=True)
-            
+
             # Save detailed results
             timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-            results_file = os.path.join(reports_dir, f"temporal_analysis_{timestamp}.json")
-            
+            results_file = os.path.join(
+                reports_dir, f"temporal_analysis_{timestamp}.json")
+
             with open(results_file, 'w', encoding='utf-8') as f:
-                json.dump(analysis_results, f, indent=2, ensure_ascii=False, default=str)
-            
-            self.logger.info(f"Temporal analytics results saved to {results_file}")
-            
+                json.dump(analysis_results, f, indent=2,
+                          ensure_ascii=False, default=str)
+
+            self.logger.info(
+                f"Temporal analytics results saved to {results_file}")
+
             # Save summary report
             summary = {
                 "batch_id": batch_id,
@@ -199,36 +216,41 @@ class TemporalAnalyticsTask:
                 "avg_momentum_duration": analysis_results.get("momentum_analysis", {}).get("avg_momentum_duration_hours", 0),
                 "recommendations_count": analysis_results.get("posting_recommendations", {}).get("total_recommendations", 0)
             }
-            
-            summary_file = os.path.join(reports_dir, f"temporal_summary_{timestamp}.json")
+
+            summary_file = os.path.join(
+                reports_dir, f"temporal_summary_{timestamp}.json")
             with open(summary_file, 'w', encoding='utf-8') as f:
                 json.dump(summary, f, indent=2)
-            
+
             return True
-            
+
         except Exception as e:
-            self.logger.error(f"Failed to save temporal analytics results: {e}")
+            self.logger.error(
+                f"Failed to save temporal analytics results: {e}")
             return False
 
     async def _send_discord_notification(self, analysis_results: Dict, batch_id: str) -> bool:
         """Send Discord notification with temporal analytics insights"""
         try:
             discord_message = analysis_results.get("discord_message", "")
-            
+
             if not discord_message:
-                self.logger.warning("No Discord message generated for temporal analytics")
+                self.logger.warning(
+                    "No Discord message generated for temporal analytics")
                 return False
 
             # Send the message
             success = await self.discord_sender.send_message(discord_message)
-            
+
             if success:
-                self.logger.info(f"Discord notification sent successfully for temporal analysis {batch_id}")
+                self.logger.info(
+                    f"Discord notification sent successfully for temporal analysis {batch_id}")
             else:
-                self.logger.error(f"Failed to send Discord notification for temporal analysis {batch_id}")
-            
+                self.logger.error(
+                    f"Failed to send Discord notification for temporal analysis {batch_id}")
+
             return success
-            
+
         except Exception as e:
             self.logger.error(f"Error sending Discord notification: {e}")
             return False
@@ -252,10 +274,10 @@ class TemporalAnalyticsTask:
 async def run_temporal_analytics_task(batch_id: str = None) -> Dict:
     """
     Standalone function to run temporal analytics task
-    
+
     Args:
         batch_id: Optional batch identifier
-        
+
     Returns:
         Dict with task results
     """
@@ -267,17 +289,17 @@ async def run_temporal_analytics_task(batch_id: str = None) -> Dict:
 async def test_temporal_analytics_task():
     """Quick test of temporal analytics task"""
     print("🧪 Testing Temporal Analytics Task...")
-    
+
     task = TemporalAnalyticsTask()
     result = await task.run_temporal_analysis_workflow("test_batch")
-    
+
     print(f"✅ Task completed: {result['success']}")
     print(f"📊 Posts analyzed: {result.get('posts_count', 0)}")
-    
+
     if result.get('analysis_results', {}).get('discord_message'):
         print("\n📱 Discord Message Preview:")
         print(result['analysis_results']['discord_message'])
-    
+
     return result
 
 

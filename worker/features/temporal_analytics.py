@@ -119,7 +119,8 @@ class TemporalAnalyticsAgent:
         for post in posts:
             try:
                 # Extract timestamp
-                timestamp_str = post.get("created_at") or post.get("metadata", {}).get("created_at")
+                timestamp_str = post.get("created_at") or post.get(
+                    "metadata", {}).get("created_at")
                 if not timestamp_str:
                     continue
 
@@ -128,16 +129,20 @@ class TemporalAnalyticsAgent:
                     # Handle different timestamp formats
                     try:
                         if timestamp_str.endswith('Z'):
-                            timestamp = datetime.fromisoformat(timestamp_str[:-1]).replace(tzinfo=timezone.utc)
+                            timestamp = datetime.fromisoformat(
+                                timestamp_str[:-1]).replace(tzinfo=timezone.utc)
                         elif '+' in timestamp_str or timestamp_str.endswith('+00:00'):
-                            timestamp = datetime.fromisoformat(timestamp_str.replace('+00:00', '')).replace(tzinfo=timezone.utc)
+                            timestamp = datetime.fromisoformat(timestamp_str.replace(
+                                '+00:00', '')).replace(tzinfo=timezone.utc)
                         else:
-                            timestamp = datetime.fromisoformat(timestamp_str).replace(tzinfo=timezone.utc)
+                            timestamp = datetime.fromisoformat(
+                                timestamp_str).replace(tzinfo=timezone.utc)
                     except ValueError:
                         # Try parsing common formats
                         for fmt in ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"]:
                             try:
-                                timestamp = datetime.strptime(timestamp_str, fmt).replace(tzinfo=timezone.utc)
+                                timestamp = datetime.strptime(
+                                    timestamp_str, fmt).replace(tzinfo=timezone.utc)
                                 break
                             except ValueError:
                                 continue
@@ -147,15 +152,19 @@ class TemporalAnalyticsAgent:
                     continue
 
                 # Extract engagement metrics
-                like_count = post.get("like_count", 0) or post.get("engagement", {}).get("like_count", 0)
-                reply_count = post.get("reply_count", 0) or post.get("engagement", {}).get("reply_count", 0)
-                repost_count = post.get("repost_count", 0) or post.get("engagement", {}).get("repost_count", 0)
+                like_count = post.get("like_count", 0) or post.get(
+                    "engagement", {}).get("like_count", 0)
+                reply_count = post.get("reply_count", 0) or post.get(
+                    "engagement", {}).get("reply_count", 0)
+                repost_count = post.get("repost_count", 0) or post.get(
+                    "engagement", {}).get("repost_count", 0)
 
                 total_engagement_post = like_count + reply_count + repost_count
 
                 # Extract additional metrics
-                author_followers = post.get("author", {}).get("follower_count", 0)
-                
+                author_followers = post.get(
+                    "author", {}).get("follower_count", 0)
+
                 temporal_post = {
                     "id": post.get("id", f"post_{len(temporal_posts)}"),
                     "timestamp": timestamp,
@@ -182,7 +191,8 @@ class TemporalAnalyticsAgent:
                     latest_time = timestamp
 
             except Exception as e:
-                self.logger.warning(f"Failed to process post {post.get('id', 'unknown')}: {e}")
+                self.logger.warning(
+                    f"Failed to process post {post.get('id', 'unknown')}: {e}")
                 continue
 
         # Calculate time span and metrics
@@ -193,11 +203,13 @@ class TemporalAnalyticsAgent:
         if earliest_time and latest_time and len(temporal_posts) > 0:
             time_span = latest_time - earliest_time
             time_span_hours = time_span.total_seconds() / 3600
-            avg_engagement_per_hour = total_engagement / max(time_span_hours, 0.1)
+            avg_engagement_per_hour = total_engagement / \
+                max(time_span_hours, 0.1)
 
             # Find peak engagement time
             if temporal_posts:
-                peak_post = max(temporal_posts, key=lambda x: x["total_engagement"])
+                peak_post = max(
+                    temporal_posts, key=lambda x: x["total_engagement"])
                 peak_engagement_time = f"{peak_post['day_name']} {peak_post['hour']:02d}:00"
 
         return {
@@ -214,7 +226,7 @@ class TemporalAnalyticsAgent:
         """Analyze engagement patterns by hour of day"""
         try:
             posts = temporal_data["posts"]
-            
+
             # Group by hour
             hourly_engagement = defaultdict(list)
             hourly_post_counts = defaultdict(int)
@@ -250,12 +262,13 @@ class TemporalAnalyticsAgent:
                     }
 
             # Find best performing hours
-            valid_hours = [h for h, stats in hourly_stats.items() if stats["post_count"] > 0]
+            valid_hours = [h for h, stats in hourly_stats.items()
+                           if stats["post_count"] > 0]
             if valid_hours:
-                best_hours = sorted(valid_hours, 
-                                  key=lambda h: hourly_stats[h]["avg_engagement"], 
-                                  reverse=True)[:3]
-                
+                best_hours = sorted(valid_hours,
+                                    key=lambda h: hourly_stats[h]["avg_engagement"],
+                                    reverse=True)[:3]
+
                 # Find optimal time ranges (consecutive good hours)
                 optimal_ranges = self._find_optimal_time_ranges(hourly_stats)
             else:
@@ -278,12 +291,13 @@ class TemporalAnalyticsAgent:
         """Analyze engagement patterns by day of week"""
         try:
             posts = temporal_data["posts"]
-            
+
             # Group by day of week
             daily_engagement = defaultdict(list)
             daily_post_counts = defaultdict(int)
 
-            day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            day_names = ["Monday", "Tuesday", "Wednesday",
+                         "Thursday", "Friday", "Saturday", "Sunday"]
 
             for post in posts:
                 day = post["day_of_week"]
@@ -318,11 +332,12 @@ class TemporalAnalyticsAgent:
                     }
 
             # Find best performing days
-            valid_days = [d for d, stats in daily_stats.items() if stats["post_count"] > 0]
+            valid_days = [d for d, stats in daily_stats.items()
+                          if stats["post_count"] > 0]
             if valid_days:
-                best_days = sorted(valid_days, 
-                                 key=lambda d: daily_stats[d]["avg_engagement"], 
-                                 reverse=True)[:3]
+                best_days = sorted(valid_days,
+                                   key=lambda d: daily_stats[d]["avg_engagement"],
+                                   reverse=True)[:3]
             else:
                 best_days = []
 
@@ -342,18 +357,18 @@ class TemporalAnalyticsAgent:
     def _find_optimal_time_ranges(self, hourly_stats: Dict) -> List[Dict]:
         """Find consecutive hours with high engagement"""
         # Sort hours by engagement
-        sorted_hours = sorted(hourly_stats.keys(), 
-                            key=lambda h: hourly_stats[h]["avg_engagement"], 
-                            reverse=True)
-        
+        sorted_hours = sorted(hourly_stats.keys(),
+                              key=lambda h: hourly_stats[h]["avg_engagement"],
+                              reverse=True)
+
         # Group consecutive good hours
         ranges = []
         current_range = []
-        
+
         # Take top performing hours
         top_hours = sorted_hours[:8]  # Top 8 hours to consider
         top_hours.sort()  # Sort by hour for consecutive checking
-        
+
         for i, hour in enumerate(top_hours):
             if not current_range:
                 current_range = [hour]
@@ -369,7 +384,7 @@ class TemporalAnalyticsAgent:
                         "range_label": f"{current_range[0]:02d}:00–{current_range[-1]:02d}:59"
                     })
                 current_range = [hour]
-        
+
         # Don't forget the last range
         if len(current_range) >= 2:
             ranges.append({
@@ -379,7 +394,7 @@ class TemporalAnalyticsAgent:
                 "avg_engagement": mean([hourly_stats[h]["avg_engagement"] for h in current_range]),
                 "range_label": f"{current_range[0]:02d}:00–{current_range[-1]:02d}:59"
             })
-        
+
         # Sort by engagement
         ranges.sort(key=lambda r: r["avg_engagement"], reverse=True)
         return ranges[:3]  # Top 3 ranges
@@ -393,7 +408,7 @@ class TemporalAnalyticsAgent:
 
             # Create combined recommendations
             optimal_combinations = []
-            
+
             if best_days and best_hours:
                 for day in best_days[:2]:  # Top 2 days
                     for hour in best_hours[:3]:  # Top 3 hours
@@ -408,7 +423,8 @@ class TemporalAnalyticsAgent:
                 "best_days": best_days,
                 "best_hours": [f"{h:02d}:00" for h in best_hours],
                 "optimal_ranges": optimal_ranges,
-                "optimal_combinations": optimal_combinations[:5],  # Top 5 combinations
+                # Top 5 combinations
+                "optimal_combinations": optimal_combinations[:5],
                 "primary_recommendation": {
                     "day": best_days[0] if best_days else "Unknown",
                     "time_range": optimal_ranges[0]["range_label"] if optimal_ranges else f"{best_hours[0]:02d}:00" if best_hours else "Unknown"
@@ -423,14 +439,17 @@ class TemporalAnalyticsAgent:
         """Analyze how long it takes for posts to reach trending status"""
         try:
             posts = temporal_data["posts"]
-            
+
             # Sort posts by engagement to identify trending posts
-            trending_posts = [p for p in posts if p["total_engagement"] >= self.trend_threshold]
-            
+            trending_posts = [
+                p for p in posts if p["total_engagement"] >= self.trend_threshold]
+
             if not trending_posts:
                 # Lower the threshold if no posts meet the criteria
-                posts_by_engagement = sorted(posts, key=lambda p: p["total_engagement"], reverse=True)
-                trending_posts = posts_by_engagement[:max(1, len(posts) // 4)]  # Top 25%
+                posts_by_engagement = sorted(
+                    posts, key=lambda p: p["total_engagement"], reverse=True)
+                trending_posts = posts_by_engagement[:max(
+                    1, len(posts) // 4)]  # Top 25%
 
             trend_times = []
             momentum_data = []
@@ -438,17 +457,22 @@ class TemporalAnalyticsAgent:
             for post in trending_posts:
                 # Simulate time-to-trend based on engagement velocity
                 # In a real implementation, this would track engagement over time
-                engagement_rate = post["total_engagement"] / max(post["author_followers"], 1)
-                
+                engagement_rate = post["total_engagement"] / \
+                    max(post["author_followers"], 1)
+
                 # Estimate time to trend based on engagement velocity
                 if engagement_rate > 0.1:  # High velocity
-                    estimated_trend_time = np.random.normal(45, 15)  # 45 ± 15 minutes
+                    estimated_trend_time = np.random.normal(
+                        45, 15)  # 45 ± 15 minutes
                 elif engagement_rate > 0.05:  # Medium velocity
-                    estimated_trend_time = np.random.normal(90, 30)  # 90 ± 30 minutes
+                    estimated_trend_time = np.random.normal(
+                        90, 30)  # 90 ± 30 minutes
                 else:  # Lower velocity
-                    estimated_trend_time = np.random.normal(180, 60)  # 180 ± 60 minutes
+                    estimated_trend_time = np.random.normal(
+                        180, 60)  # 180 ± 60 minutes
 
-                estimated_trend_time = max(5, estimated_trend_time)  # Minimum 5 minutes
+                estimated_trend_time = max(
+                    5, estimated_trend_time)  # Minimum 5 minutes
                 trend_times.append(estimated_trend_time)
 
                 momentum_data.append({
@@ -487,21 +511,22 @@ class TemporalAnalyticsAgent:
         """Analyze how long posts maintain their momentum"""
         try:
             posts = temporal_data["posts"]
-            
+
             # Sort posts by engagement to identify high-momentum posts
-            high_momentum_posts = sorted(posts, key=lambda p: p["total_engagement"], reverse=True)[:10]
+            high_momentum_posts = sorted(
+                posts, key=lambda p: p["total_engagement"], reverse=True)[:10]
 
             momentum_durations = []
-            
+
             for post in high_momentum_posts:
                 # Simulate momentum duration based on engagement characteristics
                 engagement = post["total_engagement"]
                 content_length = post["content_length"]
                 has_hashtags = post["has_hashtags"]
-                
+
                 # Base duration estimation
                 base_duration = 3.5  # hours
-                
+
                 # Adjust based on engagement level
                 if engagement > 500:
                     base_duration *= 1.8
@@ -509,11 +534,11 @@ class TemporalAnalyticsAgent:
                     base_duration *= 1.4
                 elif engagement > 100:
                     base_duration *= 1.2
-                
+
                 # Adjust based on content characteristics
                 if has_hashtags:
                     base_duration *= 1.3
-                
+
                 if content_length > 200:
                     base_duration *= 1.2
                 elif content_length < 50:
@@ -522,7 +547,7 @@ class TemporalAnalyticsAgent:
                 # Add some randomization
                 duration = np.random.normal(base_duration, base_duration * 0.3)
                 duration = max(0.5, duration)  # Minimum 30 minutes
-                
+
                 momentum_durations.append(duration)
 
             # Calculate statistics
@@ -553,7 +578,7 @@ class TemporalAnalyticsAgent:
         """Generate actionable posting recommendations"""
         try:
             recommendations = []
-            
+
             # Primary time recommendation
             primary_rec = optimal_times.get("primary_recommendation", {})
             if primary_rec.get("day") != "Unknown" and primary_rec.get("time_range") != "Unknown":
@@ -577,7 +602,8 @@ class TemporalAnalyticsAgent:
                 })
 
             # Momentum duration recommendation
-            avg_momentum = momentum_analysis.get("avg_momentum_duration_hours", 0)
+            avg_momentum = momentum_analysis.get(
+                "avg_momentum_duration_hours", 0)
             if avg_momentum > 0:
                 recommendations.append({
                     "type": "scheduling",
@@ -618,33 +644,35 @@ class TemporalAnalyticsAgent:
             }
 
         except Exception as e:
-            self.logger.error(f"Posting recommendations generation failed: {e}")
+            self.logger.error(
+                f"Posting recommendations generation failed: {e}")
             return {"recommendations": [], "total_recommendations": 0, "summary": ""}
 
     def _create_recommendation_summary(self, recommendations: List[Dict]) -> str:
         """Create a concise summary of recommendations"""
         try:
             summary_parts = []
-            
+
             for rec in recommendations:
                 if rec["type"] == "primary":
                     summary_parts.append(rec["recommendation"])
                 elif rec["type"] == "timing":
-                    summary_parts.append(f"Plan {rec['recommendation'].split(' for ')[0]}")
+                    summary_parts.append(
+                        f"Plan {rec['recommendation'].split(' for ')[0]}")
                 elif rec["type"] == "weekly":
                     summary_parts.append(rec["recommendation"])
-            
+
             return ". ".join(summary_parts[:3]) + "." if summary_parts else "No specific recommendations available."
-            
+
         except Exception as e:
             return "Recommendation summary unavailable."
 
     def _format_discord_report(self,
-                             optimal_times: Dict,
-                             trend_analysis: Dict,
-                             momentum_analysis: Dict,
-                             posting_recommendations: Dict,
-                             batch_id: str) -> str:
+                               optimal_times: Dict,
+                               trend_analysis: Dict,
+                               momentum_analysis: Dict,
+                               posting_recommendations: Dict,
+                               batch_id: str) -> str:
         """Format temporal analysis results as Discord message"""
 
         message_parts = ["⏰ **Temporal Analysis Report**", ""]
@@ -672,42 +700,45 @@ class TemporalAnalyticsAgent:
         # Average Time-to-Trend
         avg_trend_time = trend_analysis.get("avg_time_to_trend_minutes", 0)
         if avg_trend_time > 0:
-            message_parts.append(f"• **Avg Time-to-Trend:** {int(avg_trend_time)} minutes")
+            message_parts.append(
+                f"• **Avg Time-to-Trend:** {int(avg_trend_time)} minutes")
         else:
             message_parts.append("• **Avg Time-to-Trend:** Not calculated")
 
         # Momentum Duration
         avg_momentum = momentum_analysis.get("avg_momentum_duration_hours", 0)
         if avg_momentum > 0:
-            message_parts.append(f"• **Momentum Duration:** ~{avg_momentum:.1f} hours")
+            message_parts.append(
+                f"• **Momentum Duration:** ~{avg_momentum:.1f} hours")
         else:
             message_parts.append("• **Momentum Duration:** Not calculated")
 
         # Recommendation Tip
         recommendations = posting_recommendations.get("recommendations", [])
         tip_text = "Schedule key posts during peak engagement windows for maximum visibility."
-        
+
         if recommendations:
-            primary_rec = next((r for r in recommendations if r["type"] == "primary"), None)
+            primary_rec = next(
+                (r for r in recommendations if r["type"] == "primary"), None)
             if primary_rec:
                 tip_text = f"Schedule key posts {primary_rec['recommendation'].lower()} to maximize visibility."
-        
+
         message_parts.append(f"💡 **Tip:** {tip_text}")
 
         # Additional insights
         message_parts.append("")
-        
+
         # Add key insights
         insights = []
-        
+
         trending_posts = trend_analysis.get("trending_posts_count", 0)
         if trending_posts > 0:
             insights.append(f"📈 {trending_posts} trending posts analyzed")
-        
+
         if optimal_ranges:
             duration = optimal_ranges[0]["duration"]
             insights.append(f"⏱️ {duration}-hour peak engagement window")
-        
+
         if avg_trend_time > 0 and avg_momentum > 0:
             total_window = avg_trend_time / 60 + avg_momentum
             insights.append(f"🎯 ~{total_window:.1f}h total visibility window")
