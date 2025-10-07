@@ -33,10 +33,11 @@ class DiscordMessageFormatter:
             try:
                 from llms.llm_models import LLMModels
                 self.llm_client = LLMModels()
-                logger.info("✅ LLM client initialized for Discord formatting")
+                logger.info(
+                    "[OK] LLM client initialized for Discord formatting")
             except ImportError:
                 logger.warning(
-                    "⚠️ LLM client not available, using fallback formatting")
+                    "[WARNING] LLM client not available, using fallback formatting")
                 self.llm_client = None
 
     async def format_analysis_to_discord(self, analysis_data: Dict, options: Optional[Dict] = None) -> Dict:
@@ -51,7 +52,8 @@ class DiscordMessageFormatter:
             Dict: Discord webhook payload with embeds
         """
         try:
-            logger.info("🎨 Formatting analysis data for Discord using LLM...")
+            logger.info(
+                "[FORMATTING] Formatting analysis data for Discord using LLM...")
 
             # Prepare formatted data for LLM
             formatted_input = self._prepare_llm_input(
@@ -67,11 +69,12 @@ class DiscordMessageFormatter:
             # Validate and enhance payload
             validated_payload = self._validate_discord_payload(embed_payload)
 
-            logger.info("✅ Discord embed payload generated successfully")
+            logger.info(
+                "[SUCCESS] Discord embed payload generated successfully")
             return validated_payload
 
         except Exception as e:
-            logger.error(f"❌ Discord formatting failed: {e}")
+            logger.error(f"[ERROR] Discord formatting failed: {e}")
             return self._generate_error_embed(str(e))
 
     def _prepare_llm_input(self, analysis_data: Dict, options: Dict) -> Dict:
@@ -171,7 +174,7 @@ class DiscordMessageFormatter:
                 "max_fields": options.get('max_fields', 6),
                 "show_links": options.get('show_links', True),
                 "include_footer_timestamp": options.get('include_footer_timestamp', True),
-                "title_prefix": options.get('title_prefix', '🚀 Trending Intelligence'),
+                "title_prefix": options.get('title_prefix', '[TRENDING] Trending Intelligence'),
                 "include_cohort_notes": options.get('include_cohort_notes', True)
             }
         }
@@ -186,7 +189,7 @@ class DiscordMessageFormatter:
 
             # Call LLM
             response = self.llm_client.generate_response(
-                prompt, provider="openai")
+                prompt, provider="openai", context="discord_embed_formatting")
 
             # Parse JSON response
             try:
@@ -237,12 +240,12 @@ Return **only JSON** that is valid for a Discord webhook payload (embeds).
 {{
   "embeds": [
     {{
-      "title": "🚀 Trending Intelligence Report",
+      "title": "[TRENDING] Trending Intelligence Report",
       "description": "Latest trending analysis results",
       "color": 0x00ff00,
       "fields": [
         {{
-          "name": "📊 Summary",
+          "name": "[SUMMARY] Summary",
           "value": "Posts analyzed: X\\nAvg engagement: Y%\\nTop tags: #tag1, #tag2",
           "inline": false
         }}
@@ -278,7 +281,7 @@ Generate the Discord embed payload now:"""
 
         # Build embed
         embed = {
-            "title": f"{options.get('title_prefix', '🚀 Trending Intelligence')} Report",
+            "title": f"{options.get('title_prefix', '[TRENDING] Trending Intelligence')} Report",
             "description": f"Analysis completed for batch `{input_data.get('batch_id', 'unknown')}`",
             "color": color,
             "fields": []
@@ -286,7 +289,7 @@ Generate the Discord embed payload now:"""
 
         # Summary field
         embed["fields"].append({
-            "name": "📊 Analysis Summary",
+            "name": "[ANALYSIS] Analysis Summary",
             "value": f"**Posts Analyzed:** {summary.get('total_posts', 0)}\n**Avg Engagement:** {summary.get('avg_engagement_score', 0):.1f}%\n**Top Tags:** {', '.join([f'#{tag}' for tag in summary.get('top_tags', [])])[:100]}",
             "inline": False
         })
@@ -300,14 +303,14 @@ Generate the Discord embed payload now:"""
                     f"• **{strategy.get('label', 'Strategy')}** ({confidence}%)")
 
             embed["fields"].append({
-                "name": "🎯 Top Strategies",
+                "name": "[STRATEGIES] Top Strategies",
                 "value": "\n".join(strategies_text),
                 "inline": True
             })
 
         # Growth metrics
         embed["fields"].append({
-            "name": "📈 Growth Metrics",
+            "name": "[METRICS] Growth Metrics",
             "value": f"**Velocity:** {growth_summary.get('avg_velocity_per_min', 0):.2f}/min\n**Trending Candidates:** {rubric_summary.get('trending_candidates', 0)}\n**High Engagement:** {rubric_summary.get('high_engagement_posts', 0)}",
             "inline": True
         })
@@ -321,7 +324,7 @@ Generate the Discord embed payload now:"""
                 top_posts_text.append(f"• **@{author}** - {score:.1f} pts")
 
             embed["fields"].append({
-                "name": "🏆 Top Performers",
+                "name": "[PERFORMERS] Top Performers",
                 "value": "\n".join(top_posts_text),
                 "inline": False
             })
@@ -330,7 +333,7 @@ Generate the Discord embed payload now:"""
         if strategy_insights.get('cohort_notes'):
             insights_text = []
             for note in strategy_insights['cohort_notes'][:2]:
-                insights_text.append(f"💡 {note}")
+                insights_text.append(f"[INSIGHT] {note}")
 
             embed["fields"].append({
                 "name": "🧠 Key Insights",
@@ -363,7 +366,7 @@ Generate the Discord embed payload now:"""
             for embed in embeds:
                 # Ensure required fields
                 if "title" not in embed:
-                    embed["title"] = "🚀 Trending Intelligence Report"
+                    embed["title"] = "[TRENDING] Trending Intelligence Report"
 
                 # Validate color
                 if "color" in embed and not isinstance(embed["color"], int):
@@ -390,7 +393,7 @@ Generate the Discord embed payload now:"""
         """Generate error embed"""
         return {
             "embeds": [{
-                "title": "❌ Formatting Error",
+                "title": "[ERROR] Formatting Error",
                 "description": f"Failed to format analysis results: {error_message}",
                 "color": 0xff0000,  # Red
                 "footer": {
@@ -412,11 +415,11 @@ Generate the Discord embed payload now:"""
             top_insight = insights[0] if insights else None
 
             embed = {
-                "title": "⚡ Quick Intelligence Update",
+                "title": "[QUICK] Quick Intelligence Update",
                 "color": 0x1e90ff,  # Blue
                 "fields": [
                     {
-                        "name": "📊 Current Stats",
+                        "name": "[STATS] Current Stats",
                         "value": f"Posts: {total_posts} | Avg Engagement: {avg_engagement:.1f}%",
                         "inline": True
                     }
@@ -425,14 +428,14 @@ Generate the Discord embed payload now:"""
 
             if trending_tags:
                 embed["fields"].append({
-                    "name": "🔥 Trending Now",
+                    "name": "[TRENDING] Trending Now",
                     "value": ", ".join([f"#{tag}" for tag in trending_tags]),
                     "inline": True
                 })
 
             if top_insight:
                 embed["fields"].append({
-                    "name": "💡 Latest Insight",
+                    "name": "[INSIGHT] Latest Insight",
                     "value": top_insight.get('description', 'New trending pattern detected')[:200],
                     "inline": False
                 })
@@ -502,7 +505,7 @@ async def test_discord_formatter():
     # Test formatting
     result = await formatter.format_analysis_to_discord(sample_data)
 
-    print("🎨 Discord Embed Payload:")
+    print("[DISCORD] Discord Embed Payload:")
     print(json.dumps(result, indent=2))
 
     return result

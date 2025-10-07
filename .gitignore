@@ -138,3 +138,42 @@ cython_debug/
 .vscode/
 
 config.json
+
+# === DATA FILES & DIRECTORIES ===
+# Data directories
+data/
+mock_data/
+generated_data/
+
+# Data files (JSON, DB, CSV)
+trending_data_*.json
+mock_*.json
+*.db
+personas.db
+tokens.db
+*.csv
+*.parquet
+
+# Report and analysis files
+*_report.json
+*_analysis.json
+*_results.json
+*_output.json
+
+# Log files (additional patterns beyond Django)
+debug_*.log
+bot.log
+worker.log
+scheduler.log
+trigger_task.log
+quick_trigger.log
+
+# Temporary data files
+temp_data/
+tmp/
+cache/
+
+# Backup files
+*.bak
+*.backup
+*.old

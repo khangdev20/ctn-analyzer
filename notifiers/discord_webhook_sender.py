@@ -9,6 +9,77 @@ webhook_url = Config.DISCORD_WEBHOOK
 logger = logging.getLogger(__name__)
 
 
+class DiscordWebhookSender:
+    """Discord webhook sender class for engagement intelligence notifications"""
+
+    def __init__(self):
+        self.webhook_url = webhook_url
+        self.logger = logging.getLogger(__name__)
+
+    async def send_message(self, content: str) -> bool:
+        """Send a simple text message to Discord"""
+        try:
+            webhook = DiscordWebhook(url=self.webhook_url)
+            webhook.content = content
+
+            response = webhook.execute()
+
+            if response.status_code == 200:
+                self.logger.info(
+                    "[SUCCESS] Discord message sent successfully!")
+                return True
+            else:
+                self.logger.error(
+                    f"[ERROR] Failed to send Discord message: {response.status_code}")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"[ERROR] Discord webhook error: {e}")
+            return False
+
+    async def send_embed(self, embed_data: dict) -> bool:
+        """Send a rich embed to Discord"""
+        try:
+            webhook = DiscordWebhook(url=self.webhook_url)
+            embed = DiscordEmbed()
+
+            # Set basic embed properties
+            if 'title' in embed_data:
+                embed.set_title(embed_data['title'])
+            if 'description' in embed_data:
+                embed.set_description(embed_data['description'])
+            if 'color' in embed_data:
+                embed.set_color(embed_data['color'])
+
+            # Add fields
+            for field in embed_data.get('fields', []):
+                embed.add_embed_field(
+                    name=field.get('name', ''),
+                    value=field.get('value', ''),
+                    inline=field.get('inline', False)
+                )
+
+            # Set footer
+            if 'footer' in embed_data:
+                footer = embed_data['footer']
+                embed.set_footer(text=footer.get('text', ''))
+
+            webhook.add_embed(embed)
+            response = webhook.execute()
+
+            if response.status_code == 200:
+                self.logger.info("[SUCCESS] Discord embed sent successfully!")
+                return True
+            else:
+                self.logger.error(
+                    f"[ERROR] Failed to send Discord embed: {response.status_code}")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"[ERROR] Discord embed error: {e}")
+            return False
+
+
 def send_discord_message_webhook(content):
     """
     Send Discord message with support for both text and embed payloads
@@ -24,7 +95,7 @@ def send_discord_message_webhook(content):
         # Handle different content types
         if isinstance(content, dict) and 'embeds' in content:
             # Rich embed payload
-            logger.info("📤 Sending Discord embed payload...")
+            logger.info("[EMBED] Sending Discord embed payload...")
 
             for embed_data in content['embeds']:
                 embed = DiscordEmbed()
@@ -55,27 +126,27 @@ def send_discord_message_webhook(content):
 
         elif isinstance(content, str):
             # Simple text message
-            logger.info("📝 Sending Discord text message...")
+            logger.info("[TEXT] Sending Discord text message...")
             webhook.content = content
         else:
             # Try to convert to JSON string
-            logger.info("🔄 Converting content to JSON string...")
+            logger.info("[JSON] Converting content to JSON string...")
             webhook.content = json.dumps(content, indent=2)
 
         # Execute webhook
         response = webhook.execute()
 
         if response.status_code == 200:
-            logger.info("✅ Discord message sent successfully!")
+            logger.info("[SUCCESS] Discord message sent successfully!")
             return response
         else:
             logger.error(
-                f"❌ Failed to send Discord message: {response.status_code}")
+                f"[ERROR] Failed to send Discord message: {response.status_code}")
             logger.error(f"Response: {response.text}")
             return None
 
     except Exception as e:
-        logger.error(f"❌ Discord webhook error: {e}")
+        logger.error(f"[ERROR] Discord webhook error: {e}")
         return None
 
 
@@ -83,7 +154,7 @@ def send_quick_discord_update(metrics: dict, insights: list):
     """Send a quick Discord update with key metrics"""
     try:
         embed = DiscordEmbed(
-            title="⚡ Trending Intelligence Update",
+            title="[TRENDING] Trending Intelligence Update",
             color=0x1e90ff
         )
 
@@ -94,14 +165,14 @@ def send_quick_discord_update(metrics: dict, insights: list):
         trending_tags = metrics.get('trending_tags', [])[:3]
 
         embed.add_embed_field(
-            name="📊 Current Stats",
+            name="[STATS] Current Stats",
             value=f"Posts: {total_posts} | Avg Engagement: {avg_engagement:.1f}%",
             inline=True
         )
 
         if trending_tags:
             embed.add_embed_field(
-                name="🔥 Trending Now",
+                name="[TRENDING] Trending Now",
                 value=", ".join([f"#{tag}" for tag in trending_tags]),
                 inline=True
             )
@@ -110,7 +181,7 @@ def send_quick_discord_update(metrics: dict, insights: list):
         if insights:
             top_insight = insights[0]
             embed.add_embed_field(
-                name="💡 Latest Insight",
+                name="[INSIGHT] Latest Insight",
                 value=top_insight.get(
                     'description', 'New pattern detected')[:200],
                 inline=False
@@ -125,12 +196,13 @@ def send_quick_discord_update(metrics: dict, insights: list):
         response = webhook.execute()
 
         if response.status_code == 200:
-            logger.info("✅ Quick Discord update sent!")
+            logger.info("[SUCCESS] Quick Discord update sent!")
             return response
         else:
-            logger.error(f"❌ Quick update failed: {response.status_code}")
+            logger.error(
+                f"[ERROR] Quick update failed: {response.status_code}")
             return None
 
     except Exception as e:
-        logger.error(f"❌ Quick Discord update error: {e}")
+        logger.error(f"[ERROR] Quick Discord update error: {e}")
         return None

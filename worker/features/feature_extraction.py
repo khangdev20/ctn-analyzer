@@ -792,11 +792,11 @@ def save_json(obj: Any, path: str) -> bool:
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(obj, f, ensure_ascii=False, indent=2)
 
-        print(f"✅ Saved: {path}")
+        print(f"[SAVED] Saved: {path}")
         return True
 
     except Exception as e:
-        print(f"❌ Failed to save {path}: {e}")
+        print(f"[ERROR] Failed to save {path}: {e}")
         return False
 
 
@@ -818,10 +818,10 @@ def analyze_posts_to_json(
     Returns:
         Dict tóm tắt kết quả phân tích
     """
-    print("🚀 Starting social media post analysis...")
+    print("[START] Starting social media post analysis...")
 
     # Bước 1: Tính toán features và thống kê
-    print("📊 Computing features and statistics...")
+    print("[COMPUTE] Computing features and statistics...")
     result = compute_dataset(posts)
 
     post_features = result['post_features']
@@ -835,11 +835,11 @@ def analyze_posts_to_json(
         }
 
     # Bước 2: Tạo schema report
-    print("📋 Generating schema report...")
+    print("[SCHEMA] Generating schema report...")
     schema_report = _generate_schema_report(post_features)
 
     # Bước 3: Ghi files
-    print("💾 Saving analysis results...")
+    print("[SAVING] Saving analysis results...")
     files_saved = {}
 
     # Ghi post features
@@ -867,7 +867,7 @@ def analyze_posts_to_json(
         'analysis_completed_at': datetime.now().isoformat()
     }
 
-    print(f"✅ Analysis completed!")
+    print(f"[SUCCESS] Analysis completed!")
     print(f"   - Processed: {len(post_features)} posts")
     print(f"   - Avg engagement rate: {avg_engagement_rate:.6f}")
     print(f"   - Top hashtags: {', '.join(top_hashtags[:3])}")
@@ -887,7 +887,7 @@ if __name__ == "__main__":
 
     if os.path.exists(test_file):
         try:
-            print(f"📖 Loading {test_file}...")
+            print(f"[LOADING] Loading {test_file}...")
             with open(test_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
@@ -899,7 +899,7 @@ if __name__ == "__main__":
             else:
                 posts = [data]
 
-            print(f"📊 Found {len(posts)} posts to analyze")
+            print(f"[INFO] Found {len(posts)} posts to analyze")
 
             # Chạy phân tích
             result = analyze_posts_to_json(
@@ -909,14 +909,15 @@ if __name__ == "__main__":
                 schema_path="output/schema_report.json"
             )
 
-            print("\n📋 Analysis Summary:")
+            print("\n[SUMMARY] Analysis Summary:")
             print(json.dumps(result, indent=2, ensure_ascii=False))
 
         except Exception as e:
-            print(f"❌ Error processing {test_file}: {e}")
+            print(f"[ERROR] Error processing {test_file}: {e}")
 
     else:
-        print(f"⚠️  {test_file} not found. Creating sample data for testing...")
+        print(
+            f"[WARNING] {test_file} not found. Creating sample data for testing...")
 
         # Tạo dữ liệu mẫu để test
         sample_posts = [
@@ -963,5 +964,5 @@ if __name__ == "__main__":
             schema_path="test_output/schema_report.json"
         )
 
-        print("\n📋 Test Results:")
+        print("\n[RESULTS] Test Results:")
         print(json.dumps(result, indent=2, ensure_ascii=False))

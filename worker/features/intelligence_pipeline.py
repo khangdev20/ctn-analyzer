@@ -15,6 +15,7 @@ from collections import Counter, defaultdict
 from llms.llm_models import LLMModels
 from .prompt_suggestions import PromptSuggestionEngine, ContentCalendarGenerator
 from .discord_formatter import DiscordMessageFormatter
+from .content_analyzer import ContentAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +28,11 @@ class TrendingIntelligencePipeline:
         self.prompt_engine = PromptSuggestionEngine()
         self.calendar_generator = ContentCalendarGenerator(self.prompt_engine)
         self.discord_formatter = DiscordMessageFormatter(self.llm)
+        self.content_analyzer = ContentAnalyzer()
 
     async def clean_data(self, raw_data: Dict, batch_id: str) -> Dict:
         """Stage 2: Clean and preprocess data"""
-        logger.info("🧹 Cleaning and preprocessing data...")
+        logger.info("[CLEANING] Cleaning and preprocessing data...")
 
         raw_posts = raw_data.get("data", [])
         cleaned_posts = []
@@ -131,7 +133,7 @@ class TrendingIntelligencePipeline:
 
     async def calculate_scores(self, cleaned_data: Dict, batch_id: str) -> Dict:
         """Stage 3: Calculate performance scores and metrics"""
-        logger.info("📈 Calculating performance scores...")
+        logger.info("[METRICS] Calculating performance scores...")
 
         posts = cleaned_data.get("posts", [])
         scored_posts = []
@@ -278,14 +280,33 @@ class TrendingIntelligencePipeline:
         }
 
     async def analyze_strategies(self, scored_data: Dict, batch_id: str) -> Dict:
-        """Stage 4: Analyze content strategies and patterns"""
-        logger.info("🧠 Analyzing content strategies...")
+        """Stage 4: Analyze content strategies and patterns with content analysis integration"""
+        logger.info("Analyzing content strategies with content analysis insights...")
 
         posts = scored_data.get("posts", [])
         aggregate_metrics = scored_data.get("aggregate_metrics", {})
+        
+        # Extract content analysis results if available
+        content_analysis = scored_data.get("content_analysis", {})
+        content_insights = content_analysis.get("aggregate_metrics", {})
+        
+        # Merge content analysis insights with aggregate metrics
+        enhanced_metrics = aggregate_metrics.copy()
+        if content_insights:
+            enhanced_metrics.update({
+                "content_quality_metrics": {
+                    "avg_readability": content_insights.get("avg_readability", 0),
+                    "avg_content_quality": content_insights.get("avg_content_quality", 0),
+                    "avg_emotional_impact": content_insights.get("avg_emotional_impact", 0),
+                    "dominant_sentiment": content_insights.get("dominant_sentiment", "unknown"),
+                    "top_emotions": content_insights.get("top_emotions", []),
+                    "dominant_tone": content_insights.get("dominant_tone", "unknown")
+                }
+            })
+            logger.info(f"[ENHANCED] Integrated content analysis insights: sentiment={content_insights.get('dominant_sentiment')}, tone={content_insights.get('dominant_tone')}")
 
-        # Strategic analysis using LLM
-        strategic_insights = await self._generate_strategic_insights(posts, aggregate_metrics)
+        # Strategic analysis using LLM with enhanced metrics
+        strategic_insights = await self._generate_strategic_insights(posts, enhanced_metrics)
 
         # Pattern analysis
         patterns = self._analyze_success_patterns(posts)
@@ -293,15 +314,20 @@ class TrendingIntelligencePipeline:
         # Competitive analysis
         competitive_insights = self._analyze_competitive_landscape(posts)
 
+        # Content-specific strategic insights
+        content_strategic_insights = await self._generate_content_strategic_insights(content_analysis, posts)
+
         # Save analysis results
         analysis_results = {
             "batch_id": batch_id,
             "stage": "analyzed",
             "processed_at": datetime.now(timezone.utc).isoformat(),
             "strategic_insights": strategic_insights,
+            "content_strategic_insights": content_strategic_insights,
             "success_patterns": patterns,
             "competitive_insights": competitive_insights,
-            "aggregate_metrics": aggregate_metrics,
+            "aggregate_metrics": enhanced_metrics,
+            "content_analysis": content_analysis,
             "posts": posts
         }
 
@@ -309,43 +335,74 @@ class TrendingIntelligencePipeline:
 
         return analysis_results
 
+    async def analyze_content_quality(self, scored_data: Dict, batch_id: str) -> Dict:
+        """Stage 3.5: Analyze content quality, sentiment, and effectiveness"""
+        logger.info(
+            "[CONTENT_ANALYSIS] Analyzing content quality and sentiment...")
+
+        posts = scored_data.get("posts", [])
+
+        try:
+            # Run content analysis using the specialized ContentAnalyzer
+            content_analysis_results = await self.content_analyzer.analyze_content_batch(posts)
+
+            # Enhance with LLM insights if available
+            enhanced_analysis = await self.content_analyzer.generate_enhanced_analysis_with_llm(
+                posts[:10], context="trending_intelligence_content_analysis"
+            )
+
+            # Merge results with existing scored data
+            enhanced_results = {
+                "batch_id": batch_id,
+                "stage": "content_analyzed",
+                "processed_at": datetime.now(timezone.utc).isoformat(),
+                "posts": posts,  # Keep original post data
+                "content_analysis": content_analysis_results,
+                "llm_enhanced_insights": enhanced_analysis,
+                "aggregate_metrics": scored_data.get("aggregate_metrics", {})
+            }
+
+            # Save content analysis results
+            await self._save_processed_data(enhanced_results, batch_id, "content_analyzed")
+
+            logger.info(
+                f"[SUCCESS] Content analysis completed for {len(posts)} posts")
+            return enhanced_results
+
+        except Exception as e:
+            logger.error(f"Content analysis failed: {e}")
+            # Return original data if content analysis fails
+            return scored_data
+
     async def _generate_strategic_insights(self, posts: List[Dict], metrics: Dict) -> List[Dict]:
         """Generate comprehensive strategic insights using multiple LLM analyses"""
         try:
-            logger.info("🤖 Running comprehensive LLM analysis...")
+            logger.info(
+                "[BOT] Running optimized LLM analysis (reduced calls)...")
 
-            # Multiple LLM analysis approaches
+            # Optimized approach: Only essential LLM analyses
             all_insights = []
 
-            # 1. Strategic Content Analysis
+            # 1. Core Content Strategy Analysis (combines content + engagement)
+            logger.info("[LLM] Running core content strategy analysis...")
             content_insights = await self._analyze_content_strategies(posts, metrics)
             all_insights.extend(content_insights)
 
-            # 2. Engagement Optimization Analysis
-            engagement_insights = await self._analyze_engagement_strategies(posts, metrics)
-            all_insights.extend(engagement_insights)
-
-            # 3. Competitive Intelligence Analysis
+            # 2. Market Intelligence Analysis (combines competitive + trends)
+            logger.info("[LLM] Running market intelligence analysis...")
             competitive_insights = await self._analyze_competitive_strategies(posts, metrics)
             all_insights.extend(competitive_insights)
 
-            # 4. Trend Prediction Analysis
-            trend_insights = await self._analyze_trend_predictions(posts, metrics)
-            all_insights.extend(trend_insights)
-
-            # 5. Content Suggestion Generation (Enhanced)
-            content_suggestions = await self._generate_enhanced_content_suggestions(posts, metrics)
+            # 3. Quick Content Suggestions (lightweight, no heavy LLM calls)
+            logger.info("[GENERATE] Generating quick content suggestions...")
+            content_suggestions = await self._generate_content_suggestions(posts, metrics)
             all_insights.extend(content_suggestions)
-
-            # 6. Advanced Prompt Suggestions
-            prompt_suggestions = await self._generate_advanced_prompt_suggestions(posts, metrics)
-            all_insights.extend(prompt_suggestions)
 
             # Rank and filter insights by quality
             ranked_insights = self._rank_insights_by_quality(all_insights)
 
             logger.info(
-                f"✅ Generated {len(ranked_insights)} high-quality insights")
+                f"[SUCCESS] Generated {len(ranked_insights)} high-quality insights")
             return ranked_insights[:10]  # Top 10 insights
 
         except Exception as e:
@@ -360,7 +417,7 @@ class TrendingIntelligencePipeline:
 
             prompt = self._build_content_strategy_prompt(
                 top_performers, metrics)
-            response = await self._get_llm_insights(prompt)
+            response = await self._get_llm_insights(prompt, "content_strategy_analysis")
 
             return self._parse_structured_insights(response, "content_strategy")
         except Exception as e:
@@ -375,7 +432,7 @@ class TrendingIntelligencePipeline:
 
             prompt = self._build_engagement_strategy_prompt(
                 high_engagement_posts, metrics)
-            response = await self._get_llm_insights(prompt)
+            response = await self._get_llm_insights(prompt, "engagement_strategy_analysis")
 
             return self._parse_structured_insights(response, "engagement_optimization")
         except Exception as e:
@@ -389,7 +446,7 @@ class TrendingIntelligencePipeline:
 
             prompt = self._build_competitive_analysis_prompt(
                 author_performance, metrics)
-            response = await self._get_llm_insights(prompt)
+            response = await self._get_llm_insights(prompt, "competitive_analysis")
 
             return self._parse_structured_insights(response, "competitive_intelligence")
         except Exception as e:
@@ -402,7 +459,7 @@ class TrendingIntelligencePipeline:
             trending_patterns = self._extract_trending_patterns(posts, metrics)
 
             prompt = self._build_trend_prediction_prompt(trending_patterns)
-            response = await self._get_llm_insights(prompt)
+            response = await self._get_llm_insights(prompt, "trend_prediction")
 
             return self._parse_structured_insights(response, "trend_prediction")
         except Exception as e:
@@ -417,16 +474,102 @@ class TrendingIntelligencePipeline:
 
             prompt = self._build_content_suggestion_prompt(
                 success_patterns, metrics)
-            response = await self._get_llm_insights(prompt)
+            response = await self._get_llm_insights(prompt, "content_suggestions")
 
             return self._parse_structured_insights(response, "content_suggestions")
         except Exception as e:
             logger.warning(f"Content suggestion generation failed: {e}")
             return []
 
+    async def _generate_content_strategic_insights(self, content_analysis: Dict, posts: List[Dict]) -> List[Dict]:
+        """Generate strategic insights specifically from content analysis results"""
+        try:
+            if not content_analysis or not content_analysis.get("analyzed_posts"):
+                logger.info("[CONTENT_STRATEGY] No content analysis data available")
+                return []
+
+            logger.info("[CONTENT_STRATEGY] Generating content-specific strategic insights...")
+            
+            # Extract key content metrics
+            content_metrics = content_analysis.get("aggregate_metrics", {})
+            analyzed_posts = content_analysis.get("analyzed_posts", [])
+            
+            # Build content-focused prompt
+            prompt = self._build_content_analysis_strategy_prompt(content_metrics, analyzed_posts[:10])
+            
+            # Get LLM insights
+            response = await self._get_llm_insights(prompt, "content_analysis_strategy")
+            
+            # Parse insights
+            insights = self._parse_structured_insights(response, "content_quality_strategy")
+            
+            logger.info(f"[SUCCESS] Generated {len(insights)} content-specific strategic insights")
+            return insights
+            
+        except Exception as e:
+            logger.warning(f"Content strategic insights generation failed: {e}")
+            return []
+
+    def _build_content_analysis_strategy_prompt(self, content_metrics: Dict, analyzed_posts: List[Dict]) -> str:
+        """Build prompt for content analysis strategic insights"""
+        
+        # Extract key metrics
+        avg_readability = content_metrics.get("avg_readability", 0)
+        avg_quality = content_metrics.get("avg_content_quality", 0)
+        avg_impact = content_metrics.get("avg_emotional_impact", 0)
+        dominant_sentiment = content_metrics.get("dominant_sentiment", "unknown")
+        dominant_tone = content_metrics.get("dominant_tone", "unknown")
+        top_emotions = content_metrics.get("top_emotions", [])
+        
+        prompt = f"""CONTENT QUALITY STRATEGIC ANALYSIS
+
+You are a content optimization strategist. Analyze these content quality metrics to provide actionable improvement strategies:
+
+CONTENT QUALITY OVERVIEW:
+- Average Readability Score: {avg_readability:.1f}/100
+- Average Content Quality: {avg_quality:.1f}/100  
+- Average Emotional Impact: {avg_impact:.1f}/100
+- Dominant Sentiment: {dominant_sentiment}
+- Primary Tone: {dominant_tone}
+- Top Emotions: {', '.join(top_emotions[:3])}
+
+INDIVIDUAL POST ANALYSIS:
+"""
+        
+        # Add top performing posts from content analysis
+        for i, post in enumerate(analyzed_posts[:5], 1):
+            prompt += f"""
+{i}. Content Quality: {post.get('content_quality', 0):.1f}/100
+   Readability: {post.get('readability', 0):.1f}/100
+   Emotional Impact: {post.get('emotional_impact', 0):.1f}/100
+   Sentiment: {post.get('sentiment', 'unknown')}
+   Tone: {post.get('tone', 'unknown')}
+   Preview: "{post.get('content_preview', '')}"
+   Engagement: {post.get('engagement_data', {}).get('total_engagement', 0)} interactions
+"""
+
+        prompt += f"""
+
+STRATEGIC OPTIMIZATION PRIORITIES:
+1. READABILITY_OPTIMIZATION: How to improve content clarity and accessibility
+2. EMOTIONAL_RESONANCE: Strategies to enhance emotional connection with audience  
+3. SENTIMENT_BALANCING: Optimal sentiment mix for maximum engagement
+4. TONE_CONSISTENCY: Voice and tone recommendations for brand alignment
+5. CONTENT_STRUCTURE: Format and length optimization strategies
+
+For each strategy, provide:
+- Specific improvement recommendations
+- Expected impact on engagement
+- Implementation difficulty (Easy/Medium/Hard)
+- Success metrics to track
+
+Focus on actionable insights that can immediately improve content performance."""
+
+        return prompt
+
     def _build_content_strategy_prompt(self, top_posts: List[Dict], metrics: Dict) -> str:
         """Build specialized prompt for content strategy analysis"""
-        prompt = """🎯 CONTENT STRATEGY ANALYSIS
+        prompt = """CONTENT STRATEGY ANALYSIS
 
             You are an expert social media strategist. Analyze these high-performing posts to identify winning content patterns:
 
@@ -437,7 +580,7 @@ class TrendingIntelligencePipeline:
                 {i}. Performance Score: {post['scores']['performance_score']:.1f}/100
                 Content: "{post['content']}"
                 Length: {post['content_length']} chars, {post['word_count']} words
-                Engagement: {post['engagement']['like_count']}👍 {post['engagement']['reply_count']}💬 {post['engagement']['repost_count']}🔄
+                Engagement: {post['engagement']['like_count']} likes {post['engagement']['reply_count']} replies {post['engagement']['repost_count']} reposts
                 Tags: {', '.join(post['tags'])} 
                 Features: Questions={post.get('has_question', False)}, Exclamation={post.get('has_exclamation', False)}
                 Author: {post['author']['display_name']} ({post['author']['follower_count']} followers, Verified={post['author']['verified']})
@@ -468,7 +611,7 @@ class TrendingIntelligencePipeline:
         if not high_engagement_posts:
             return "No high engagement posts available for analysis."
 
-        prompt = """📈 ENGAGEMENT OPTIMIZATION ANALYSIS
+        prompt = """ENGAGEMENT OPTIMIZATION ANALYSIS
 
             You are a social media engagement expert. Analyze these high-engagement posts to identify tactics that maximize user interaction:
 
@@ -508,7 +651,7 @@ class TrendingIntelligencePipeline:
 
     def _build_competitive_analysis_prompt(self, author_performance: Dict, metrics: Dict) -> str:
         """Build prompt for competitive intelligence analysis"""
-        prompt = """🏆 COMPETITIVE INTELLIGENCE ANALYSIS
+        prompt = """[COMPETITIVE] COMPETITIVE INTELLIGENCE ANALYSIS
 
             You are a competitive intelligence analyst. Analyze the performance patterns of different content creators:
 
@@ -541,7 +684,7 @@ class TrendingIntelligencePipeline:
 
     def _build_trend_prediction_prompt(self, trending_patterns: Dict) -> str:
         """Build prompt for trend prediction analysis"""
-        prompt = """🔮 TREND PREDICTION ANALYSIS
+        prompt = """[PREDICTION] TREND PREDICTION ANALYSIS
 
             You are a social media trend forecaster. Analyze current patterns to predict future opportunities:
 
@@ -572,7 +715,7 @@ class TrendingIntelligencePipeline:
 
     def _build_content_suggestion_prompt(self, success_patterns: Dict, metrics: Dict) -> str:
         """Build prompt for generating specific content suggestions"""
-        prompt = """✨ CONTENT SUGGESTION GENERATOR
+        prompt = """[SUGGESTIONS] CONTENT SUGGESTION GENERATOR
 
             You are a creative content strategist. Based on successful patterns, generate specific content ideas:
             
@@ -712,7 +855,7 @@ class TrendingIntelligencePipeline:
 
         return patterns
 
-    async def _get_llm_insights(self, prompt: str) -> str:
+    async def _get_llm_insights(self, prompt: str, context: str = "general_analysis") -> str:
         """Get insights from LLM with enhanced error handling and retries"""
         try:
             def get_completion():
@@ -720,7 +863,8 @@ class TrendingIntelligencePipeline:
                     prompt=prompt,
                     model="gpt-4o-mini",
                     max_tokens=1500,  # Increased for more detailed analysis
-                    temperature=0.7
+                    temperature=0.7,
+                    context=context
                 )
 
             loop = asyncio.get_event_loop()
@@ -1156,47 +1300,70 @@ class TrendingIntelligencePipeline:
             return {"top_performers": [], "market_concentration": 0, "competitive_intensity": 0}
 
     async def format_report(self, analysis_results: Dict, batch_id: str) -> Dict:
-        """Stage 5: Format comprehensive report"""
-        logger.info("📝 Formatting final report...")
+        """Stage 5: Format comprehensive report with content analysis integration"""
+        logger.info("[FORMATTING] Formatting final report with content analysis...")
 
         insights = analysis_results.get("strategic_insights", [])
+        content_insights = analysis_results.get("content_strategic_insights", [])
         patterns = analysis_results.get("success_patterns", {})
         competitive = analysis_results.get("competitive_insights", {})
         metrics = analysis_results.get("aggregate_metrics", {})
+        content_analysis = analysis_results.get("content_analysis", {})
 
-        # Create summary
+        # Extract content quality metrics
+        content_quality_metrics = metrics.get("content_quality_metrics", {})
+        
+        # Create enhanced summary with content analysis
         summary = {
             "batch_id": batch_id,
             "total_posts": metrics.get("total_posts", 0),
             "avg_engagement_score": metrics.get("engagement_stats", {}).get("mean_engagement", 0),
             "success_pattern_score": patterns.get("engagement_patterns", {}).get("high_engagement_threshold", 0),
             "trending_tags": metrics.get("trending_tags", [])[:5],
-            "top_performer": competitive.get("top_performers", [{}])[0].get("username", "N/A") if competitive.get("top_performers") else "N/A"
+            "top_performer": competitive.get("top_performers", [{}])[0].get("username", "N/A") if competitive.get("top_performers") else "N/A",
+            
+            # Content analysis summary
+            "content_quality_summary": {
+                "avg_readability": content_quality_metrics.get("avg_readability", 0),
+                "avg_content_quality": content_quality_metrics.get("avg_content_quality", 0),
+                "avg_emotional_impact": content_quality_metrics.get("avg_emotional_impact", 0),
+                "dominant_sentiment": content_quality_metrics.get("dominant_sentiment", "unknown"),
+                "dominant_tone": content_quality_metrics.get("dominant_tone", "unknown"),
+                "top_emotions": content_quality_metrics.get("top_emotions", [])[:3]
+            }
         }
 
-        # Format top insights
-        top_insights = insights[:3]  # Top 3 most important
+        # Format top insights (combine strategic and content insights)
+        all_insights = insights + content_insights
+        all_insights.sort(key=lambda x: x.get('priority', 0), reverse=True)
+        top_insights = all_insights[:5]  # Top 5 most important insights
+        
+        # Separate content-specific insights for detailed reporting
+        top_content_insights = content_insights[:3] if content_insights else []
 
         report = {
             "batch_id": batch_id,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "summary": summary,
             "top_insights": top_insights,
+            "top_content_insights": top_content_insights,
             "success_patterns": patterns,
             "competitive_landscape": competitive,
-            "detailed_metrics": metrics
+            "detailed_metrics": metrics,
+            "content_analysis_summary": content_analysis.get("aggregate_metrics", {}),
+            "content_analysis_discord_summary": content_analysis.get("discord_summary", "")
         }
 
         # Create Discord embed for the report
         try:
             discord_embed = await self.create_discord_embed(analysis_results, {
-                'title_prefix': '🚀 Trending Intelligence Report',
+                'title_prefix': 'Trending Intelligence Report',
                 'max_fields': 6,
                 'show_links': True,
                 'include_footer_timestamp': True
             })
             report["discord_embed"] = discord_embed
-            logger.info("✅ Discord embed added to report")
+            logger.info("[SUCCESS] Discord embed added to report")
         except Exception as e:
             logger.warning(f"Failed to create Discord embed: {e}")
 
@@ -1217,7 +1384,7 @@ class TrendingIntelligencePipeline:
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
 
-            logger.debug(f"💾 {stage.title()} data saved to: {filepath}")
+            logger.debug(f"[SAVED] {stage.title()} data saved to: {filepath}")
 
         except Exception as e:
             logger.warning(f"Failed to save {stage} data: {e}")
@@ -1225,7 +1392,8 @@ class TrendingIntelligencePipeline:
     async def _generate_enhanced_content_suggestions(self, posts: List[Dict], metrics: Dict) -> List[Dict]:
         """Generate enhanced content suggestions using advanced prompt engine"""
         try:
-            logger.info("🎨 Generating enhanced content suggestions...")
+            logger.info(
+                "[GENERATE] Generating enhanced content suggestions...")
 
             # Prepare analysis data for prompt engine
             analysis_data = {
@@ -1264,7 +1432,7 @@ class TrendingIntelligencePipeline:
                 insights.append(insight)
 
             logger.info(
-                f"✅ Generated {len(insights)} enhanced content suggestions")
+                f"[SUCCESS] Generated {len(insights)} enhanced content suggestions")
             return insights
 
         except Exception as e:
@@ -1275,7 +1443,7 @@ class TrendingIntelligencePipeline:
         """Generate advanced prompt suggestions and content calendar"""
         try:
             logger.info(
-                "📅 Generating advanced prompt suggestions and calendar...")
+                "[GENERATE] Generating advanced prompt suggestions and calendar...")
 
             # Prepare analysis data
             analysis_data = {
@@ -1329,7 +1497,7 @@ class TrendingIntelligencePipeline:
                 insights.append(strategic_insight)
 
             logger.info(
-                f"✅ Generated {len(insights)} advanced prompt and calendar insights")
+                f"[SUCCESS] Generated {len(insights)} advanced prompt and calendar insights")
             return insights
 
         except Exception as e:
@@ -1339,7 +1507,7 @@ class TrendingIntelligencePipeline:
     async def generate_full_content_package(self, posts: List[Dict], metrics: Dict) -> Dict:
         """Generate a comprehensive content package with all suggestions"""
         try:
-            logger.info("📦 Generating full content package...")
+            logger.info("[PACKAGE] Generating full content package...")
 
             analysis_data = {
                 'posts': posts,
@@ -1348,58 +1516,63 @@ class TrendingIntelligencePipeline:
                 'competitive_insights': self._analyze_competitive_landscape(posts)
             }
 
-            # Generate all types of content suggestions
+            # Generate lightweight content suggestions (skip heavy LLM calls)
             content_package = {}
 
-            # 1. Comprehensive suggestions
-            comprehensive_suggestions = await self.prompt_engine.generate_comprehensive_suggestions(
-                analysis_data,
-                target_goals=['viral', 'engagement',
-                              'educational', 'community_building']
-            )
-            content_package['comprehensive_suggestions'] = comprehensive_suggestions
+            logger.info(
+                "[OPTIMIZE] Skipping heavy LLM calls for content package to reduce API usage")
 
-            # 2. Weekly calendar
-            weekly_calendar = await self.calendar_generator.generate_weekly_calendar(
-                analysis_data,
-                focus_areas=['viral', 'engagement', 'educational']
-            )
-            content_package['weekly_calendar'] = weekly_calendar
+            # 1. Lightweight suggestions (rule-based)
+            lightweight_suggestions = self._generate_lightweight_suggestions(
+                posts, metrics)
+            content_package['comprehensive_suggestions'] = {
+                'top_recommendations': lightweight_suggestions,
+                'generation_method': 'rule_based_optimization'
+            }
 
-            # 3. A/B test variations
-            ab_test_suggestions = comprehensive_suggestions.get(
-                'suggestions_by_category', {}).get('ab_test_variations', [])
-            content_package['ab_test_ready'] = ab_test_suggestions[:5]
+            # 2. Simple calendar (pattern-based)
+            simple_calendar = self._generate_simple_calendar(posts, metrics)
+            content_package['weekly_calendar'] = simple_calendar
 
-            # 4. Immediate action items
-            top_recommendations = comprehensive_suggestions.get(
-                'top_recommendations', [])
+            # 3. A/B test variations (simplified)
+            ab_test_suggestions = [
+                {'variation': 'timing_test',
+                    'description': 'Test different posting hours'},
+                {'variation': 'hashtag_test',
+                    'description': 'Test trending vs niche hashtags'},
+                {'variation': 'content_length_test',
+                    'description': 'Test short vs detailed posts'}
+            ]
+            content_package['ab_test_ready'] = ab_test_suggestions
+
+            # 4. Immediate action items (from lightweight suggestions)
             immediate_actions = [
                 {
-                    'content': rec.get('content', ''),
+                    'content': rec.get('content', f'Create content about {rec.get("topic", "trending topic")}'),
                     'hashtags': rec.get('hashtags', []),
                     'timing': rec.get('timing', 'optimal'),
-                    'performance_prediction': rec.get('performance_prediction', 0),
-                    'category': rec.get('category', ''),
-                    'priority': 'high' if rec.get('performance_prediction', 0) > 75 else 'medium'
+                    'performance_prediction': rec.get('performance_prediction', 70),
+                    'category': rec.get('category', 'general'),
+                    'priority': 'high' if rec.get('performance_prediction', 70) > 75 else 'medium'
                 }
-                for rec in top_recommendations[:10]
+                for rec in lightweight_suggestions[:10]
             ]
             content_package['immediate_actions'] = immediate_actions
 
-            # 5. Strategic insights summary
+            # 5. Strategic insights summary (updated for lightweight approach)
             insights_summary = {
-                'total_suggestions': comprehensive_suggestions.get('total_suggestions', 0),
-                'calendar_days_covered': len(weekly_calendar.get('weekly_calendar', {})),
+                'total_suggestions': len(lightweight_suggestions),
+                'calendar_days_covered': len(simple_calendar.get('weekly_calendar', {})),
                 'high_confidence_items': len([item for item in immediate_actions if item['performance_prediction'] > 80]),
                 'ready_to_post_count': len([item for item in immediate_actions if item['content']]),
                 'categories_covered': list(set([item['category'] for item in immediate_actions if item.get('category')])),
-                'generation_timestamp': datetime.now(timezone.utc).isoformat()
+                'generation_timestamp': datetime.now(timezone.utc).isoformat(),
+                'optimization_note': 'Generated using lightweight rule-based analysis to reduce LLM API usage'
             }
             content_package['insights_summary'] = insights_summary
 
             logger.info(
-                f"✅ Generated full content package with {insights_summary['total_suggestions']} total suggestions")
+                f"[SUCCESS] Generated full content package with {insights_summary['total_suggestions']} total suggestions")
             return content_package
 
         except Exception as e:
@@ -1409,21 +1582,22 @@ class TrendingIntelligencePipeline:
     async def create_discord_embed(self, analysis_results: Dict, options: Optional[Dict] = None) -> Dict:
         """Create Discord embed from analysis results using LLM formatting"""
         try:
-            logger.info("🎨 Creating Discord embed from analysis results...")
+            logger.info(
+                "[EMBED] Creating Discord embed from analysis results...")
 
             # Use Discord formatter to create embed
             embed_payload = await self.discord_formatter.format_analysis_to_discord(
                 analysis_results, options
             )
 
-            logger.info("✅ Discord embed created successfully")
+            logger.info("[SUCCESS] Discord embed created successfully")
             return embed_payload
 
         except Exception as e:
             logger.error(f"Discord embed creation failed: {e}")
             return {
                 "embeds": [{
-                    "title": "❌ Analysis Report",
+                    "title": "Analysis Report",
                     "description": f"Report generation completed with errors: {str(e)}",
                     "color": 0xff6b6b,
                     "footer": {
@@ -1435,19 +1609,129 @@ class TrendingIntelligencePipeline:
     async def create_quick_discord_update(self, metrics: Dict, top_insights: List[Dict]) -> Dict:
         """Create a quick Discord update embed for real-time notifications"""
         try:
-            logger.info("⚡ Creating quick Discord update...")
+            logger.info("[DISCORD] Creating quick Discord update...")
 
             embed_payload = await self.discord_formatter.format_quick_update(metrics, top_insights)
 
-            logger.info("✅ Quick Discord update created")
+            logger.info("[SUCCESS] Quick Discord update created")
             return embed_payload
 
         except Exception as e:
             logger.error(f"Quick Discord update failed: {e}")
             return {
                 "embeds": [{
-                    "title": "⚡ Quick Update",
+                    "title": "[QUICK] Quick Update",
                     "description": f"Update failed: {str(e)}",
                     "color": 0xff6b6b
                 }]
             }
+
+    def _generate_lightweight_suggestions(self, posts: List[Dict], metrics: Dict) -> List[Dict]:
+        """Generate lightweight content suggestions without heavy LLM processing"""
+        suggestions = []
+
+        try:
+            # Get top performing posts for pattern analysis
+            top_posts = sorted(posts, key=lambda x: x.get(
+                "scores", {}).get("performance_score", 0), reverse=True)[:5]
+
+            # Extract successful patterns
+            common_tags = self._extract_common_tags(top_posts)
+            optimal_length = self._calculate_optimal_length(top_posts)
+            best_timing = self._analyze_posting_times(top_posts)
+
+            # Generate rule-based suggestions
+            suggestions.extend([
+                {
+                    'content': f'Create engaging post with trending elements (aim for ~{optimal_length} chars)',
+                    'hashtags': common_tags[:3],
+                    'timing': best_timing,
+                    'performance_prediction': 75,
+                    'category': 'trending_optimization',
+                    'topic': 'performance_optimized'
+                },
+                {
+                    'content': 'Share behind-the-scenes content to boost engagement',
+                    'hashtags': ['#BehindTheScenes'] + common_tags[:2],
+                    'timing': best_timing,
+                    'performance_prediction': 70,
+                    'category': 'engagement_boost',
+                    'topic': 'authentic_content'
+                },
+                {
+                    'content': 'Ask engaging question to community',
+                    'hashtags': ['#Community'] + common_tags[:2],
+                    'timing': best_timing,
+                    'performance_prediction': 68,
+                    'category': 'community_building',
+                    'topic': 'interactive_content'
+                }
+            ])
+
+        except Exception as e:
+            logger.warning(f"Lightweight suggestions failed: {e}")
+
+        return suggestions
+
+    def _generate_simple_calendar(self, posts: List[Dict], metrics: Dict) -> Dict:
+        """Generate simple weekly calendar without heavy LLM processing"""
+        try:
+            best_timing = self._analyze_posting_times(posts[:10])
+            common_tags = self._extract_common_tags(posts[:10])
+
+            return {
+                'weekly_calendar': {
+                    'monday': {
+                        'focus_theme': 'motivational',
+                        'optimal_times': [best_timing],
+                        'suggested_tags': common_tags[:2]
+                    },
+                    'wednesday': {
+                        'focus_theme': 'educational',
+                        'optimal_times': [best_timing],
+                        'suggested_tags': common_tags[:2]
+                    },
+                    'friday': {
+                        'focus_theme': 'community',
+                        'optimal_times': [best_timing],
+                        'suggested_tags': common_tags[:2]
+                    }
+                },
+                'generation_method': 'rule_based'
+            }
+        except:
+            return {'weekly_calendar': {}, 'generation_method': 'fallback'}
+
+    def _extract_common_tags(self, posts: List[Dict]) -> List[str]:
+        """Extract most common tags from top performing posts"""
+        tag_counter = Counter()
+        for post in posts:
+            tags = post.get('hashtags', []) or post.get('tags', [])
+            if isinstance(tags, list):
+                tag_counter.update(tags)
+        return [tag for tag, _ in tag_counter.most_common(5)]
+
+    def _calculate_optimal_length(self, posts: List[Dict]) -> int:
+        """Calculate optimal content length from top posts"""
+        lengths = [len(post.get('content', ''))
+                   for post in posts if post.get('content')]
+        return int(np.mean(lengths)) if lengths else 200
+
+    def _analyze_posting_times(self, posts: List[Dict]) -> str:
+        """Analyze optimal posting times"""
+        try:
+            times = []
+            for post in posts:
+                if 'created_at' in post:
+                    # Extract hour from timestamp
+                    hour = int(post['created_at'].split('T')[1].split(':')[
+                               0]) if 'T' in str(post['created_at']) else 12
+                    times.append(hour)
+
+            if times:
+                avg_hour = int(np.mean(times))
+                return f"{avg_hour:02d}:00 UTC"
+            else:
+                return "12:00 UTC (default)"
+        except:
+            return "12:00 UTC (default)"

@@ -72,7 +72,8 @@ class PromptSuggestionEngine:
 
     async def generate_comprehensive_suggestions(self, analysis_data: Dict, target_goals: List[str] = None) -> Dict:
         """Generate comprehensive content suggestions based on analysis data"""
-        logger.info("🎨 Generating comprehensive content suggestions...")
+        logger.info(
+            "[GENERATE] Generating comprehensive content suggestions...")
 
         if target_goals is None:
             target_goals = ['viral', 'engagement', 'educational']
@@ -128,7 +129,7 @@ class PromptSuggestionEngine:
             success_patterns = analysis_data.get('success_patterns', {})
 
             prompt = f"""
-🔬 DATA-DRIVEN CONTENT GENERATION
+[DATA] DATA-DRIVEN CONTENT GENERATION
 
 You are an expert content strategist with access to performance data. Generate 8-10 specific content prompts based on these insights:
 
@@ -189,7 +190,7 @@ Format as JSON with keys: content, hashtags, timing, engagement_type, performanc
             trending_tags = metrics.get('trending_tags', [])[:3]
 
             prompt = f"""
-🎯 {archetype.upper()} CONTENT GENERATION
+{archetype.upper()} CONTENT GENERATION
 
 Generate 6-8 content ideas optimized for {archetype} performance:
 
@@ -268,7 +269,7 @@ Format as structured content ready for immediate use.
                 return []
 
             prompt = f"""
-🔥 TRENDING CONTENT VARIATIONS
+TRENDING CONTENT VARIATIONS
 
 Create viral variations of current trending topics:
 
@@ -289,10 +290,10 @@ VARIATION REQUIREMENTS:
 - Consider different audience segments
 
 Create content that:
-✓ Joins conversations authentically
-✓ Adds unique value/perspective
-✓ Drives meaningful engagement
-✓ Builds authority/credibility
+[CHECK] Joins conversations authentically
+[CHECK] Adds unique value/perspective
+[CHECK] Drives meaningful engagement
+[CHECK] Builds authority/credibility
 
 Format each variation with performance prediction and target audience.
 """
@@ -377,7 +378,7 @@ Format each variation with performance prediction and target audience.
             peak_hours = timing_patterns.get('peak_hours', [])
 
             prompt = f"""
-                ⏰ TIME-SENSITIVE CONTENT STRATEGY
+                TIME-SENSITIVE CONTENT STRATEGY
 
                 Current Time: {current_time.strftime('%Y-%m-%d %H:%M UTC')}
                 Day: {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][day_of_week]}
@@ -429,7 +430,7 @@ Format each variation with performance prediction and target audience.
                 'success_patterns', {}).get('engagement_patterns', {})
 
             prompt = f"""
-                🎮 INTERACTIVE CONTENT FORMATS
+                [INTERACTIVE] INTERACTIVE CONTENT FORMATS
 
                 Current Engagement Data:
                 - Reply Rate: {engagement_patterns.get('avg_like_ratio', 0):.2f}
@@ -560,7 +561,7 @@ Format each variation with performance prediction and target audience.
                     prompt=prompt,
                     model="gpt-4o-mini",
                     max_tokens=2000,
-                    temperature=0.8  # Higher creativity for content generation
+                    temperature=0.8,  # Higher creativity for content generation\n                    context="content_generation"
                 )
 
             loop = asyncio.get_event_loop()

@@ -62,11 +62,15 @@ def register_api_routes(app):
             "current_time": datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
             "endpoints": [
                 "/metrics",
-                "/topics",
+                "/topics", 
                 "/config",
                 "/status",
                 "/health",
-                "/heartbeat"
+                "/heartbeat",
+                "/trigger-intelligence",
+                "/trigger-content-analysis",
+                "/trigger-engagement-analysis",
+                "/engagement-quick-check"
             ]
         })
 
@@ -301,6 +305,251 @@ def register_api_routes(app):
     def trigger_alias():
         """Alias for /trigger-intelligence for easier access"""
         return trigger_intelligence_task()
+
+    @app.route('/trigger-content-analysis', methods=['POST'])
+    def trigger_content_analysis():
+        """Manually trigger content analysis task"""
+        from datetime import datetime, timezone
+        import asyncio
+
+        logger.info("[TRIGGER] Manual content analysis trigger requested")
+
+        try:
+            if _worker and _worker.is_running and _worker.loop:
+                # Import the content analysis task
+                from worker.tasks.content_analysis_task import ContentAnalysisTask
+
+                # Get parameters from request
+                data_source = request.json.get('data_source', 'api') if request.json else 'api'
+                num_posts = request.json.get('num_posts', 20) if request.json else 20
+
+                logger.info(f"[TRIGGER] Starting content analysis - Source: {data_source}, Posts: {num_posts}")
+
+                # Schedule content analysis task
+                task = ContentAnalysisTask()
+                future = asyncio.run_coroutine_threadsafe(
+                    task.run_content_analysis_workflow(data_source=data_source, num_posts=num_posts),
+                    _worker.loop
+                )
+
+                logger.info("[TRIGGER] Content analysis task scheduled successfully")
+
+                return jsonify({
+                    "status": "triggered",
+                    "message": "Content analysis task started",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "parameters": {
+                        "data_source": data_source,
+                        "num_posts": num_posts
+                    },
+                    "task_info": {
+                        "estimated_duration": f"{num_posts * 2} seconds",
+                        "worker_running": _worker.is_running
+                    },
+                    "monitoring": {
+                        "logs": "Monitor bot.log for detailed execution progress",
+                        "status_endpoint": "/status"
+                    }
+                })
+            else:
+                return jsonify({
+                    "error": "Worker event loop not available",
+                    "worker_status": "loop_unavailable"
+                }), 500
+
+        except Exception as e:
+            logger.error(f"Failed to trigger content analysis task: {e}")
+            return jsonify({
+                "error": str(e),
+                "status": "failed",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }), 500
+
+    @app.route('/trigger-content-analysis', methods=['GET'])
+    def get_content_analysis_info():
+        """Get information about the content analysis endpoint"""
+        from datetime import datetime, timezone
+
+        return jsonify({
+            "endpoint": "/trigger-content-analysis",
+            "method": "POST",
+            "description": "AI-powered social media content analysis",
+            "parameters": {
+                "data_source": "api (real) or mock (test) - default: api",
+                "num_posts": "Number of posts (1-50) - default: 20"
+            },
+            "features": [
+                "Content quality analysis",
+                "Sentiment and emotion detection", 
+                "Hashtag effectiveness scoring",
+                "AI-generated Discord reports",
+                "Readability assessment"
+            ],
+            "usage": {
+                "curl_example": 'curl -X POST http://localhost:5000/trigger-content-analysis -H "Content-Type: application/json" -d \'{"data_source": "api", "num_posts": 15}\''
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        })
+
+    @app.route('/trigger-engagement-analysis', methods=['POST'])
+    def trigger_engagement_analysis():
+        """Manually trigger engagement intelligence analysis"""
+        from datetime import datetime, timezone
+        import asyncio
+
+        logger.info("[TRIGGER] Manual engagement analysis trigger requested")
+
+        try:
+            if _worker and _worker.is_running and _worker.loop:
+                # Import the engagement intelligence task
+                from worker.tasks.engagement_intelligence_task import EngagementIntelligenceTask
+
+                # Get parameters from request
+                send_discord = request.json.get('send_discord', True) if request.json else True
+                save_results = request.json.get('save_results', True) if request.json else True
+
+                logger.info(f"[TRIGGER] Starting engagement analysis - Discord: {send_discord}, Save: {save_results}")
+
+                # Schedule engagement analysis task
+                task = EngagementIntelligenceTask()
+                future = asyncio.run_coroutine_threadsafe(
+                    task.run_engagement_analysis_workflow(
+                        send_discord=send_discord,
+                        save_results=save_results
+                    ),
+                    _worker.loop
+                )
+
+                logger.info("[TRIGGER] Engagement analysis task scheduled successfully")
+
+                return jsonify({
+                    "status": "triggered",
+                    "message": "Engagement intelligence analysis started",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "parameters": {
+                        "send_discord": send_discord,
+                        "save_results": save_results
+                    },
+                    "task_info": {
+                        "estimated_duration": "30-60 seconds",
+                        "worker_running": _worker.is_running,
+                        "description": "Analyzes engagement growth between current and previous data snapshots"
+                    },
+                    "analysis_features": [
+                        "Engagement deltas (Δlikes, Δreplies, Δreposts)",
+                        "Engagement velocity calculation",
+                        "Engagement acceleration analysis", 
+                        "Top 5 fastest growing posts identification",
+                        "Discord-formatted growth reports"
+                    ],
+                    "monitoring": {
+                        "logs": "Monitor bot.log for detailed execution progress",
+                        "status_endpoint": "/status",
+                        "results_path": "data/reports/engagement/"
+                    }
+                })
+            else:
+                return jsonify({
+                    "error": "Worker event loop not available",
+                    "worker_status": "loop_unavailable"
+                }), 500
+
+        except Exception as e:
+            logger.error(f"Failed to trigger engagement analysis task: {e}")
+            return jsonify({
+                "error": str(e),
+                "status": "failed",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }), 500
+
+    @app.route('/trigger-engagement-analysis', methods=['GET'])
+    def get_engagement_analysis_info():
+        """Get information about the engagement analysis endpoint"""
+        from datetime import datetime, timezone
+
+        return jsonify({
+            "endpoint": "/trigger-engagement-analysis",
+            "method": "POST",
+            "description": "Social engagement intelligence analysis with growth tracking",
+            "parameters": {
+                "send_discord": "Send Discord notification (true/false) - default: true",
+                "save_results": "Save results to disk (true/false) - default: true"
+            },
+            "features": [
+                "Engagement velocity computation (Δtotal_engagement / Δtime)",
+                "Engagement acceleration analysis (velocity change rate)",
+                "Top 5 fastest growing posts identification",
+                "Engagement composition analysis (likes/replies/reposts %)",
+                "Discord-formatted growth reports with emojis"
+            ],
+            "analysis_outputs": {
+                "velocity_metrics": "Average growth velocity per minute",
+                "top_performers": "Ranked list of fastest growing posts",
+                "composition_breakdown": "Percentage distribution of engagement types",
+                "discord_message": "Emoji-rich Discord report format"
+            },
+            "sample_discord_output": [
+                "📊 **Engagement Growth Report**",
+                "• Avg Growth Velocity: +0.73 /min",
+                "🚀 **Top 5 Fastest Posts:**",
+                "   1️⃣ @user1 — +1.2/min (+45 likes, +20 replies)",
+                "📈 **Engagement Composition:**",
+                "   ❤️ Likes 62% | 💬 Replies 25% | 🔁 Reposts 13%"
+            ],
+            "usage": {
+                "curl_example": 'curl -X POST http://localhost:5000/trigger-engagement-analysis -H "Content-Type: application/json" -d \'{"send_discord": true, "save_results": true}\''
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        })
+
+    @app.route('/engagement-quick-check', methods=['GET'])
+    def engagement_quick_check():
+        """Quick engagement metrics check for real-time monitoring"""
+        from datetime import datetime, timezone
+        import asyncio
+
+        try:
+            if _worker and _worker.is_running and _worker.loop:
+                from worker.tasks.engagement_intelligence_task import EngagementIntelligenceTask
+
+                # Run quick check
+                task = EngagementIntelligenceTask()
+                future = asyncio.run_coroutine_threadsafe(
+                    task.quick_engagement_check(),
+                    _worker.loop
+                )
+
+                # Wait for result with timeout
+                try:
+                    quick_result = future.result(timeout=30)
+                    
+                    return jsonify({
+                        "status": "success",
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                        "quick_check_result": quick_result,
+                        "description": "Real-time engagement metrics snapshot"
+                    })
+                    
+                except asyncio.TimeoutError:
+                    return jsonify({
+                        "status": "timeout",
+                        "message": "Quick check timed out after 30 seconds",
+                        "timestamp": datetime.now(timezone.utc).isoformat()
+                    }), 408
+                    
+            else:
+                return jsonify({
+                    "error": "Worker not available",
+                    "status": "unavailable"
+                }), 503
+
+        except Exception as e:
+            logger.error(f"Quick engagement check failed: {e}")
+            return jsonify({
+                "error": str(e),
+                "status": "failed",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }), 500
 
 
 # if __name__ == '__main__':

@@ -11,11 +11,11 @@ def main():
     """Start the application with the new worker system"""
     try:
         app = create_app()
-        print("🚀 Starting Trending Intelligence System...")
-        print("📊 Enhanced LLM Pipeline Active")
+        print("[START] Starting Trending Intelligence System...")
+        print("[INFO] Enhanced LLM Pipeline Active")
         print("🔄 Background Worker: ENABLED")
         print("🌐 Flask API: http://localhost:5000")
-        print("\n💡 Press Ctrl+C to stop")
+        print("\n[INFO] Press Ctrl+C to stop")
 
         app.run(
             host='0.0.0.0',

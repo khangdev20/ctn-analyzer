@@ -37,14 +37,14 @@ class BackgroundWorker:
     def _run_loop(self):
         asyncio.set_event_loop(self._loop)
         try:
-            logger.info("🔄 Starting scheduler loop...")
+            logger.info("[START] Starting scheduler loop...")
             self._loop.run_until_complete(run_scheduler_loop(self))
             # Should not reach here
-            logger.info("✅ Scheduler loop completed normally")
+            logger.info("[OK] Scheduler loop completed normally")
         except Exception as e:
-            logger.error(f"💥 Worker loop crashed: {e}")
+            logger.error(f"[CRASH] Worker loop crashed: {e}")
             import traceback
-            logger.error(f"📋 Traceback: {traceback.format_exc()}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             # Set flag to indicate crash
             self.is_running = False
 
@@ -85,13 +85,14 @@ class BackgroundWorker:
 
         try:
             logger.info(
-                "🚀 Starting trending intelligence task with timeout protection")
+                "[START] Starting trending intelligence task with timeout protection")
             logger.info(
-                f"⏰ Timeout limit: {timeout_seconds}s ({timeout_seconds/60:.1f} minutes)")
-            logger.info(f"🔄 Current active tasks: {len(self.active_tasks)}")
+                f"[TIMEOUT] Timeout limit: {timeout_seconds}s ({timeout_seconds/60:.1f} minutes)")
+            logger.info(
+                f"[TASKS] Current active tasks: {len(self.active_tasks)}")
 
             # Run with timeout protection
-            logger.info("🎯 Calling trending_intelligence_task.run()...")
+            logger.info("[CALL] Calling trending_intelligence_task.run()...")
             result = await asyncio.wait_for(
                 trending_intelligence_task.run(self),
                 timeout=timeout_seconds
@@ -99,33 +100,33 @@ class BackgroundWorker:
 
             execution_time = asyncio.get_event_loop().time() - start_time
             logger.info(
-                f"✅ Trending intelligence task completed in {execution_time:.1f}s")
+                f"[SUCCESS] Trending intelligence task completed in {execution_time:.1f}s")
             logger.info(
-                f"📊 Task result status: {result.get('status', 'unknown') if isinstance(result, dict) else 'non-dict result'}")
+                f"[RESULT] Task result status: {result.get('status', 'unknown') if isinstance(result, dict) else 'non-dict result'}")
 
             return result
 
         except asyncio.TimeoutError:
             execution_time = asyncio.get_event_loop().time() - start_time
             logger.error(
-                f"⏰ Trending intelligence task timed out after {execution_time:.1f}s (limit: {timeout_seconds}s)")
+                f"[TIMEOUT] Trending intelligence task timed out after {execution_time:.1f}s (limit: {timeout_seconds}s)")
 
             # Log timeout details for debugging
             logger.error(
-                f"🔍 Active tasks at timeout: {len(self.active_tasks)}")
-            logger.error(f"🔍 Task IDs: {self.active_tasks}")
+                f"[DEBUG] Active tasks at timeout: {len(self.active_tasks)}")
+            logger.error(f"[DEBUG] Task IDs: {self.active_tasks}")
 
         except Exception as e:
             execution_time = asyncio.get_event_loop().time() - start_time
             logger.error(
-                f"❌ Error running trending intelligence task after {execution_time:.1f}s: {e}")
+                f"[ERROR] Error running trending intelligence task after {execution_time:.1f}s: {e}")
 
             # Clear any stuck tasks
             if hasattr(self, 'active_tasks'):
                 stuck_tasks = [
                     task for task in self.active_tasks if 'trending_intelligence' in task]
                 for task in stuck_tasks:
-                    logger.warning(f"🧹 Clearing stuck task: {task}")
+                    logger.warning(f"[CLEANUP] Clearing stuck task: {task}")
                     self.active_tasks.remove(task)
 
     async def _run_trending_intelligence_task_with_cleanup(self):
@@ -133,39 +134,42 @@ class BackgroundWorker:
         task_id = 'trending_intelligence_main'
         start_time = datetime.now(timezone.utc)
 
-        logger.info("🌟" * 60)
-        logger.info(f"🧠 TRENDING INTELLIGENCE TASK TRIGGERED")
-        logger.info(f"⏰ Start Time: {start_time.strftime('%H:%M:%S UTC')}")
-        logger.info(f"📋 Task ID: {task_id}")
+        logger.info("[STATUS]" * 12)
+        logger.info(f"[TRIGGER] TRENDING INTELLIGENCE TASK TRIGGERED")
         logger.info(
-            f"🔄 Active Tasks: {len(self.active_tasks)} ({self.active_tasks})")
-        logger.info(f"💡 Worker running: {self.is_running}")
-        logger.info(f"📊 Total task count: {self.task_count}")
-        logger.info("🌟" * 60)
+            f"[TIME] Start Time: {start_time.strftime('%H:%M:%S UTC')}")
+        logger.info(f"[TASK] Task ID: {task_id}")
+        logger.info(
+            f"[ACTIVE] Active Tasks: {len(self.active_tasks)} ({self.active_tasks})")
+        logger.info(f"[STATUS] Worker running: {self.is_running}")
+        logger.info(f"[COUNT] Total task count: {self.task_count}")
+        logger.info("[STATUS]" * 12)
 
         try:
             # Force cleanup any existing stuck instances first
-            logger.info("🧹 Step 1: Running pre-task cleanup...")
+            logger.info("[CLEANUP] Step 1: Running pre-task cleanup...")
             cleanup_start = datetime.now(timezone.utc)
             await self._force_cleanup_job(task_id)
             cleanup_time = (datetime.now(timezone.utc) -
                             cleanup_start).total_seconds()
-            logger.info(f"✅ Step 1 completed in {cleanup_time:.2f}s")
+            logger.info(f"[STEP1] Step 1 completed in {cleanup_time:.2f}s")
 
             # Run the actual task
-            logger.info("🚀 Step 2: Starting trending intelligence pipeline...")
+            logger.info(
+                "[STEP2] Step 2: Starting trending intelligence pipeline...")
             pipeline_start = datetime.now(timezone.utc)
             result = await self._run_trending_intelligence_task()
             pipeline_time = (datetime.now(timezone.utc) -
                              pipeline_start).total_seconds()
-            logger.info(f"✅ Step 2 completed in {pipeline_time:.2f}s")
+            logger.info(f"[STEP2] Step 2 completed in {pipeline_time:.2f}s")
 
             total_time = (datetime.now(timezone.utc) -
                           start_time).total_seconds()
             logger.info("=" * 60)
-            logger.info(f"🎉 TRENDING INTELLIGENCE TASK COMPLETED SUCCESSFULLY")
-            logger.info(f"⏱️  Total execution time: {total_time:.2f}s")
-            logger.info(f"📊 Result: {result}")
+            logger.info(
+                f"[SUCCESS] TRENDING INTELLIGENCE TASK COMPLETED SUCCESSFULLY")
+            logger.info(f"[TIME] Total execution time: {total_time:.2f}s")
+            logger.info(f"[RESULT] Result: {result}")
             logger.info("=" * 60)
 
             return result
@@ -174,26 +178,27 @@ class BackgroundWorker:
             error_time = (datetime.now(timezone.utc) -
                           start_time).total_seconds()
             logger.error("=" * 60)
-            logger.error(f"❌ TRENDING INTELLIGENCE TASK FAILED")
-            logger.error(f"⏱️  Failed after: {error_time:.2f}s")
-            logger.error(f"🚨 Error: {e}")
-            logger.error(f"📋 Task ID: {task_id}")
+            logger.error(f"[FAILED] TRENDING INTELLIGENCE TASK FAILED")
+            logger.error(f"[TIME] Failed after: {error_time:.2f}s")
+            logger.error(f"[ERROR] Error: {e}")
+            logger.error(f"[TASK] Task ID: {task_id}")
             logger.error("=" * 60)
 
             # Always try cleanup on error
             try:
-                logger.info("🧹 Running error cleanup...")
+                logger.info("[CLEANUP] Running error cleanup...")
                 await self._force_cleanup_job(task_id)
-                logger.info("✅ Error cleanup completed")
+                logger.info("[OK] Error cleanup completed")
             except Exception as cleanup_error:
-                logger.error(f"❌ Error during error cleanup: {cleanup_error}")
+                logger.error(
+                    f"[ERROR] Error during error cleanup: {cleanup_error}")
 
             raise
 
     async def _cleanup_stuck_jobs(self):
         """Periodic cleanup job to handle stuck processes"""
         try:
-            logger.info("🧹 Running periodic stuck job cleanup...")
+            logger.info("[CLEANUP] Running periodic stuck job cleanup...")
 
             # Clear active task tracking
             if hasattr(self, 'active_tasks'):
@@ -203,37 +208,37 @@ class BackgroundWorker:
                 new_count = len(self.active_tasks)
                 if old_count != new_count:
                     logger.info(
-                        f"🧹 Cleaned {old_count - new_count} stuck task references")
+                        f"[CLEANUP] Cleaned {old_count - new_count} stuck task references")
 
             # Force cleanup the main intelligence job if needed
             await self._force_cleanup_job('trending_intelligence_main')
 
-            logger.info("✅ Periodic cleanup completed")
+            logger.info("[OK] Periodic cleanup completed")
 
         except Exception as e:
-            logger.error(f"❌ Error in periodic cleanup: {e}")
+            logger.error(f"[ERROR] Error in periodic cleanup: {e}")
 
     async def _force_cleanup_job(self, job_id):
         """Force cleanup a specific job instance"""
-        logger.debug(f"🔍 Starting cleanup for job: {job_id}")
+        logger.debug(f"[DEBUG] Starting cleanup for job: {job_id}")
 
         try:
             # Get current event loop and all tasks
             current_task = asyncio.current_task()
             all_tasks = asyncio.all_tasks()
 
-            logger.debug(f"📊 Found {len(all_tasks)} total asyncio tasks")
+            logger.debug(f"[DEBUG] Found {len(all_tasks)} total asyncio tasks")
 
             # Filter out completed tasks and current task
             active_tasks = [task for task in all_tasks
                             if not task.done() and task != current_task]
 
             logger.debug(
-                f"🔄 Found {len(active_tasks)} active tasks (excluding current)")
+                f"[FOUND] Found {len(active_tasks)} active tasks (excluding current)")
 
             if active_tasks:
                 logger.info(
-                    f"🧹 Force cancelling {len(active_tasks)} running tasks for job {job_id}")
+                    f"[CLEANUP] Force cancelling {len(active_tasks)} running tasks for job {job_id}")
 
                 # Log task details for debugging
                 for i, task in enumerate(active_tasks):
@@ -249,7 +254,8 @@ class BackgroundWorker:
                         task.cancel()
                         cancelled_count += 1
 
-                logger.info(f"📤 Sent cancel signal to {cancelled_count} tasks")
+                logger.info(
+                    f"[CANCELLED] Sent cancel signal to {cancelled_count} tasks")
 
                 # Wait briefly for tasks to cancel gracefully
                 try:
@@ -258,20 +264,21 @@ class BackgroundWorker:
                         timeout=10.0  # Increased timeout for cleanup
                     )
                     logger.info(
-                        f"✅ All tasks cancelled gracefully for job {job_id}")
+                        f"[OK] All tasks cancelled gracefully for job {job_id}")
                 except asyncio.TimeoutError:
                     logger.warning(
-                        f"⚠️ Some tasks did not cancel within timeout for job {job_id}")
+                        f"[WARNING] Some tasks did not cancel within timeout for job {job_id}")
                     # Log which tasks are still running
                     still_running = [
                         task for task in active_tasks if not task.done()]
                     logger.warning(
-                        f"🔄 {len(still_running)} tasks still running after cleanup timeout")
+                        f"[RUNNING] {len(still_running)} tasks still running after cleanup timeout")
                 except Exception as gather_error:
                     logger.warning(
-                        f"⚠️ Error during task cancellation gather: {gather_error}")
+                        f"[WARNING] Error during task cancellation gather: {gather_error}")
             else:
-                logger.debug(f"✅ No active tasks to cleanup for job {job_id}")
+                logger.debug(
+                    f"[DEBUG] No active tasks to cleanup for job {job_id}")
 
             # Clean up worker active tasks list
             if hasattr(self, 'active_tasks'):
@@ -281,9 +288,9 @@ class BackgroundWorker:
                 new_count = len(self.active_tasks)
                 if old_count != new_count:
                     logger.info(
-                        f"🧹 Cleaned {old_count - new_count} stuck tasks from worker active_tasks")
+                        f"[CLEANUP] Cleaned {old_count - new_count} stuck tasks from worker active_tasks")
 
         except Exception as e:
-            logger.error(f"❌ Error in force cleanup for {job_id}: {e}")
+            logger.error(f"[ERROR] Error in force cleanup for {job_id}: {e}")
 
-        logger.debug(f"✅ Cleanup completed for job: {job_id}")
+        logger.debug(f"[DEBUG] Cleanup completed for job: {job_id}")

@@ -9,11 +9,12 @@ logger = logging.getLogger(__name__)
 async def run_scheduler_loop(worker):
     """Async scheduler loop"""
     scheduler = AsyncIOScheduler()
-    
+
     # Load configuration
     config = get_config()
     trending_interval_minutes = config.collection_interval_minutes
-    logger.info(f"📅 Scheduling trending intelligence task every {trending_interval_minutes} minutes")
+    logger.info(
+        f"[SCHEDULE] Scheduling trending intelligence task every {trending_interval_minutes} minutes")
 
     # Schedule trending intelligence task (main task)
     scheduler.add_job(
@@ -44,16 +45,17 @@ async def run_scheduler_loop(worker):
     )
 
     scheduler.start()
-    logger.info(f"⚙️ Scheduler started with {len(scheduler.get_jobs())} jobs")
+    logger.info(
+        f"[SCHEDULER] Scheduler started with {len(scheduler.get_jobs())} jobs")
 
     try:
         while worker.is_running:
             await asyncio.sleep(1)
     except asyncio.CancelledError:
-        logger.info("🛑 Scheduler loop cancelled")
+        logger.info("[CANCELLED] Scheduler loop cancelled")
     finally:
         try:
             scheduler.shutdown(wait=False)
-            logger.info("🔚 Scheduler shutdown")
+            logger.info("[SHUTDOWN] Scheduler shutdown")
         except Exception as e:
             logger.debug(f"Scheduler shutdown error (ignored): {e}")

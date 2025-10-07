@@ -37,19 +37,19 @@ async def run(worker):
         }
 
         # Log to console with visual formatting
-        print(f"\n{'🕐' * 20}")
-        print(f"💓 WORKER HEARTBEAT")
-        print(f"🕐 Time: {timestamp}")
-        print(f"⏳ Uptime: {uptime_str}")
+        print(f"\n{'=' * 20}")
+        print(f"[HEARTBEAT] WORKER HEARTBEAT")
+        print(f"[TIME] Time: {timestamp}")
+        print(f"[UPTIME] Uptime: {uptime_str}")
         print(
-            f"📊 Tasks: {worker.task_count} total | {len(worker.active_tasks)} active")
-        print(f"🔄 Current: {task_id}")
-        print(f"✅ Status: RUNNING")
-        print(f"{'🕐' * 20}\n")
+            f"[TASKS] Tasks: {worker.task_count} total | {len(worker.active_tasks)} active")
+        print(f"[CURRENT] Current: {task_id}")
+        print(f"[STATUS] Status: RUNNING")
+        print(f"{'=' * 20}\n")
 
         # Also log to file
         logger.info(
-            f"💓 HEARTBEAT - {timestamp} | Uptime: {uptime_str} | Tasks: {worker.task_count}")
+            f"[HEARTBEAT] HEARTBEAT - {timestamp} | Uptime: {uptime_str} | Tasks: {worker.task_count}")
 
         # Update worker heartbeat info
         worker.last_heartbeat = current_time
@@ -59,16 +59,18 @@ async def run(worker):
         try:
             await asyncio.sleep(0.1)
         except asyncio.CancelledError:
-            logger.info(f"🔄 Heartbeat {task_id} cancelled gracefully")
+            logger.info(
+                f"[CANCELLED] Heartbeat {task_id} cancelled gracefully")
             raise
 
-        logger.info(f"✅ Heartbeat {task_id} completed")
+        logger.info(f"[OK] Heartbeat {task_id} completed")
 
     except asyncio.CancelledError:
-        logger.info(f"🔄 Heartbeat {task_id} cancelled during shutdown")
+        logger.info(
+            f"[SHUTDOWN] Heartbeat {task_id} cancelled during shutdown")
         raise  # Re-raise to let scheduler handle it properly
     except Exception as e:
-        logger.error(f"❌ Error in heartbeat {task_id}: {e}")
+        logger.error(f"[ERROR] Error in heartbeat {task_id}: {e}")
     finally:
         if task_id in worker.active_tasks:
             worker.active_tasks.remove(task_id)
