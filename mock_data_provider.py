@@ -118,6 +118,140 @@ class MockDataProvider:
 
         return posts
 
+    def generate_strategic_dataset(self, num_posts: int = 30) -> List[Dict]:
+        """Generate dataset optimized for strategic intelligence testing"""
+        posts = []
+        base_time = datetime.now(timezone.utc)
+
+        # Strategic content templates with different framings
+        strategic_content = {
+            "attack": [
+                "The corrupt {candidate} administration has failed our {issue} completely. This disaster must end!",
+                "Lies and scandals from {candidate} have destroyed our trust in {issue}. Time for change!",
+                "The incompetent {candidate} policies are ruining our {issue}. We need new leadership now.",
+                "{candidate}'s dangerous agenda threatens our {issue}. We can't afford four more years!"
+            ],
+            "support": [
+                "Amazing progress on {issue} under {candidate}! Our successful policies are working.",
+                "Proud of {candidate}'s excellent achievements in {issue}. Great leadership delivers results.",
+                "Strong {issue} growth shows {candidate}'s effective strategy is bringing prosperity.",
+                "{candidate} continues to champion {issue} with dedication and results that matter."
+            ],
+            "call_to_action": [
+                "Vote for {candidate}! Register now and make your voice heard on {issue}.",
+                "Join {candidate}'s campaign! Volunteer, donate, and help spread the message on {issue}.",
+                "Take action today! Support {candidate} and demand better {issue} policies.",
+                "Stand with {candidate}! Share this message and fight for better {issue} solutions."
+            ],
+            "emotional_appeal": [
+                "Our children deserve better {issue} under {candidate}. Together we can build hope.",
+                "Families are struggling with {issue}. {candidate} understands and will fight for justice.",
+                "The American dream depends on strong {issue}. {candidate} will restore our future.",
+                "Hope for {issue} lives with {candidate}. Let's unite for freedom and prosperity."
+            ]
+        }
+
+        # Strategic themes
+        issues = ["economy", "healthcare", "education",
+                  "immigration", "environment", "security"]
+        candidates = ["CastilloReform",
+                      "ProgressiveHope", "FutureFirst", "UnityNow"]
+
+        # Authors with coordination patterns
+        coordinated_authors = {
+            "team_castillo1": "CastilloReform",
+            "team_castillo2": "CastilloReform",
+            "castillo_supporter": "CastilloReform",
+            "progressive_voice1": "ProgressiveHope",
+            "progressive_voice2": "ProgressiveHope",
+            "future_advocate": "FutureFirst",
+            "unity_supporter": "UnityNow"
+        }
+
+        individual_authors = [
+            "independent_voter", "policy_expert", "citizen_advocate", "local_activist",
+            "concerned_parent", "small_business", "community_leader", "veteran_voice"
+        ]
+
+        all_authors = list(coordinated_authors.keys()) + individual_authors
+
+        for i in range(num_posts):
+            # Select framing type with realistic distribution
+            framing_weights = {"attack": 0.25, "support": 0.35,
+                               "call_to_action": 0.20, "emotional_appeal": 0.20}
+            framing = random.choices(
+                list(framing_weights.keys()), weights=list(framing_weights.values()))[0]
+
+            # Select content template and fill it
+            template = random.choice(strategic_content[framing])
+            issue = random.choice(issues)
+            candidate = random.choice(candidates)
+            content = template.format(candidate=candidate, issue=issue)
+
+            # Select author
+            author = random.choice(all_authors)
+
+            # Coordination timing for team members
+            if author in coordinated_authors:
+                # Coordinated authors post closer together
+                base_hours = i * 2.1
+                # Within 3-hour window
+                coordination_offset = random.uniform(-1.5, 1.5)
+                hours_offset = base_hours + coordination_offset
+            else:
+                hours_offset = i * 3.2  # More spread out
+
+            post_time = base_time - timedelta(hours=hours_offset)
+
+            # Generate engagement metrics with some bias toward coordinated content
+            base_engagement = random.randint(40, 120)
+            if author in coordinated_authors:
+                # Coordinated content gets more engagement
+                base_engagement *= random.uniform(1.2, 1.8)
+
+            like_count = int(base_engagement * random.uniform(0.5, 0.7))
+            reply_count = int(base_engagement * random.uniform(0.15, 0.35))
+            repost_count = int(base_engagement * random.uniform(0.1, 0.25))
+
+            # Tags based on content
+            tags = ["politics", "campaign", issue]
+            if candidate.lower() in content.lower():
+                tags.append(candidate.lower())
+
+            post = {
+                "id": f"strategic_post_{i:03d}",
+                "created_at": post_time.isoformat(),
+                "content": content,
+                "like_count": like_count,
+                "reply_count": reply_count,
+                "repost_count": repost_count,
+                "author": {
+                    "username": author,
+                    "follower_count": random.randint(800, 15000)
+                },
+                "tags": tags,
+                "engagement": {
+                    "like_count": like_count,
+                    "reply_count": reply_count,
+                    "repost_count": repost_count
+                },
+                "metadata": {
+                    "created_at": post_time.isoformat(),
+                    "platform": "strategic_test",
+                    "framing_type": framing,
+                    "candidate_mentioned": candidate,
+                    "issue_focus": issue,
+                    "is_coordinated": author in coordinated_authors
+                }
+            }
+
+            posts.append(post)
+
+        # Sort by timestamp for realistic analysis
+        posts.sort(key=lambda p: p["created_at"], reverse=True)
+
+        return posts
+
 
 def generate_mock_trending_data(num_posts: int = 20) -> Dict:
     """Generate mock trending data for testing"""
