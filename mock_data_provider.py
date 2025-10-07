@@ -252,6 +252,107 @@ class MockDataProvider:
 
         return posts
 
+    def generate_trending_dataset(self, count: int = 25) -> List[Dict]:
+        """Generate dataset optimized for trending prediction testing"""
+        posts = []
+
+        # High-potential trending content templates
+        trending_templates = [
+            "🚨 BREAKING: {} just announced revolutionary changes! This could affect millions #{}",
+            "VIRAL: {} story is spreading like wildfire across social media #{}",
+            "🔥 HOT TAKE: Why {} is about to explode in popularity #{}",
+            "EXCLUSIVE: Inside sources reveal {} will transform everything #{}",
+            "⚡ URGENT: {} development could change the game forever #{}",
+            "MASSIVE: {} reaches unprecedented milestone today #{}",
+            "SHOCKING: {} reveals surprising truth about {} #{}",
+            "MUST READ: {} expert drops truth bombs about {} #{}"
+        ]
+
+        # Viral topics for trending content
+        viral_topics = [
+            "AI", "Elections", "Climate", "Innovation", "Healthcare", "Economy",
+            "Technology", "Social Justice", "Education", "Environment", "Politics",
+            "Space", "Science", "Culture", "Sports", "Entertainment", "Finance"
+        ]
+
+        # Authors with varying influence levels
+        trending_authors = [
+            {"name": "viral_content_creator",
+                "influence": 0.9, "engagement_boost": 15},
+            {"name": "trending_influencer", "influence": 0.85, "engagement_boost": 12},
+            {"name": "news_breaker", "influence": 0.8, "engagement_boost": 10},
+            {"name": "thought_leader", "influence": 0.75, "engagement_boost": 8},
+            {"name": "community_voice", "influence": 0.7, "engagement_boost": 6},
+            {"name": "rising_creator", "influence": 0.6, "engagement_boost": 4},
+            {"name": "regular_user", "influence": 0.4, "engagement_boost": 2},
+            {"name": "new_account", "influence": 0.2, "engagement_boost": 0}
+        ]
+
+        for i in range(count):
+            # Select author (higher influence authors more likely for trending)
+            author_weights = [author["influence"]
+                              for author in trending_authors]
+            author = random.choices(
+                trending_authors, weights=author_weights)[0]
+
+            # Generate content with viral potential
+            topic = random.choice(viral_topics)
+            hashtag = topic.lower()
+            template = random.choice(trending_templates)
+            content = template.format(topic, hashtag, topic, hashtag)
+
+            # Base scores with some randomness
+            base_story_score = random.randint(40, 100)
+            base_engagement = random.randint(30, 95)
+            base_velocity = random.uniform(0.5, 10.0)
+            base_timing = random.randint(35, 100)
+            base_strategic = random.randint(25, 95)
+
+            # Apply author influence boosts
+            story_score = min(100, base_story_score +
+                              author["engagement_boost"])
+            engagement_score = min(
+                100, base_engagement + author["engagement_boost"])
+            velocity = min(10.0, base_velocity + (author["influence"] * 2))
+            timing_score = min(100, base_timing + (author["influence"] * 10))
+            strategic_score = min(100, base_strategic +
+                                  author["engagement_boost"])
+
+            # Create trending-optimized post
+            post = {
+                'id': f'trending_{i+1:03d}',
+                'content': content,
+                'author': author["name"],
+                'created_at': (datetime.now(timezone.utc) - timedelta(minutes=random.randint(0, 720))).isoformat(),
+                'story_score': story_score,
+                'engagement_score': engagement_score,
+                'velocity': round(velocity, 2),
+                'network_influence': round(author["influence"], 2),
+                'timing_score': timing_score,
+                'strategic_score': strategic_score,
+                'hashtags': [f"#{hashtag}", f"#{topic.lower()}trend", "#viral"],
+                'metrics': {
+                    'likes': random.randint(10, 10000),
+                    'shares': random.randint(5, 5000),
+                    'comments': random.randint(2, 2000),
+                    'reach': random.randint(100, 50000)
+                },
+                'trending_factors': {
+                    'viral_keywords': content.count('🚨') + content.count('🔥') + content.count('⚡'),
+                    'urgency_indicators': content.count('BREAKING') + content.count('URGENT') + content.count('EXCLUSIVE'),
+                    'emotional_triggers': content.count('SHOCKING') + content.count('VIRAL') + content.count('MASSIVE'),
+                    'engagement_signals': author["influence"] * 100
+                }
+            }
+
+            posts.append(post)
+
+        # Sort by trending potential (higher scores first)
+        posts.sort(key=lambda p: p['story_score'] +
+                   p['engagement_score'] + (p['velocity'] * 10), reverse=True)
+
+        return posts
+
 
 def generate_mock_trending_data(num_posts: int = 20) -> Dict:
     """Generate mock trending data for testing"""
