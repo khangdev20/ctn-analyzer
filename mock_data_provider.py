@@ -60,22 +60,34 @@ def generate_mock_trending_data(num_posts: int = 20) -> Dict:
         hours_ago = random.randint(1, 24)
         timestamp = (base_time - timedelta(hours=hours_ago))
 
+        # Generate hashtags with network relationships
+        hashtags = [tag, "tech", "innovation"] + \
+            random.sample(trending_topics[:5], 2)
+        hashtags = [h.lower() for h in hashtags]
+
         post = {
             "id": f"post_{i+1:03d}",
             "content": content,
             "author": {
                 "username": random.choice(sample_usernames),
                 "display_name": f"Tech User {i+1}",
-                "verified": random.choice([True, False])
+                "verified": random.choice([True, False]),
+                "follower_count": random.randint(500, 50000)
             },
             "engagement": {
                 "like_count": like_count,
                 "reply_count": reply_count,
                 "repost_count": repost_count
             },
+            # Network Intelligence format compatibility
+            "like_count": like_count,
+            "reply_count": reply_count,
+            "repost_count": repost_count,
+            "tags": hashtags,
+            "created_at": timestamp.isoformat(),
             "metadata": {
                 "created_at": timestamp.isoformat(),
-                "hashtags": [tag, "tech", "innovation"] + random.sample(trending_topics, 2),
+                "hashtags": hashtags,
                 "mentions": [],
                 "links": []
             },
