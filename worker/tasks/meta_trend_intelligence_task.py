@@ -516,7 +516,7 @@ def get_meta_trend_task_config() -> Dict:
         'function': run_weekly_meta_trend_task,
         'schedule': {
             'trigger': 'cron',
-            'day_of_week': 'sunday',  # Run every Sunday
+            'day_of_week': 6,         # Run every Sunday (0=Monday, 6=Sunday)
             'hour': 2,                # At 2 AM UTC
             'minute': 0,
             'misfire_grace_time': 3600  # 1 hour grace period
