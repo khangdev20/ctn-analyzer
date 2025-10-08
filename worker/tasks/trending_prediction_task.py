@@ -70,12 +70,13 @@ class TrendingPredictionTask:
         self.reports_path = self.base_data_path / "reports" / "trending_prediction"
         self.reports_path.mkdir(parents=True, exist_ok=True)
 
-    async def run_trending_prediction_workflow(self, batch_id: str = None) -> Dict:
+    async def run_trending_prediction_workflow(self, batch_id: str = None, send_discord: bool = True) -> Dict:
         """
         Execute complete trending prediction workflow.
 
         Args:
             batch_id: Optional batch identifier for tracking
+            send_discord: Whether to send Discord notifications (default True)
 
         Returns:
             Dictionary containing workflow results and analysis
@@ -84,7 +85,7 @@ class TrendingPredictionTask:
             batch_id = f"trending_prediction_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 
         logger.info(
-            f"🔥 Starting trending prediction workflow for batch {batch_id}")
+            f"[HOT] Starting trending prediction workflow for batch {batch_id}")
 
         try:
             # Step 1: Collect comprehensive post data
@@ -95,7 +96,7 @@ class TrendingPredictionTask:
                 return {'status': 'no_data', 'batch_id': batch_id}
 
             logger.info(
-                f"📊 Collected {len(posts_data)} posts for trending analysis")
+                f"[ANALYTICS] Collected {len(posts_data)} posts for trending analysis")
 
             # Step 2: Run trending prediction analysis
             analysis_results = await self.agent.analyze_trending_potential(posts_data, batch_id)
@@ -120,11 +121,11 @@ class TrendingPredictionTask:
             }
 
             logger.info(
-                f"✅ Trending prediction workflow completed successfully for batch {batch_id}")
+                f"[OK] Trending prediction workflow completed successfully for batch {batch_id}")
             return workflow_results
 
         except Exception as e:
-            logger.error(f"❌ Error in trending prediction workflow: {str(e)}")
+            logger.error(f"[ERROR] Error in trending prediction workflow: {str(e)}")
             return {
                 'status': 'error',
                 'batch_id': batch_id,
@@ -150,19 +151,25 @@ class TrendingPredictionTask:
                     f"📥 Collected {len(recent_data)} posts from recent analyses")
 
             # Method 2: Try to collect from raw data if available
-            if len(collected_posts) < 10:  # Ensure we have enough data
-                raw_data = await self._collect_from_raw_data()
-                if raw_data:
-                    collected_posts.extend(raw_data)
-                    logger.info(
-                        f"📥 Collected {len(raw_data)} additional posts from raw data")
+            raw_data = await self._collect_from_raw_data()
+            if raw_data:
+                collected_posts.extend(raw_data)
+                logger.info(
+                    f"📥 Collected {len(raw_data)} additional posts from raw data")
 
-            # Method 3: Generate mock data if insufficient real data
+            # Method 3: Try trending data files from root directory
+            trending_files_data = await self._collect_from_trending_files()
+            if trending_files_data:
+                collected_posts.extend(trending_files_data)
+                logger.info(
+                    f"📥 Collected {len(trending_files_data)} posts from trending data files")
+
+            # Method 4: Generate mock data if insufficient real data
             if len(collected_posts) < 5:
                 mock_data = await self._generate_mock_trending_data()
                 collected_posts.extend(mock_data)
                 logger.info(
-                    f"📥 Generated {len(mock_data)} mock posts for trending analysis")
+                    f"� Generated {len(mock_data)} mock posts for trending analysis")
 
             # Remove duplicates based on post ID
             unique_posts = []
@@ -177,11 +184,11 @@ class TrendingPredictionTask:
                     seen_ids.add(post_id)
 
             logger.info(
-                f"📊 Final dataset: {len(unique_posts)} unique posts for trending analysis")
+                f"[ANALYTICS] Final dataset: {len(unique_posts)} unique posts for trending analysis")
             return unique_posts[:50]  # Limit to 50 posts for performance
 
         except Exception as e:
-            logger.error(f"❌ Error collecting trending data: {str(e)}")
+            logger.error(f"[ERROR] Error collecting trending data: {str(e)}")
             return await self._generate_mock_trending_data()
 
     async def _collect_from_recent_analyses(self) -> List[Dict]:
@@ -225,41 +232,136 @@ class TrendingPredictionTask:
 
         try:
             # Different engines store posts in different formats
-            if engine_type == 'content_analysis' and 'analyzed_posts' in analysis_data:
-                for post in analysis_data['analyzed_posts']:
-                    normalized_post = {
-                        'id': post.get('id', post.get('post_id')),
-                        'content': post.get('content', post.get('text', '')),
-                        'author': post.get('author', 'unknown'),
-                        'story_score': post.get('story_score', post.get('content_score', 50)),
-                        'engagement_score': post.get('engagement_score', 50),
-                        'velocity': post.get('velocity', 1.0),
-                        'network_influence': post.get('network_influence', 0.5),
-                        'timing_score': post.get('timing_score', post.get('temporal_score', 50)),
-                        'strategic_score': post.get('strategic_score', 50),
-                        'source_engine': engine_type
-                    }
-                    posts.append(normalized_post)
+            if engine_type == 'content_analysis':
+                # Try different possible structures
+                post_sources = [
+                    analysis_data.get('analyzed_posts', []),
+                    analysis_data.get('posts', []),
+                    analysis_data.get('content_analysis', {}).get('posts', [])
+                ]
+                
+                for source in post_sources:
+                    if source:
+                        for post in source:
+                            normalized_post = {
+                                'id': post.get('id', post.get('post_id', f"content_{len(posts)}")),
+                                'content': post.get('content', post.get('text', '')),
+                                'author': post.get('author', 'unknown'),
+                                'story_score': post.get('story_score', post.get('content_score', 60)),
+                                'engagement_score': post.get('engagement_score', 55),
+                                'velocity': post.get('velocity', 1.2),
+                                'network_influence': post.get('network_influence', 0.5),
+                                'timing_score': post.get('timing_score', post.get('temporal_score', 55)),
+                                'strategic_score': post.get('strategic_score', 50),
+                                'source_engine': engine_type
+                            }
+                            posts.append(normalized_post)
+                        break  # Use first non-empty source
 
-            elif engine_type == 'engagement_intelligence' and 'engagement_analysis' in analysis_data:
-                engagement_data = analysis_data['engagement_analysis']
-                if 'post_scores' in engagement_data:
-                    for post_id, score_data in engagement_data['post_scores'].items():
-                        normalized_post = {
-                            'id': post_id,
-                            'content': score_data.get('content', ''),
-                            'author': score_data.get('author', 'unknown'),
-                            'story_score': 60,  # Default content score
-                            'engagement_score': score_data.get('engagement_score', score_data.get('viral_score', 50)),
-                            'velocity': score_data.get('velocity', 1.0),
-                            'network_influence': 0.5,  # Default network influence
-                            'timing_score': 50,  # Default timing
-                            'strategic_score': 50,  # Default strategic
-                            'source_engine': engine_type
-                        }
-                        posts.append(normalized_post)
+            elif engine_type == 'engagement_intelligence':
+                # Try different possible structures
+                engagement_sources = [
+                    analysis_data.get('engagement_analysis', {}),
+                    analysis_data.get('analysis', {}),
+                    analysis_data
+                ]
+                
+                for source in engagement_sources:
+                    if 'post_scores' in source:
+                        for post_id, score_data in source['post_scores'].items():
+                            normalized_post = {
+                                'id': post_id,
+                                'content': score_data.get('content', f'Engagement post {post_id}'),
+                                'author': score_data.get('author', 'unknown'),
+                                'story_score': 60,
+                                'engagement_score': score_data.get('engagement_score', score_data.get('viral_score', 60)),
+                                'velocity': score_data.get('velocity', 1.5),
+                                'network_influence': 0.6,
+                                'timing_score': 55,
+                                'strategic_score': 50,
+                                'source_engine': engine_type
+                            }
+                            posts.append(normalized_post)
+                        break
 
-            # Add more engine-specific extraction logic as needed
+            elif engine_type == 'temporal_analytics':
+                # Try temporal analytics structure
+                temporal_sources = [
+                    analysis_data.get('temporal_data', []),
+                    analysis_data.get('posts', []),
+                    analysis_data.get('analysis', {}).get('posts', [])
+                ]
+                
+                for source in temporal_sources:
+                    if source:
+                        for post in source:
+                            normalized_post = {
+                                'id': post.get('id', post.get('post_id', f"temporal_{len(posts)}")),
+                                'content': post.get('content', post.get('text', f'Temporal post {len(posts)}')),
+                                'author': post.get('author', 'unknown'),
+                                'story_score': 55,
+                                'engagement_score': post.get('engagement_score', 50),
+                                'velocity': post.get('velocity', 1.3),
+                                'network_influence': 0.5,
+                                'timing_score': post.get('timing_score', post.get('temporal_score', 70)),
+                                'strategic_score': 45,
+                                'source_engine': engine_type
+                            }
+                            posts.append(normalized_post)
+                        break
+
+            elif engine_type == 'strategic_intelligence':
+                # Try strategic intelligence structure
+                strategic_sources = [
+                    analysis_data.get('strategic_data', []),
+                    analysis_data.get('posts', []),
+                    analysis_data.get('analysis', {}).get('posts', [])
+                ]
+                
+                for source in strategic_sources:
+                    if source:
+                        for post in source:
+                            normalized_post = {
+                                'id': post.get('id', post.get('post_id', f"strategic_{len(posts)}")),
+                                'content': post.get('content', post.get('text', f'Strategic post {len(posts)}')),
+                                'author': post.get('author', 'unknown'),
+                                'story_score': 50,
+                                'engagement_score': 55,
+                                'velocity': 1.1,
+                                'network_influence': 0.6,
+                                'timing_score': 50,
+                                'strategic_score': post.get('strategic_score', post.get('business_value', 65)),
+                                'source_engine': engine_type
+                            }
+                            posts.append(normalized_post)
+                        break
+
+            # Generic fallback for any engine type
+            if not posts:
+                generic_sources = [
+                    analysis_data.get('posts', []),
+                    analysis_data.get('data', []),
+                    analysis_data.get('items', [])
+                ]
+                
+                for source in generic_sources:
+                    if isinstance(source, list) and source:
+                        for item in source:
+                            if isinstance(item, dict):
+                                normalized_post = {
+                                    'id': item.get('id', f"{engine_type}_{len(posts)}"),
+                                    'content': item.get('content', item.get('text', f'{engine_type} post')),
+                                    'author': item.get('author', 'unknown'),
+                                    'story_score': 55,
+                                    'engagement_score': 55,
+                                    'velocity': 1.2,
+                                    'network_influence': 0.5,
+                                    'timing_score': 55,
+                                    'strategic_score': 55,
+                                    'source_engine': engine_type
+                                }
+                                posts.append(normalized_post)
+                        break
 
         except Exception as e:
             logger.warning(
@@ -313,6 +415,68 @@ class TrendingPredictionTask:
             logger.warning(f"Error collecting from raw data: {str(e)}")
             return []
 
+    async def _collect_from_trending_files(self) -> List[Dict]:
+        """Collect posts from trending data files in root directory."""
+        posts = []
+
+        try:
+            # Look for trending_data_*.json files in root directory
+            root_path = Path(".")
+            trending_files = list(root_path.glob("trending_data_*.json"))
+            
+            if trending_files:
+                # Use the most recent trending data file
+                latest_trending_file = max(trending_files, key=lambda f: f.stat().st_mtime)
+                logger.info(f"[ANALYTICS] Using trending data file: {latest_trending_file.name}")
+                
+                try:
+                    with open(latest_trending_file, 'r', encoding='utf-8') as f:
+                        trending_data = json.load(f)
+                    
+                    # Extract posts from trending data format
+                    if isinstance(trending_data, list):
+                        for item in trending_data:
+                            if isinstance(item, dict):
+                                normalized_post = self._normalize_trending_post(item)
+                                posts.append(normalized_post)
+                    elif isinstance(trending_data, dict):
+                        if 'posts' in trending_data:
+                            for post in trending_data['posts']:
+                                normalized_post = self._normalize_trending_post(post)
+                                posts.append(normalized_post)
+                        elif 'data' in trending_data:
+                            for post in trending_data['data']:
+                                normalized_post = self._normalize_trending_post(post)
+                                posts.append(normalized_post)
+                        else:
+                            # Try to treat the whole object as a single post
+                            normalized_post = self._normalize_trending_post(trending_data)
+                            posts.append(normalized_post)
+                
+                except Exception as e:
+                    logger.warning(f"Could not read trending file {latest_trending_file}: {str(e)}")
+            
+            return posts
+
+        except Exception as e:
+            logger.warning(f"Error collecting from trending files: {str(e)}")
+            return []
+
+    def _normalize_trending_post(self, trending_post: Dict) -> Dict:
+        """Normalize trending post data to trending analysis format."""
+        return {
+            'id': trending_post.get('id', trending_post.get('post_id', f"trending_{hash(str(trending_post)) % 100000}")),
+            'content': trending_post.get('content', trending_post.get('text', trending_post.get('message', ''))),
+            'author': trending_post.get('author', trending_post.get('username', trending_post.get('user', 'unknown'))),
+            'story_score': trending_post.get('story_score', trending_post.get('content_score', 65)),
+            'engagement_score': trending_post.get('engagement_score', trending_post.get('likes', 0) + trending_post.get('shares', 0) + trending_post.get('comments', 0)),
+            'velocity': trending_post.get('velocity', trending_post.get('growth_rate', 2.0)),
+            'network_influence': trending_post.get('network_influence', trending_post.get('reach', 0.6)),
+            'timing_score': trending_post.get('timing_score', trending_post.get('optimal_time', 70)),
+            'strategic_score': trending_post.get('strategic_score', trending_post.get('business_value', 60)),
+            'source_engine': 'trending_data_file'
+        }
+
     def _normalize_raw_post(self, raw_post: Dict) -> Dict:
         """Normalize raw post data to trending analysis format."""
         return {
@@ -356,7 +520,7 @@ class TrendingPredictionTask:
                 normalized_posts.append(normalized_post)
 
             logger.info(
-                f"📝 Generated {len(normalized_posts)} mock posts for trending analysis")
+                f"[NOTE] Generated {len(normalized_posts)} mock posts for trending analysis")
             return normalized_posts
 
         except ImportError:
@@ -409,10 +573,10 @@ class TrendingPredictionTask:
                 f.write(analysis_results.get(
                     'discord_message', 'No Discord message generated'))
 
-            logger.info(f"💾 Analysis results saved to {results_dir}")
+            logger.info(f"[SAVE] Analysis results saved to {results_dir}")
 
         except Exception as e:
-            logger.error(f"❌ Error saving analysis results: {str(e)}")
+            logger.error(f"[ERROR] Error saving analysis results: {str(e)}")
 
     async def _send_discord_notification(self, analysis_results: Dict) -> bool:
         """Send Discord notification with trending prediction results."""
@@ -427,12 +591,12 @@ class TrendingPredictionTask:
 
             # Send as rich embed if possible
             success = await self.discord_sender.send_rich_embed(
-                title="🔥 Trending Prediction Report",
+                title="[HOT] Trending Prediction Report",
                 description=discord_message,
                 color=0xFF6B35,  # Orange color for trending
                 fields=[
                     {
-                        "name": "📊 Analysis Summary",
+                        "name": "[ANALYTICS] Analysis Summary",
                         "value": f"Posts: {analysis_results.get('posts_analyzed', 0)}\nCandidates: {len(analysis_results.get('trending_candidates', []))}",
                         "inline": True
                     },
@@ -445,7 +609,7 @@ class TrendingPredictionTask:
             )
 
             if success:
-                logger.info("✅ Discord notification sent successfully")
+                logger.info("[OK] Discord notification sent successfully")
                 return True
             else:
                 # Fallback to simple message
@@ -453,7 +617,7 @@ class TrendingPredictionTask:
                 return success
 
         except Exception as e:
-            logger.error(f"❌ Error sending Discord notification: {str(e)}")
+            logger.error(f"[ERROR] Error sending Discord notification: {str(e)}")
             return False
 
     async def _generate_workflow_insights(self, analysis_results: Dict) -> List[str]:
@@ -468,14 +632,14 @@ class TrendingPredictionTask:
 
             # Workflow performance insights
             insights.append(
-                f"🔍 Processed {posts_count} posts across multiple analysis engines")
+                f"[SEARCH] Processed {posts_count} posts across multiple analysis engines")
 
             if candidates_count > 0:
                 insights.append(
-                    f"🎯 Identified {candidates_count} high-potential trending candidates")
+                    f"[TARGET] Identified {candidates_count} high-potential trending candidates")
             else:
                 insights.append(
-                    "📈 No posts currently meet trending threshold - consider content strategy review")
+                    "[TRENDING_UP] No posts currently meet trending threshold - consider content strategy review")
 
             # Score-based insights
             if avg_score >= 80:
@@ -483,16 +647,16 @@ class TrendingPredictionTask:
                     "💪 Strong overall content performance detected")
             elif avg_score >= 60:
                 insights.append(
-                    "📊 Moderate content performance - optimization opportunities available")
+                    "[ANALYTICS] Moderate content performance - optimization opportunities available")
             else:
                 insights.append(
-                    "⚡ Content performance below average - strategic improvements recommended")
+                    "[FAST] Content performance below average - strategic improvements recommended")
 
             # Factor-based insights
             top_factors = analysis_results.get('top_influencing_factors', [])
             if top_factors:
                 insights.append(
-                    f"🎪 Key success factors: {', '.join(top_factors[:2])}")
+                    f"[CIRCUS] Key success factors: {', '.join(top_factors[:2])}")
 
             return insights
 
@@ -547,13 +711,13 @@ def get_trending_task_config() -> Dict:
 if __name__ == "__main__":
     # Demo execution
     async def demo():
-        print("🔥 Trending Prediction Task Demo")
+        print("[HOT] Trending Prediction Task Demo")
         print("=" * 50)
 
         task = TrendingPredictionTask()
         result = await task.run_trending_prediction_workflow("demo_trending_task")
 
-        print(f"📊 Task Results:")
+        print(f"[ANALYTICS] Task Results:")
         print(f"Status: {result.get('status')}")
         print(f"Posts Processed: {result.get('posts_processed', 0)}")
         print(f"Trending Candidates: {result.get('trending_candidates', 0)}")
@@ -562,7 +726,7 @@ if __name__ == "__main__":
             f"Discord Notification: {result.get('discord_notification', False)}")
 
         if result.get('workflow_insights'):
-            print("\n💡 Workflow Insights:")
+            print("\n[IDEA] Workflow Insights:")
             for insight in result['workflow_insights']:
                 print(f"  • {insight}")
 

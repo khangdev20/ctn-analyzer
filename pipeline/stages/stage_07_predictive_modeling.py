@@ -42,7 +42,7 @@ class PredictiveModelingStage:
 
     async def execute(self, batch_id: str, network_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute predictive modeling stage"""
-        logger.info("🔮 Stage 7: Forecasting trending potential...")
+        logger.info("[PREDICT] Stage 7: Forecasting trending potential...")
         
         try:
             # Extract posts from network data (they should contain all previous stage data)
@@ -100,9 +100,9 @@ class PredictiveModelingStage:
             # Generate summary
             summary = self._generate_summary(prediction_data, batch_id)
             
-            logger.info(f"✅ Stage 7 completed: Predictions for {len(predicted_posts)} posts")
-            logger.info(f"🎯 High probability posts: {summary['high_probability_count']}")
-            logger.info(f"📈 Average trending probability: {summary['average_probability']:.3f}")
+            logger.info(f"[OK] Stage 7 completed: Predictions for {len(predicted_posts)} posts")
+            logger.info(f"[TARGET] High probability posts: {summary['high_probability_count']}")
+            logger.info(f"[TRENDING_UP] Average trending probability: {summary['average_probability']:.3f}")
             
             return {
                 **summary,
@@ -111,7 +111,7 @@ class PredictiveModelingStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 7 error: {e}")
+            logger.error(f"[ERROR] Stage 7 error: {e}")
             return None
 
     async def _calculate_trending_probability(self, post: Dict) -> float:

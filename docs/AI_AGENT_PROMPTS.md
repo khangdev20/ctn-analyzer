@@ -1,4 +1,4 @@
-# 🤖 AI AGENT PROMPTS FOR FULL TRENDING ANALYSIS WORKFLOW
+# [BOT] AI AGENT PROMPTS FOR FULL TRENDING ANALYSIS WORKFLOW
 
 ### (Optimized for GitHub Copilot Integration)
 
@@ -7,7 +7,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 ---
 
-## 🟩 1️⃣ Data Collection — Collect Trending and Latest Posts
+## 🟩 [1] Data Collection — Collect Trending and Latest Posts
 
 ```python
 # Task: Collect latest and trending posts from the feed
@@ -21,7 +21,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 # - Return: summary dict {batch_id, collected_count, trending_tags}
 ```
 
-## 🟦 2️⃣ Data Cleaning — Normalize and Prepare Data
+## 🟦 [2] Data Cleaning — Normalize and Prepare Data
 
 # Task: Clean and normalize collected post data
 
@@ -41,7 +41,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: summary dict {batch_id, cleaned_count, duplicates_removed, avg_engagement}
 
-## 🟧 3️⃣ Growth Tracking — Compute Engagement Growth and Velocity
+## 🟧 [3] Growth Tracking — Compute Engagement Growth and Velocity
 
 # Task: Compute engagement deltas and growth velocity between current and previous batches
 
@@ -61,7 +61,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: summary dict {avg_velocity_per_min, top_velocity_posts}
 
-## 🟨 4️⃣ Score Estimation — Calculate Raw Story and Engagement Scores
+## 🟨 [4] Score Estimation — Calculate Raw Story and Engagement Scores
 
 # Task: Estimate raw Story Score and Engagement Score for each post
 
@@ -79,7 +79,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: average story_score and engagement_score for batch
 
-## 🟥 5️⃣ Rubric Evaluation — Apply Viral Post Rubric
+## 🟥 [5] Rubric Evaluation — Apply Viral Post Rubric
 
 # Task: Evaluate each post using viral rubric weights
 
@@ -113,7 +113,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Input: rubric results + tag and author data
 
-## 🟪 6️⃣ Strategic & Network Analysis — Detect Patterns and Clusters
+## 🟪 [6] Strategic & Network Analysis — Detect Patterns and Clusters
 
 # - Output: network JSON file (data/network/YYYY/MM/DD/batch\_<timestamp>.network.json)
 
@@ -129,7 +129,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: top_tags, tag_clusters, author_groups
 
-## 🟫 7️⃣ Predictive Modeling — Forecast Future Trending Posts
+## 🟫 [7] Predictive Modeling — Forecast Future Trending Posts
 
 # Task: Predict trending probability for each post
 
@@ -147,7 +147,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: {post_id, trending_probability, key_factors}
 
-## 🟦 8️⃣ Reporting — Generate Intelligence Report for Discord
+## 🟦 [8] Reporting — Generate Intelligence Report for Discord
 
 # Task: Generate human-readable intelligence report from latest batch
 
@@ -169,7 +169,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: {embed_payload, timestamp, send_status}
 
-## 🟩 9️⃣ Continuous Learning — Refine Rubric and Feature Weights
+## 🟩 [9] Continuous Learning — Refine Rubric and Feature Weights
 
 # Task: Adjust scoring model and rubric weights based on performance
 
@@ -187,7 +187,7 @@ Use these as in-code prompts or docstring templates to generate full functions, 
 
 # - Return: new rubric weight dict and accuracy score
 
-## 🧩 🔟 Meta Analysis — Weekly Strategic Insights
+## 🧩 [10] Meta Analysis — Weekly Strategic Insights
 
 # Task: Generate weekly trend and strategy report
 

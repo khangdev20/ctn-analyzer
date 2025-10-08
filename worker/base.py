@@ -18,6 +18,18 @@ from .tasks.strategic_intelligence_task import run_strategic_intelligence_task
 from .tasks.trending_prediction_task import run_trending_prediction_task
 from .tasks.meta_trend_intelligence_task import run_weekly_meta_trend_task
 
+# Import leaderboard tasks
+from .tasks.leaderboard_worker import leaderboard_daily_task, leaderboard_bidaily_task
+from .tasks.engagement_intelligence_task import run_engagement_intelligence_task
+from .tasks.network_intelligence_task import run_network_intelligence_task
+from .tasks.temporal_analytics_task import run_temporal_analytics_task
+from .tasks.strategic_intelligence_task import run_strategic_intelligence_task
+from .tasks.trending_prediction_task import run_trending_prediction_task
+from .tasks.meta_trend_intelligence_task import run_weekly_meta_trend_task
+
+# Import leaderboard task
+from .tasks.leaderboard_worker import leaderboard_daily_task
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,9 +99,9 @@ class BackgroundWorker:
         """
         try:
             logger.info(
-                "🚀 [MAIN FLOW] Starting Main Intelligence Flow Orchestrator")
+                "[LAUNCH] [MAIN FLOW] Starting Main Intelligence Flow Orchestrator")
             logger.info(
-                "🎯 [MAIN FLOW] Sequential execution of all 7 analysis engines")
+                "[TARGET] [MAIN FLOW] Sequential execution of all 7 analysis engines")
 
             # Import main flow orchestrator
             from pipeline.main_flow import run_main_flow
@@ -102,29 +114,29 @@ class BackgroundWorker:
                 total_engines = result.get('total_engines', 7)
                 execution_time = result.get('execution_time_seconds', 0)
 
-                logger.info(f"✅ [MAIN FLOW] Pipeline completed successfully!")
+                logger.info(f"[OK] [MAIN FLOW] Pipeline completed successfully!")
                 logger.info(
-                    f"📊 [MAIN FLOW] Engines: {successful_engines}/{total_engines} successful")
+                    f"[ANALYTICS] [MAIN FLOW] Engines: {successful_engines}/{total_engines} successful")
                 logger.info(
-                    f"⏱️ [MAIN FLOW] Total runtime: {execution_time:.1f}s")
+                    f"[TIMER] [MAIN FLOW] Total runtime: {execution_time:.1f}s")
                 logger.info(
-                    f"📋 [MAIN FLOW] Batch ID: {result.get('batch_id')}")
+                    f"[REPORT] [MAIN FLOW] Batch ID: {result.get('batch_id')}")
             else:
                 error_msg = result.get('error', 'Unknown error')
-                logger.error(f"❌ [MAIN FLOW] Pipeline failed: {error_msg}")
+                logger.error(f"[ERROR] [MAIN FLOW] Pipeline failed: {error_msg}")
 
             return result
 
         except ImportError as e:
             logger.error(
-                f"❌ [MAIN FLOW] Import error - Main flow orchestrator not available: {e}")
+                f"[ERROR] [MAIN FLOW] Import error - Main flow orchestrator not available: {e}")
             return {
                 'status': 'error',
                 'error': f'Main flow orchestrator import failed: {str(e)}',
                 'timestamp': str(datetime.now(timezone.utc))
             }
         except Exception as e:
-            logger.error(f"❌ [MAIN FLOW] Main flow orchestrator error: {e}")
+            logger.error(f"[ERROR] [MAIN FLOW] Main flow orchestrator error: {e}")
             return {
                 'status': 'error',
                 'error': str(e),
@@ -139,7 +151,7 @@ class BackgroundWorker:
         """Content Analysis Engine - content quality and topic analysis"""
         try:
             logger.info("[ENGINE] Starting Content Analysis Engine")
-            result = await run_content_analysis_task()
+            result = await run_content_analysis_task(self)
             logger.info(
                 f"[ENGINE] Content Analysis completed: {result.get('status', 'unknown')}")
             return result
@@ -201,17 +213,29 @@ class BackgroundWorker:
         except Exception as e:
             logger.error(f"[ENGINE] Trending Prediction Engine error: {e}")
 
-    async def _run_meta_trend_intelligence_task(self):
-        """Meta-Trend Intelligence Engine - weekly cross-engine analysis"""
+    # DEPRECATED: Meta-Trend Intelligence moved to separate scheduler
+    # async def _run_meta_trend_intelligence_task(self):
+    #     """DEPRECATED: Meta-Trend Intelligence Engine - use run_weekly_meta_scheduler.py"""
+    #     logger.warning("⚠️  Meta-Trend Intelligence moved to separate scheduler")
+    #     logger.warning("📅 Use: python run_weekly_meta_scheduler.py")
+    #     return {"status": "deprecated", "message": "Use separate weekly scheduler"}
+
+    async def _run_leaderboard_daily_task(self):
+        """DEPRECATED: Leaderboard Daily Logger - use bi-daily task instead"""
+        logger.warning("⚠️  Daily leaderboard task is deprecated")
+        logger.warning("📊 Use bi-daily leaderboard task (every 12 hours)")
+        return {"status": "deprecated", "message": "Use bi-daily leaderboard task"}
+
+    async def _run_leaderboard_bidaily_task(self):
+        """Leaderboard Bi-Daily Logger - competition analysis and Discord reporting (every 12 hours)"""
         try:
+            logger.info("[LEADERBOARD] Starting Bi-Daily Leaderboard Logger (12-hour interval)")
+            result = await leaderboard_bidaily_task()
             logger.info(
-                "[ENGINE] Starting Meta-Trend Intelligence Engine (Weekly)")
-            result = await run_weekly_meta_trend_task()
-            logger.info(
-                f"[ENGINE] Meta-Trend Intelligence completed: {result.get('status', 'unknown')}")
+                f"[LEADERBOARD] Bi-Daily Leaderboard completed: {result.get('status', 'unknown')}")
             return result
         except Exception as e:
-            logger.error(f"[ENGINE] Meta-Trend Intelligence Engine error: {e}")
+            logger.error(f"[LEADERBOARD] Bi-Daily Leaderboard Logger error: {e}")
 
     # ===============================
     # LEGACY CLEANUP (DEPRECATED)
@@ -247,3 +271,27 @@ class BackgroundWorker:
 
         except Exception as e:
             logger.error(f"[ERROR] Error in periodic cleanup: {e}")
+
+    async def _disk_cleanup_task(self):
+        """Disk cleanup maintenance task"""
+        try:
+            logger.info("[DISK] Starting disk cleanup maintenance task...")
+
+            # Import disk cleanup task
+            from .tasks.disk_cleanup_task import run_disk_cleanup_task
+
+            # Run disk cleanup
+            result = await run_disk_cleanup_task(self)
+
+            if result.get("status") == "error":
+                logger.error(
+                    f"[DISK] Disk cleanup failed: {result.get('error')}")
+            else:
+                logger.info(
+                    f"[DISK] Disk cleanup completed: {result.get('files_cleaned', 0)} files cleaned")
+
+            return result
+
+        except Exception as e:
+            logger.error(f"[DISK] Disk cleanup task error: {e}")
+            return {"status": "error", "error": str(e)}

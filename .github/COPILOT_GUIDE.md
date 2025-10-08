@@ -1,4 +1,14 @@
-# 🤖 GitHub Copilot Guide for the Trending Intelligence Project
+# [BOT]## [AI]- [ORGANIZE] _What_ this code should do
+
+- [#] _Inputs_ and _outputs_
+- [TARGET] _Constraints_ or _edge cases_
+
+> [CHAT] Tip: A **good comment is a mini prompt.**  
+> A one-line description like "# compute velocity between two snapshots" can save minutes of refactoring.
+
+---
+
+## [ORGANIZE] [2] Project Context (So Copilot Understands Your Patterns)sophy — "Guide the AI, Don't Expect It to Guess"GitHub Copilot Guide for the Trending Intelligence Project
 
 **Purpose:**  
 To help all developers in this project use GitHub Copilot effectively for writing, maintaining, and extending the AI-driven post analysis system.
@@ -14,7 +24,7 @@ The clearer your intent, the better your code suggestions.
 
 - 🧩 _What_ this code should do
 - 🔢 _Inputs_ and _outputs_
-- 🎯 _Constraints_ or _edge cases_
+- [TARGET] _Constraints_ or _edge cases_
 
 > 💬 Tip: A **good comment is a mini prompt.**  
 > A one-line description like “# compute velocity between two snapshots” can save minutes of refactoring.
@@ -41,7 +51,7 @@ Core technologies:
 
 ---
 
-## 🧩 3️⃣ File & Task Patterns (Copilot Learns from These)
+## [ORGANIZE] [3] File & Task Patterns (Copilot Learns from These)
 
 | Module                | Responsibility                       | Typical Function                      |
 | --------------------- | ------------------------------------ | ------------------------------------- |
@@ -54,17 +64,17 @@ Core technologies:
 | `report_builder.py`   | Combine analysis results             | `def build_intelligence_report()`     |
 | `discord_notifier.py` | Format & send embed message          | `def send_discord_embed()`            |
 
-> 🧩 Keep consistent naming patterns.  
+> [ORGANIZE] Keep consistent naming patterns.  
 > Copilot uses previous functions as pattern examples.
 
 ---
 
-## ✍️ 4️⃣ Comment Templates for Copilot Prompts
+## [WRITE] [4] Comment Templates for Copilot Prompts
 
 Before you start typing code, describe the _intent_.  
 Copilot reads nearby comments first.
 
-### 🔹 Function-level comment
+### [DIAMOND] Function-level comment
 
 ```python
 # Step: Compute growth velocity and acceleration for posts

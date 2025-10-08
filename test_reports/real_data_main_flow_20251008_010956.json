@@ -1,0 +1,88 @@
+{
+  "test_metadata": {
+    "test_type": "real_data_main_flow_test",
+    "start_time": "2025-10-08T01:09:45.121330+00:00",
+    "end_time": "2025-10-08T01:09:56.405627+00:00",
+    "total_execution_time": 11.284297,
+    "test_version": "1.0.0"
+  },
+  "real_data_characteristics": {
+    "total_posts": 20,
+    "unique_authors": 12,
+    "verified_authors": 0,
+    "total_engagement": 14788,
+    "avg_engagement_per_post": 739.4,
+    "engagement_breakdown": {
+      "likes": 1492,
+      "replies": 12026,
+      "reposts": 1270
+    },
+    "content_features": {
+      "posts_with_tags": 20,
+      "posts_with_embeds": 14
+    },
+    "time_span_hours": 8.5
+  },
+  "test_results": {
+    "data_loading": {
+      "status": "success",
+      "source_file": "trending_data_20251008_110424.json",
+      "posts_count": 20,
+      "data_type": "real_trending_data"
+    },
+    "data_analysis": {
+      "status": "success",
+      "statistics": {
+        "total_posts": 20,
+        "unique_authors": 12,
+        "verified_authors": 0,
+        "total_engagement": 14788,
+        "avg_engagement_per_post": 739.4,
+        "engagement_breakdown": {
+          "likes": 1492,
+          "replies": 12026,
+          "reposts": 1270
+        },
+        "content_features": {
+          "posts_with_tags": 20,
+          "posts_with_embeds": 14
+        },
+        "time_span_hours": 8.5
+      }
+    },
+    "orchestrator_setup": {
+      "status": "success",
+      "engines_count": 6,
+      "unified_reporting": true,
+      "temp_data_file": "temp_real_data_20251008_010945.json"
+    },
+    "main_flow_execution": {
+      "status": "success",
+      "execution_time": 11.279310703277588,
+      "successful_engines": 6,
+      "total_engines": 6,
+      "batch_id": "main_flow_20251008T010945Z",
+      "real_posts_processed": 20,
+      "real_engagement_analyzed": 14788,
+      "discord_sent": true
+    }
+  },
+  "real_data_insights": {
+    "engagement_density": 739.4,
+    "author_diversity": 12,
+    "content_richness": {
+      "tagged_content_ratio": 1.0,
+      "multimedia_ratio": 0.7
+    },
+    "temporal_distribution": "8.5 hours of real activity",
+    "engagement_composition": {
+      "likes": 1492,
+      "replies": 12026,
+      "reposts": 1270
+    }
+  },
+  "system_info": {
+    "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "platform": "win32"
+  }
+}

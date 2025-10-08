@@ -27,7 +27,7 @@ class TrendingRedisHelper:
 
         if not self.cache_enabled:
             logger.warning(
-                "⚠️ Redis caching disabled - operating without cache")
+                "[WARNING] Redis caching disabled - operating without cache")
 
     async def get_or_analyze(self, analysis_type: str, content: str, analysis_func, *args, **kwargs) -> Dict:
         """
@@ -51,7 +51,7 @@ class TrendingRedisHelper:
             cached_result = await self.redis_manager.get_cached_analysis(analysis_type, content)
 
             if cached_result:
-                logger.debug(f"🎯 Cache HIT for {analysis_type}")
+                logger.debug(f"[TARGET] Cache HIT for {analysis_type}")
                 return cached_result
 
             # Cache miss - run analysis
@@ -66,7 +66,7 @@ class TrendingRedisHelper:
                     hashlib.sha256(content.encode()).hexdigest()[:16],
                     result
                 )
-                logger.debug(f"📝 Cached fresh analysis for {analysis_type}")
+                logger.debug(f"[NOTE] Cached fresh analysis for {analysis_type}")
 
             return result
 
@@ -203,11 +203,11 @@ async def init_redis_helper():
         redis_manager = await get_redis_manager()
         _redis_helper_instance = TrendingRedisHelper(redis_manager)
 
-        logger.info("✅ Redis helper initialized successfully")
+        logger.info("[OK] Redis helper initialized successfully")
         return True
 
     except Exception as e:
-        logger.warning(f"⚠️ Redis helper initialization failed: {str(e)}")
+        logger.warning(f"[WARNING] Redis helper initialization failed: {str(e)}")
         logger.warning("Continuing without Redis caching...")
         _redis_helper_instance = TrendingRedisHelper(None)  # No cache mode
         return False

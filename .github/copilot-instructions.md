@@ -33,7 +33,7 @@ The system uses a **threaded async worker** pattern:
 - Main thread runs Flask app
 - Separate daemon thread runs `asyncio` event loop
 - APScheduler manages 3 jobs:
-  - `trending_intelligence_main`: Every 15 minutes
+  - `trending_intelligence_main`: Every 2 hours
   - `sample_task_test`: Every 2 minutes (debugging)
   - `cleanup_stuck_jobs`: Every 30 minutes
 

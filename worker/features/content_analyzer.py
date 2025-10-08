@@ -100,7 +100,7 @@ class ContentAnalyzer:
             return {
                 "analyzed_posts": [],
                 "aggregate_metrics": {},
-                "discord_summary": "❌ Content analysis failed",
+                "discord_summary": "[ERROR] Content analysis failed",
                 "error": str(e)
             }
 
@@ -452,7 +452,7 @@ class ContentAnalyzer:
     def _format_discord_summary(self, analyzed_posts: List[Dict], aggregate_metrics: Dict) -> str:
         """Format analysis results into Discord-ready message"""
         if not analyzed_posts or not aggregate_metrics:
-            return "❌ **Content Analysis Failed** - No data to analyze"
+            return "[ERROR] **Content Analysis Failed** - No data to analyze"
 
         # Get metrics
         total_posts = aggregate_metrics["total_posts_analyzed"]
@@ -465,7 +465,7 @@ class ContentAnalyzer:
         avg_engagement = aggregate_metrics["avg_engagement"]
 
         # Quality indicators
-        quality_emoji = "🟢" if avg_quality >= 70 else "🟡" if avg_quality >= 50 else "🔴"
+        quality_emoji = "[GREEN]" if avg_quality >= 70 else "[YELLOW]" if avg_quality >= 50 else "[RED]"
         sentiment_emoji = {"positive": "😊", "negative": "😔",
                            "neutral": "😐"}.get(dominant_sentiment, "😐")
 
@@ -473,9 +473,9 @@ class ContentAnalyzer:
         emotion_text = ", ".join(top_emotions[:3]) if top_emotions else "Mixed"
 
         # Create Discord message
-        discord_message = f"""🎯 **Content Analysis Summary**
+        discord_message = f"""[TARGET] **Content Analysis Summary**
 
-📊 **Overview:**
+[ANALYTICS] **Overview:**
 • Posts analyzed: **{total_posts}**
 • Avg Content Quality: **{avg_quality}/100** {quality_emoji}
 • Avg Readability: **{avg_readability}/100**
@@ -486,20 +486,20 @@ class ContentAnalyzer:
 • Primary Tone: **{dominant_tone.title()}**
 • Top Emotions: **{emotion_text}**
 
-📈 **Engagement Metrics:**
+[TRENDING_UP] **Engagement Metrics:**
 • Average Engagement: **{avg_engagement:.1f}** interactions per post
 • High-Quality Content: **{aggregate_metrics['readability_distribution']['high']}** posts (80+ readability)
 
-💡 **Quick Insights:**
+[IDEA] **Quick Insights:**
 """
 
         # Add insights based on analysis
         insights = []
 
         if avg_quality >= 75:
-            insights.append("✅ Strong content quality across posts")
+            insights.append("[OK] Strong content quality across posts")
         elif avg_quality < 50:
-            insights.append("⚠️ Content quality needs improvement")
+            insights.append("[WARNING] Content quality needs improvement")
 
         if avg_readability >= 80:
             insights.append("📖 Highly readable content")
@@ -514,7 +514,7 @@ class ContentAnalyzer:
             insights.append("😔 High negative sentiment detected")
 
         if avg_impact >= 70:
-            insights.append("🔥 Strong emotional impact across posts")
+            insights.append("[HOT] Strong emotional impact across posts")
 
         # Add insights to message
         for insight in insights[:4]:  # Limit to 4 insights

@@ -30,12 +30,13 @@ class TemporalAnalyticsTask:
         self.agent = TemporalAnalyticsAgent()
         self.discord_sender = DiscordWebhookSender()
 
-    async def run_temporal_analysis_workflow(self, batch_id: str = None) -> Dict:
+    async def run_temporal_analysis_workflow(self, batch_id: str = None, send_discord: bool = True) -> Dict:
         """
         Run complete temporal analytics workflow
 
         Args:
             batch_id: Optional batch identifier
+            send_discord: Whether to send Discord notifications (default True)
 
         Returns:
             Dict with workflow results and status
@@ -45,7 +46,7 @@ class TemporalAnalyticsTask:
 
         try:
             self.logger.info(
-                f"⏰ Starting temporal analytics workflow for batch {batch_id}")
+                f"[ALARM] Starting temporal analytics workflow for batch {batch_id}")
 
             # Step 1: Collect post data
             posts_data = await self._collect_temporal_data(batch_id)
@@ -56,7 +57,7 @@ class TemporalAnalyticsTask:
                 )
 
             self.logger.info(
-                f"📊 Collected {len(posts_data)} posts for temporal analysis")
+                f"[ANALYTICS] Collected {len(posts_data)} posts for temporal analysis")
 
             # Step 2: Run temporal analytics analysis
             analysis_results = await self.agent.analyze_temporal_patterns(posts_data, batch_id)
@@ -85,12 +86,12 @@ class TemporalAnalyticsTask:
                 "trend_analysis", {})
 
             self.logger.info(
-                f"✅ Temporal analytics workflow completed successfully for batch {batch_id}")
+                f"[OK] Temporal analytics workflow completed successfully for batch {batch_id}")
             return workflow_result
 
         except Exception as e:
             self.logger.error(
-                f"❌ Temporal analytics workflow failed for batch {batch_id}: {e}")
+                f"[ERROR] Temporal analytics workflow failed for batch {batch_id}: {e}")
             return self._create_workflow_result(
                 batch_id, False, f"Workflow error: {str(e)}", {}
             )
@@ -288,13 +289,13 @@ async def run_temporal_analytics_task(batch_id: str = None) -> Dict:
 # Quick test function
 async def test_temporal_analytics_task():
     """Quick test of temporal analytics task"""
-    print("🧪 Testing Temporal Analytics Task...")
+    print("[TEST] Testing Temporal Analytics Task...")
 
     task = TemporalAnalyticsTask()
     result = await task.run_temporal_analysis_workflow("test_batch")
 
-    print(f"✅ Task completed: {result['success']}")
-    print(f"📊 Posts analyzed: {result.get('posts_count', 0)}")
+    print(f"[OK] Task completed: {result['success']}")
+    print(f"[ANALYTICS] Posts analyzed: {result.get('posts_count', 0)}")
 
     if result.get('analysis_results', {}).get('discord_message'):
         print("\n📱 Discord Message Preview:")

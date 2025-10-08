@@ -196,20 +196,20 @@ class LLMModels:
 
         for provider in providers_to_try:
             try:
-                print(f"🤖 Attempting to generate response using {provider}")
+                print(f"[BOT] Attempting to generate response using {provider}")
 
                 result = None
                 if provider.lower() == "openai":
                     # Check if API key is available
                     if not self.config.openai_api_key:
-                        print(f"⚠️  OpenAI API key not configured, skipping")
+                        print(f"[WARNING]  OpenAI API key not configured, skipping")
                         continue
                     result = self.call_openai(prompt, system_prompt, **kwargs)
 
                 elif provider.lower() == "anthropic":
                     # Check if API key is available
                     if not self.config.anthropic_api_key:
-                        print(f"⚠️  Anthropic API key not configured, skipping")
+                        print(f"[WARNING]  Anthropic API key not configured, skipping")
                         continue
                     result = self.call_anthropic(
                         prompt, system_prompt, **kwargs)
@@ -217,24 +217,24 @@ class LLMModels:
                 elif provider.lower() == "google":
                     # Check if API key is available
                     if not self.config.google_api_key:
-                        print(f"⚠️  Google API key not configured, skipping")
+                        print(f"[WARNING]  Google API key not configured, skipping")
                         continue
                     result = self.call_google(prompt, system_prompt, **kwargs)
 
                 else:
-                    print(f"⚠️  Unknown provider: {provider}, skipping")
+                    print(f"[WARNING]  Unknown provider: {provider}, skipping")
                     continue
 
                 if result and result.strip():
                     print(
-                        f"✅ Successfully generated response using {provider}")
+                        f"[OK] Successfully generated response using {provider}")
                     return result
                 else:
                     print(
-                        f"❌ No response from {provider}, trying next provider")
+                        f"[ERROR] No response from {provider}, trying next provider")
 
             except Exception as e:
-                print(f"❌ Error with {provider}: {e}")
+                print(f"[ERROR] Error with {provider}: {e}")
                 # Log specific error types for debugging
                 if "rate_limit" in str(e).lower() or "quota" in str(e).lower():
                     print(f"   Rate limit/quota exceeded for {provider}")
@@ -244,7 +244,7 @@ class LLMModels:
                     print(f"   Timeout error for {provider}")
                 continue
 
-        print("❌ All LLM providers failed to generate response")
+        print("[ERROR] All LLM providers failed to generate response")
         return None
 
     def get_available_providers(self) -> dict:

@@ -139,11 +139,11 @@ class StrategicIntelligenceAgent:
             }
 
             self.logger.info(
-                f"✅ Strategic intelligence analysis completed successfully")
+                f"[OK] Strategic intelligence analysis completed successfully")
             return results
 
         except Exception as e:
-            self.logger.error(f"❌ Strategic intelligence analysis failed: {e}")
+            self.logger.error(f"[ERROR] Strategic intelligence analysis failed: {e}")
             return self._generate_error_response(batch_id, str(e))
 
     async def _classify_content_framing(self, posts: List[Dict]) -> Dict:
@@ -651,11 +651,11 @@ class StrategicIntelligenceAgent:
             "overall_strategy_assessment", "")
         if strategic_assessment:
             message_parts.append("")
-            message_parts.append(f"📊 **Assessment:** {strategic_assessment}")
+            message_parts.append(f"[ANALYTICS] **Assessment:** {strategic_assessment}")
 
         # Footer
         message_parts.append("")
-        message_parts.append(f"🎯 *Strategic Analysis: {batch_id}*")
+        message_parts.append(f"[TARGET] *Strategic Analysis: {batch_id}*")
 
         # Join and ensure Discord character limit
         full_message = "\n".join(message_parts)
@@ -682,7 +682,7 @@ class StrategicIntelligenceAgent:
             "coordination_analysis": {"groups_detected": 0, "coordination_groups": []},
             "emotional_analysis": {"consistency_level": "Unknown", "emotional_patterns": {}},
             "strategic_patterns": {"patterns_detected": 0, "strategic_patterns": []},
-            "discord_message": f"🧭 **Strategic Intelligence Summary**\n\n⚠️ **Analysis Skipped**\nReason: {reason}\n\n🎯 *{batch_id}*",
+            "discord_message": f"🧭 **Strategic Intelligence Summary**\n\n[WARNING] **Analysis Skipped**\nReason: {reason}\n\n[TARGET] *{batch_id}*",
             "error": True,
             "error_message": reason
         }
@@ -694,7 +694,7 @@ class StrategicIntelligenceAgent:
             "error": True,
             "error_message": error_message,
             "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
-            "discord_message": f"❌ **Strategic Intelligence Error**\n\nBatch: {batch_id}\nError: {error_message[:200]}\n\n🎯 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
+            "discord_message": f"[ERROR] **Strategic Intelligence Error**\n\nBatch: {batch_id}\nError: {error_message[:200]}\n\n[TARGET] *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
         }
 
 

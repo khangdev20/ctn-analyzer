@@ -57,7 +57,7 @@ class NetworkIntelligenceAgent:
                 return self._generate_empty_response(batch_id, "Insufficient network data")
 
             self.logger.info(
-                f"📊 Network data: {len(network_data['authors'])} authors, {len(network_data['hashtags'])} hashtags")
+                f"[ANALYTICS] Network data: {len(network_data['authors'])} authors, {len(network_data['hashtags'])} hashtags")
 
             # Step 2: Build hashtag co-occurrence clusters
             hashtag_clusters = await self._build_hashtag_clusters(network_data)
@@ -95,11 +95,11 @@ class NetworkIntelligenceAgent:
             }
 
             self.logger.info(
-                f"✅ Network intelligence analysis completed successfully")
+                f"[OK] Network intelligence analysis completed successfully")
             return results
 
         except Exception as e:
-            self.logger.error(f"❌ Network intelligence analysis failed: {e}")
+            self.logger.error(f"[ERROR] Network intelligence analysis failed: {e}")
             return self._generate_error_response(batch_id, str(e))
 
     def _extract_network_data(self, posts: List[Dict]) -> Dict:
@@ -159,7 +159,7 @@ class NetworkIntelligenceAgent:
 
                 # Build tag co-occurrences
                 for tag1, tag2 in combinations(clean_tags, 2):
-                    pair = tuple(sorted([tag1, tag2]))
+                    pair = "|||".join(sorted([tag1, tag2]))  # Use triple pipe separator for safety
                     tag_cooccurrences[pair] += 1
 
             except Exception as e:
@@ -194,8 +194,9 @@ class NetworkIntelligenceAgent:
                 G.add_node(hashtag, engagement=engagement)
 
             # Add co-occurrence edges with weights
-            for (tag1, tag2), cooccurrence_count in tag_cooccurrences.items():
+            for tag_pair_str, cooccurrence_count in tag_cooccurrences.items():
                 if cooccurrence_count >= self.min_tag_frequency:
+                    tag1, tag2 = tag_pair_str.split("|||")  # Split triple pipe separator back to individual tags
                     G.add_edge(tag1, tag2, weight=cooccurrence_count)
 
             # Find communities using modularity-based clustering
@@ -213,7 +214,7 @@ class NetworkIntelligenceAgent:
                         # Find strongest internal connections
                         internal_connections = []
                         for tag1, tag2 in combinations(cluster_tags, 2):
-                            pair = tuple(sorted([tag1, tag2]))
+                            pair = "|||".join(sorted([tag1, tag2]))  # Use triple pipe separator for safety
                             if pair in tag_cooccurrences:
                                 internal_connections.append({
                                     "tags": [tag1, tag2],
@@ -699,7 +700,7 @@ class NetworkIntelligenceAgent:
 
         total_connections = tag_connectivity.get("total_connections", 0)
         if total_connections > 0:
-            insights.append(f"📊 {total_connections} tag connections detected")
+            insights.append(f"[ANALYTICS] {total_connections} tag connections detected")
 
         if len(communities) > 1:
             insights.append(
@@ -749,7 +750,7 @@ class NetworkIntelligenceAgent:
             "author_communities": {"communities": [], "influencers": [], "community_count": 0},
             "tag_connectivity": {"connectivity_index": 0, "most_connected_tags": [], "network_density": 0},
             "cross_influence": {"most_influential_tag": None, "bridge_tags": [], "influence_scores": {}},
-            "discord_message": f"🌐 **Network Intelligence Report**\n\n⚠️ **Analysis Skipped**\nReason: {reason}\n\n📅 *{batch_id}*",
+            "discord_message": f"🌐 **Network Intelligence Report**\n\n[WARNING] **Analysis Skipped**\nReason: {reason}\n\n📅 *{batch_id}*",
             "error": True,
             "error_message": reason
         }
@@ -761,7 +762,7 @@ class NetworkIntelligenceAgent:
             "error": True,
             "error_message": error_message,
             "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
-            "discord_message": f"❌ **Network Intelligence Error**\n\nBatch: {batch_id}\nError: {error_message[:200]}\n\n📅 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
+            "discord_message": f"[ERROR] **Network Intelligence Error**\n\nBatch: {batch_id}\nError: {error_message[:200]}\n\n📅 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
         }
 
 

@@ -61,7 +61,7 @@ class UnifiedDiscordReporter:
         """Add result from an individual engine"""
         self.engine_results.append(result)
         logger.debug(
-            f"📝 Added result from {result.engine_name}: {result.status}")
+            f"[NOTE] Added result from {result.engine_name}: {result.status}")
 
     def add_engine_result_dict(self, engine_name: str, result_data: Dict):
         """Add engine result from dictionary format"""
@@ -232,10 +232,10 @@ class UnifiedDiscordReporter:
 
             if success:
                 logger.info(
-                    f"✅ Unified Discord report sent successfully for batch {self.batch_id}")
+                    f"[OK] Unified Discord report sent successfully for batch {self.batch_id}")
             else:
                 logger.error(
-                    f"❌ Failed to send unified Discord report for batch {self.batch_id}")
+                    f"[ERROR] Failed to send unified Discord report for batch {self.batch_id}")
 
             return success
 
@@ -251,10 +251,10 @@ class UnifiedDiscordReporter:
 
         # Status emoji and colors
         status_config = {
-            "success": {"emoji": "✅", "color": 0x00ff00, "title_suffix": "All Systems Operational"},
-            "warning": {"emoji": "⚠️", "color": 0xff9900, "title_suffix": "Minor Issues Detected"},
+            "success": {"emoji": "[OK]", "color": 0x00ff00, "title_suffix": "All Systems Operational"},
+            "warning": {"emoji": "[WARNING]", "color": 0xff9900, "title_suffix": "Minor Issues Detected"},
             "partial": {"emoji": "🔶", "color": 0xff6600, "title_suffix": "Partial Success"},
-            "error": {"emoji": "❌", "color": 0xff0000, "title_suffix": "Critical Issues"}
+            "error": {"emoji": "[ERROR]", "color": 0xff0000, "title_suffix": "Critical Issues"}
         }
 
         config = status_config.get(overall_status, status_config["warning"])
@@ -274,11 +274,11 @@ class UnifiedDiscordReporter:
         # 1. Engine Status Overview
         engine_status_value = ""
         for result in report["engine_results"]:
-            status_emoji = "✅" if result.status == "success" else "❌" if result.status == "error" else "⚠️"
+            status_emoji = "[OK]" if result.status == "success" else "[ERROR]" if result.status == "error" else "[WARNING]"
             engine_status_value += f"{status_emoji} **{result.engine_name}** ({result.execution_time:.1f}s)\n"
 
         fields.append({
-            "name": "🔧 Engine Status",
+            "name": "[TOOLS] Engine Status",
             "value": engine_status_value[:1024] if engine_status_value else "No engines executed",
             "inline": True
         })
@@ -291,7 +291,7 @@ class UnifiedDiscordReporter:
                 metrics_value += f"**{metric.title()}**: {data['avg']:.1f} (avg)\n"
 
             fields.append({
-                "name": "📊 Key Metrics",
+                "name": "[ANALYTICS] Key Metrics",
                 "value": metrics_value or "No metrics available",
                 "inline": True
             })
@@ -305,7 +305,7 @@ class UnifiedDiscordReporter:
                     insight) > 100 else f"{i}. {insight}\n"
 
             fields.append({
-                "name": "💡 Key Insights",
+                "name": "[IDEA] Key Insights",
                 "value": insights_value[:1024],
                 "inline": False
             })
@@ -319,7 +319,7 @@ class UnifiedDiscordReporter:
                     rec) > 100 else f"{i}. {rec}\n"
 
             fields.append({
-                "name": "🎯 Recommendations",
+                "name": "[TARGET] Recommendations",
                 "value": recs_value[:1024],
                 "inline": False
             })
@@ -333,7 +333,7 @@ class UnifiedDiscordReporter:
 
             if error_details:
                 fields.append({
-                    "name": "❌ Error Details",
+                    "name": "[ERROR] Error Details",
                     "value": error_details[:1024],
                     "inline": False
                 })
@@ -383,7 +383,7 @@ async def add_engine_result(engine_name: str, result_data: Dict):
     """Convenience function to add engine result to unified reporter"""
     reporter = get_unified_reporter()
     reporter.add_engine_result_dict(engine_name, result_data)
-    logger.debug(f"📝 Added {engine_name} result to unified reporter")
+    logger.debug(f"[NOTE] Added {engine_name} result to unified reporter")
 
 
 async def send_unified_report(batch_id: str = None) -> bool:
@@ -406,7 +406,7 @@ async def clear_reporter():
 if __name__ == "__main__":
     # Test unified reporter
     async def test_unified_reporter():
-        print("🧪 Testing Unified Discord Reporter...")
+        print("[TEST] Testing Unified Discord Reporter...")
 
         reporter = UnifiedDiscordReporter()
 
@@ -460,6 +460,6 @@ if __name__ == "__main__":
         embed_data = await reporter._create_discord_embed(report)
         print(f"Discord embed created: {embed_data['title']}")
 
-        print("✅ Unified reporter test completed!")
+        print("[OK] Unified reporter test completed!")
 
     asyncio.run(test_unified_reporter())

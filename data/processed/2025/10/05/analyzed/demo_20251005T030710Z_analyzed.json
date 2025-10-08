@@ -77,7 +77,7 @@
     },
     {
       "title": "CALENDAR_FRIDAY",
-      "description": "Friday strategy: \"Struggling to stay productive? Try the Pomodoro Technique! ⏳ Work for 25 mins, break for 5. Repeat 4...\" | Focus: engagement | Times: 02:00, 01:00",
+      "description": "Friday strategy: \"Struggling to stay productive? Try the Pomodoro Technique! [WAITING] Work for 25 mins, break for 5. Repeat 4...\" | Focus: engagement | Times: 02:00, 01:00",
       "category": "content_calendar",
       "priority": 80,
       "actionable": true,
@@ -260,7 +260,7 @@
   "posts": [
     {
       "id": "tweet_001",
-      "content": "🚨 BREAKING: Major policy announcement sends shockwaves through political landscape! What are your thoughts on the implications? #votehawthorne #election2025 #politics #breaking",
+      "content": "[ALERT] BREAKING: Major policy announcement sends shockwaves through political landscape! What are your thoughts on the implications? #votehawthorne #election2025 #politics #breaking",
       "author": {
         "id": null,
         "username": "politicalinsider",
@@ -408,7 +408,7 @@
     },
     {
       "id": "tweet_004",
-      "content": "📊 Data visualization shows clear patterns in voter behavior across demographics. Young voters (18-29) showing highest engagement rates in decades! #voterdata #youth #engagement #statistics",
+      "content": "[ANALYTICS] Data visualization shows clear patterns in voter behavior across demographics. Young voters (18-29) showing highest engagement rates in decades! #voterdata #youth #engagement #statistics",
       "author": {
         "id": null,
         "username": "dataviz_pro",
@@ -458,7 +458,7 @@
     },
     {
       "id": "tweet_005",
-      "content": "💡 Innovation in grassroots organizing: How technology is revolutionizing political campaigns. From AI-powered outreach to blockchain voting systems. The future is here! #innovation #campaign #technology #future",
+      "content": "[IDEA] Innovation in grassroots organizing: How technology is revolutionizing political campaigns. From AI-powered outreach to blockchain voting systems. The future is here! #innovation #campaign #technology #future",
       "author": {
         "id": null,
         "username": "techpolitics",
@@ -508,7 +508,7 @@
     },
     {
       "id": "tweet_006",
-      "content": "🔥 HOT TAKE: Social media algorithms are reshaping political discourse in ways we never anticipated. Are we ready for the implications? Thread 🧵 #algorithms #socialmedia #politics #discourse",
+      "content": "[HOT] HOT TAKE: Social media algorithms are reshaping political discourse in ways we never anticipated. Are we ready for the implications? Thread 🧵 #algorithms #socialmedia #politics #discourse",
       "author": {
         "id": null,
         "username": "digitalethics",

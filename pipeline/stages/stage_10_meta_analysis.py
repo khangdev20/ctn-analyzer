@@ -31,14 +31,14 @@ class MetaAnalysisStage:
 
     async def execute(self, batch_id: str, learning_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute meta analysis stage"""
-        logger.info("📊 Stage 10: Generating weekly strategic insights and content calendar...")
+        logger.info("[ANALYTICS] Stage 10: Generating weekly strategic insights and content calendar...")
         
         try:
             # Collect weekly data from multiple pipeline stages
             weekly_data = await self._collect_weekly_data(batch_id)
             
             if not weekly_data:
-                logger.warning("📊 No weekly data found - generating baseline analysis")
+                logger.warning("[ANALYTICS] No weekly data found - generating baseline analysis")
                 return await self._create_baseline_analysis(batch_id)
             
             # Generate comprehensive weekly analysis
@@ -77,8 +77,8 @@ class MetaAnalysisStage:
             # Generate executive summary
             summary = self._generate_summary(meta_analysis, batch_id)
             
-            logger.info(f"✅ Stage 10 completed: Weekly meta analysis generated")
-            logger.info(f"📈 Analyzed {len(weekly_data.get('all_posts', []))} posts across {self.analysis_window_days} days")
+            logger.info(f"[OK] Stage 10 completed: Weekly meta analysis generated")
+            logger.info(f"[TRENDING_UP] Analyzed {len(weekly_data.get('all_posts', []))} posts across {self.analysis_window_days} days")
             
             return {
                 **summary,
@@ -87,7 +87,7 @@ class MetaAnalysisStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 10 error: {e}")
+            logger.error(f"[ERROR] Stage 10 error: {e}")
             return None
 
     async def _collect_weekly_data(self, current_batch_id: str) -> Dict:
@@ -133,7 +133,7 @@ class MetaAnalysisStage:
             ]
             weekly_data["trending_posts"] = trending_posts
             
-            logger.info(f"📊 Collected {len(unique_posts)} unique posts ({len(trending_posts)} trending)")
+            logger.info(f"[ANALYTICS] Collected {len(unique_posts)} unique posts ({len(trending_posts)} trending)")
             return weekly_data
             
         except Exception as e:

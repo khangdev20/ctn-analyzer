@@ -30,12 +30,13 @@ class StrategicIntelligenceTask:
         self.agent = StrategicIntelligenceAgent()
         self.discord_sender = DiscordWebhookSender()
 
-    async def run_strategic_analysis_workflow(self, batch_id: str = None) -> Dict:
+    async def run_strategic_analysis_workflow(self, batch_id: str = None, send_discord: bool = True) -> Dict:
         """
         Run complete strategic intelligence workflow
 
         Args:
             batch_id: Optional batch identifier
+            send_discord: Whether to send Discord notifications (default True)
 
         Returns:
             Dict with workflow results and status
@@ -56,7 +57,7 @@ class StrategicIntelligenceTask:
                 )
 
             self.logger.info(
-                f"📊 Collected {len(posts_data)} posts for strategic analysis")
+                f"[ANALYTICS] Collected {len(posts_data)} posts for strategic analysis")
 
             # Step 2: Run strategic intelligence analysis
             analysis_results = await self.agent.analyze_strategic_patterns(posts_data, batch_id)
@@ -85,12 +86,12 @@ class StrategicIntelligenceTask:
                 "coordination_analysis", {}).get("groups_detected", 0) > 0
 
             self.logger.info(
-                f"✅ Strategic intelligence workflow completed successfully for batch {batch_id}")
+                f"[OK] Strategic intelligence workflow completed successfully for batch {batch_id}")
             return workflow_result
 
         except Exception as e:
             self.logger.error(
-                f"❌ Strategic intelligence workflow failed for batch {batch_id}: {e}")
+                f"[ERROR] Strategic intelligence workflow failed for batch {batch_id}: {e}")
             return self._create_workflow_result(
                 batch_id, False, f"Workflow error: {str(e)}", {}
             )
@@ -283,13 +284,13 @@ async def run_strategic_intelligence_task(batch_id: str = None) -> Dict:
 # Quick test function
 async def test_strategic_intelligence_task():
     """Quick test of strategic intelligence task"""
-    print("🧪 Testing Strategic Intelligence Task...")
+    print("[TEST] Testing Strategic Intelligence Task...")
 
     task = StrategicIntelligenceTask()
     result = await task.run_strategic_analysis_workflow("test_strategic_batch")
 
-    print(f"✅ Task completed: {result['success']}")
-    print(f"📊 Posts analyzed: {result.get('posts_count', 0)}")
+    print(f"[OK] Task completed: {result['success']}")
+    print(f"[ANALYTICS] Posts analyzed: {result.get('posts_count', 0)}")
 
     if result.get('analysis_results', {}).get('discord_message'):
         print("\n📱 Discord Message Preview:")

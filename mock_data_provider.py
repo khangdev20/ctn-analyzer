@@ -258,11 +258,11 @@ class MockDataProvider:
 
         # High-potential trending content templates
         trending_templates = [
-            "🚨 BREAKING: {} just announced revolutionary changes! This could affect millions #{}",
+            "[ALERT] BREAKING: {} just announced revolutionary changes! This could affect millions #{}",
             "VIRAL: {} story is spreading like wildfire across social media #{}",
-            "🔥 HOT TAKE: Why {} is about to explode in popularity #{}",
+            "[HOT] HOT TAKE: Why {} is about to explode in popularity #{}",
             "EXCLUSIVE: Inside sources reveal {} will transform everything #{}",
-            "⚡ URGENT: {} development could change the game forever #{}",
+            "[FAST] URGENT: {} development could change the game forever #{}",
             "MASSIVE: {} reaches unprecedented milestone today #{}",
             "SHOCKING: {} reveals surprising truth about {} #{}",
             "MUST READ: {} expert drops truth bombs about {} #{}"
@@ -338,7 +338,7 @@ class MockDataProvider:
                     'reach': random.randint(100, 50000)
                 },
                 'trending_factors': {
-                    'viral_keywords': content.count('🚨') + content.count('🔥') + content.count('⚡'),
+                    'viral_keywords': content.count('[ALERT]') + content.count('[HOT]') + content.count('[FAST]'),
                     'urgency_indicators': content.count('BREAKING') + content.count('URGENT') + content.count('EXCLUSIVE'),
                     'emotional_triggers': content.count('SHOCKING') + content.count('VIRAL') + content.count('MASSIVE'),
                     'engagement_signals': author["influence"] * 100

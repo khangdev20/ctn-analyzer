@@ -57,33 +57,33 @@ class NetworkIntelligenceTask:
 
         try:
             # Step 1: Collect current data snapshot
-            logger.info("📊 Step 1: Collecting social media data...")
+            logger.info("[ANALYTICS] Step 1: Collecting social media data...")
             current_data = await self._collect_network_data()
 
             if not current_data or not current_data.get("posts"):
-                logger.warning("⚠️ No data available for network analysis")
+                logger.warning("[WARNING] No data available for network analysis")
                 return self._generate_no_data_response(batch_id)
 
             posts = current_data["posts"]
-            logger.info(f"📊 Collected {len(posts)} posts for network analysis")
+            logger.info(f"[ANALYTICS] Collected {len(posts)} posts for network analysis")
 
             # Step 2: Run network intelligence analysis
-            logger.info("🧠 Step 2: Running network intelligence analysis...")
+            logger.info("[AI] Step 2: Running network intelligence analysis...")
             analysis_results = await self.agent.analyze_network_intelligence(posts, batch_id)
 
             if analysis_results.get("error"):
                 logger.error(
-                    f"❌ Network analysis failed: {analysis_results.get('error_message')}")
+                    f"[ERROR] Network analysis failed: {analysis_results.get('error_message')}")
                 return analysis_results
 
             # Step 3: Save results if requested
             if save_results:
-                logger.info("💾 Step 3: Saving network analysis results...")
+                logger.info("[SAVE] Step 3: Saving network analysis results...")
                 await self._save_analysis_results(analysis_results, batch_id)
 
             # Step 4: Send Discord notification if requested
             if send_discord:
-                logger.info("📢 Step 4: Sending Discord notification...")
+                logger.info("[ANNOUNCE] Step 4: Sending Discord notification...")
                 discord_success = await self._send_discord_notification(analysis_results)
                 analysis_results["discord_sent"] = discord_success
 
@@ -92,7 +92,7 @@ class NetworkIntelligenceTask:
                 analysis_results)
 
             logger.info(
-                f"✅ Network intelligence workflow completed successfully")
+                f"[OK] Network intelligence workflow completed successfully")
             logger.info(f"🌐 Summary: {execution_summary['summary_text']}")
 
             return {
@@ -102,7 +102,7 @@ class NetworkIntelligenceTask:
             }
 
         except Exception as e:
-            logger.error(f"❌ Network intelligence workflow failed: {e}")
+            logger.error(f"[ERROR] Network intelligence workflow failed: {e}")
             error_response = {
                 "batch_id": batch_id,
                 "workflow_status": "error",
@@ -174,7 +174,7 @@ class NetworkIntelligenceTask:
                             recent_data = json.load(f)
 
                         logger.info(
-                            f"📊 Using recent processed data: {latest_file}")
+                            f"[ANALYTICS] Using recent processed data: {latest_file}")
                         return recent_data
 
             return None
@@ -195,7 +195,7 @@ class NetworkIntelligenceTask:
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(results, f, ensure_ascii=False, indent=2)
 
-            logger.info(f"💾 Network results saved to: {filepath}")
+            logger.info(f"[SAVE] Network results saved to: {filepath}")
             return filepath
 
         except Exception as e:
@@ -213,9 +213,9 @@ class NetworkIntelligenceTask:
             success = await self.discord_sender.send_message(discord_message)
 
             if success:
-                logger.info("📢 Discord notification sent successfully")
+                logger.info("[ANNOUNCE] Discord notification sent successfully")
             else:
-                logger.warning("⚠️ Discord notification failed to send")
+                logger.warning("[WARNING] Discord notification failed to send")
 
             return success
 
@@ -226,10 +226,10 @@ class NetworkIntelligenceTask:
     async def _send_error_notification(self, batch_id: str, error_message: str):
         """Send error notification to Discord"""
         try:
-            error_msg = f"❌ **Network Intelligence Error**\n\n"
+            error_msg = f"[ERROR] **Network Intelligence Error**\n\n"
             error_msg += f"**Batch:** {batch_id}\n"
             error_msg += f"**Error:** {error_message[:500]}\n\n"
-            error_msg += f"📅 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
+            error_msg += f"[TIMER] *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
 
             await self.discord_sender.send_message(error_msg)
 
@@ -266,17 +266,17 @@ class NetworkIntelligenceTask:
             "error": True,
             "error_message": "No data available for network analysis",
             "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
-            "discord_message": f"⚠️ **Network Analysis Skipped**\n\nReason: No data available\n\n📅 *{batch_id}*"
+            "discord_message": f"[WARNING] **Network Analysis Skipped**\n\nReason: No data available\n\n[TIMER] *{batch_id}*"
         }
 
     async def quick_network_check(self) -> str:
         """Quick network check for real-time monitoring"""
         try:
-            logger.info("⚡ Running quick network check...")
+            logger.info("[FAST] Running quick network check...")
 
             current_data = await self._collect_network_data()
             if not current_data:
-                return "⚠️ **Quick Network Check Failed** - No data available"
+                return "[WARNING] **Quick Network Check Failed** - No data available"
 
             posts = current_data.get("posts", [])
             if not posts:
@@ -315,16 +315,16 @@ class NetworkIntelligenceTask:
             top_author = max(author_post_counts.items(
             ), key=lambda x: x[1]) if author_post_counts else ("unknown", 0)
 
-            message = f"⚡ **Quick Network Check**\n"
+            message = f"[FAST] **Quick Network Check**\n"
             message += f"👥 **{len(authors)} authors** | 🏷️ **{len(hashtags)} hashtags**\n"
-            message += f"📊 **{len(posts)} posts** analyzed\n"
-            message += f"🏆 Most active: @{top_author[0]} ({top_author[1]} posts)"
+            message += f"[ANALYTICS] **{len(posts)} posts** analyzed\n"
+            message += f"[WINNER] Most active: @{top_author[0]} ({top_author[1]} posts)"
 
             return message
 
         except Exception as e:
             logger.error(f"Quick network check failed: {e}")
-            return f"❌ **Quick Network Check Error:** {str(e)[:100]}"
+            return f"[ERROR] **Quick Network Check Error:** {str(e)[:100]}"
 
 
 # Utility function for standalone task execution

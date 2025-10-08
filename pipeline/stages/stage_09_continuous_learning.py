@@ -30,14 +30,14 @@ class ContinuousLearningStage:
 
     async def execute(self, batch_id: str, report_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute continuous learning stage"""
-        logger.info("🧠 Stage 9: Refining prediction model with continuous learning...")
+        logger.info("[AI] Stage 9: Refining prediction model with continuous learning...")
         
         try:
             # Load historical data for comparison
             historical_data = await self._load_historical_data(batch_id)
             
             if not historical_data or len(historical_data) < self.min_samples_for_learning:
-                logger.info("📊 Insufficient historical data for learning - returning baseline weights")
+                logger.info("[ANALYTICS] Insufficient historical data for learning - returning baseline weights")
                 return await self._create_baseline_weights(batch_id)
             
             # Evaluate prediction accuracy
@@ -70,8 +70,8 @@ class ContinuousLearningStage:
             # Generate summary
             summary = self._generate_summary(weight_config, batch_id)
             
-            logger.info(f"✅ Stage 9 completed: Model weights updated based on {len(historical_data)} samples")
-            logger.info(f"🎯 Prediction accuracy: {accuracy_analysis.get('overall_accuracy', 0):.1%}")
+            logger.info(f"[OK] Stage 9 completed: Model weights updated based on {len(historical_data)} samples")
+            logger.info(f"[TARGET] Prediction accuracy: {accuracy_analysis.get('overall_accuracy', 0):.1%}")
             
             return {
                 **summary,
@@ -80,7 +80,7 @@ class ContinuousLearningStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 9 error: {e}")
+            logger.error(f"[ERROR] Stage 9 error: {e}")
             return None
 
     async def _load_historical_data(self, current_batch_id: str) -> List[Dict]:
@@ -120,7 +120,7 @@ class ContinuousLearningStage:
                             logger.warning(f"Failed to load {file_path}: {e}")
                             continue
             
-            logger.info(f"📊 Loaded {len(historical_posts)} historical predictions for learning")
+            logger.info(f"[ANALYTICS] Loaded {len(historical_posts)} historical predictions for learning")
             return historical_posts
             
         except Exception as e:

@@ -31,13 +31,14 @@ class ContentAnalysisTask:
         now = datetime.now(timezone.utc)
         return f"content_analysis_{now.strftime('%Y%m%dT%H%MZ')}"
     
-    async def run_content_analysis_workflow(self, data_source: str = "api", num_posts: int = 25) -> Dict:
+    async def run_content_analysis_workflow(self, data_source: str = "api", num_posts: int = 25, send_discord: bool = True) -> Dict:
         """
         Run complete content analysis workflow with Discord reporting
         
         Args:
             data_source: "api" for real data, "mock" for test data
             num_posts: Number of posts to analyze (default 25)
+            send_discord: Whether to send Discord notifications (default True)
             
         Returns:
             Dictionary with analysis results and Discord message status
@@ -75,13 +76,16 @@ class ContentAnalysisTask:
                     "batch_id": self.batch_id
                 }
             
-            # Step 3: Generate Discord Report
-            logger.info("[STEP3] Generating Discord-ready content report...")
-            discord_report = await self.prompt_handler.generate_content_analysis_discord_report(posts_data)
-            
-            # Step 4: Send to Discord
-            logger.info("[STEP4] Sending report to Discord...")
-            discord_success = await self._send_discord_report(discord_report)
+            # Step 3 & 4: Discord Reporting (conditional)
+            discord_success = False
+            if send_discord:
+                logger.info("[STEP3] Generating Discord-ready content report...")
+                discord_report = await self.prompt_handler.generate_content_analysis_discord_report(posts_data)
+                
+                logger.info("[STEP4] Sending report to Discord...")
+                discord_success = await self._send_discord_report(discord_report)
+            else:
+                logger.info("[STEP3-4] Skipping Discord reporting (send_discord=False)")
             
             # Step 5: Save Results
             await self._save_analysis_results(analysis_results, posts_data)
@@ -170,7 +174,7 @@ class ContentAnalysisTask:
                 discord_report = discord_report[:1800] + "...\n*[Report truncated]*"
             
             # Add header to identify this as a content analysis report
-            enhanced_report = f"""🤖 **AI Content Analysis Report**
+            enhanced_report = f"""[BOT] **AI Content Analysis Report**
 
 {discord_report}
 

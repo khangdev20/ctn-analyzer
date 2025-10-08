@@ -122,7 +122,7 @@ def register_api_routes(app):
             "total_tasks_run": _worker.task_count if _worker else 0,
             "heartbeat_count": _worker.heartbeat_count if _worker else 0,
             "last_heartbeat": _worker.last_heartbeat.isoformat() if (_worker and _worker.last_heartbeat) else None,
-            "heartbeat_message": f"🔴 Worker heartbeat at {now.strftime('%H:%M:%S UTC')}"
+            "heartbeat_message": f"[RED] Worker heartbeat at {now.strftime('%H:%M:%S UTC')}"
         }
 
         # Add uptime if worker is running
@@ -489,12 +489,12 @@ def register_api_routes(app):
                 "discord_message": "Emoji-rich Discord report format"
             },
             "sample_discord_output": [
-                "📊 **Engagement Growth Report**",
+                "[ANALYTICS] **Engagement Growth Report**",
                 "• Avg Growth Velocity: +0.73 /min",
-                "🚀 **Top 5 Fastest Posts:**",
-                "   1️⃣ @user1 — +1.2/min (+45 likes, +20 replies)",
-                "📈 **Engagement Composition:**",
-                "   ❤️ Likes 62% | 💬 Replies 25% | 🔁 Reposts 13%"
+                "[LAUNCH] **Top 5 Fastest Posts:**",
+                "   [1] @user1 — +1.2/min (+45 likes, +20 replies)",
+                "[TRENDING_UP] **Engagement Composition:**",
+                "   [HEART] Likes 62% | [CHAT] Replies 25% | [REPOST] Reposts 13%"
             ],
             "usage": {
                 "curl_example": 'curl -X POST http://localhost:5000/trigger-engagement-analysis -H "Content-Type: application/json" -d \'{"send_discord": true, "save_results": true}\''

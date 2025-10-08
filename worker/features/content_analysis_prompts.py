@@ -43,7 +43,7 @@ Focus on:
 5. Overall engagement potential
 
 Always format your response as a Discord message with:
-- Emoji headers (🎯, 📈, 💬, 📊, 💡)
+- Emoji headers ([TARGET], [TRENDING_UP], [CHAT], [ANALYTICS], [IDEA])
 - Bullet points with key metrics
 - Clear, actionable insights
 - Professional but engaging tone"""
@@ -53,7 +53,7 @@ Always format your response as a Discord message with:
 {posts_summary}
 
 Format:
-🎯 **Content Analysis Summary**
+[TARGET] **Content Analysis Summary**
 • Posts analyzed: [number]
 • Avg Readability: [score/100]
 • Dominant Tone: [tone]
@@ -127,12 +127,12 @@ Length: {post.get('word_count', 0)} words"""
         
         timestamp = datetime.now(timezone.utc).strftime('%H:%M UTC')
         
-        return f"""🎯 **Content Analysis Summary**
+        return f"""[TARGET] **Content Analysis Summary**
 • Posts analyzed: **{total_posts}**
 • Avg Engagement: **{avg_engagement:.1f}**
 • Top Hashtags: {', '.join(top_tags)}
 
-💡 **Quick Insights:**
+[IDEA] **Quick Insights:**
 • Content variety detected
 • Mixed engagement patterns
 • Monitor trends for optimization

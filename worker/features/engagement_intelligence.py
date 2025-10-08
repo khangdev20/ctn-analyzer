@@ -46,13 +46,13 @@ class EngagementIntelligenceAgent:
             Dict with growth analysis and Discord-formatted results
         """
         try:
-            self.logger.info(f"🚀 Starting engagement intelligence analysis for batch {batch_id}")
+            self.logger.info(f"[LAUNCH] Starting engagement intelligence analysis for batch {batch_id}")
             
             # Step 1: Extract and validate posts data
             prev_posts = self._extract_posts_data(previous_batch)
             curr_posts = self._extract_posts_data(current_batch)
             
-            self.logger.info(f"📊 Data snapshot: {len(prev_posts)} previous posts, {len(curr_posts)} current posts")
+            self.logger.info(f"[ANALYTICS] Data snapshot: {len(prev_posts)} previous posts, {len(curr_posts)} current posts")
             
             # Step 2: Compute engagement deltas and velocities
             growth_analysis = await self._compute_engagement_deltas(prev_posts, curr_posts)
@@ -94,11 +94,11 @@ class EngagementIntelligenceAgent:
                 "detailed_analysis": acceleration_data
             }
             
-            self.logger.info(f"✅ Engagement intelligence analysis completed successfully")
+            self.logger.info(f"[OK] Engagement intelligence analysis completed successfully")
             return results
             
         except Exception as e:
-            self.logger.error(f"❌ Engagement intelligence analysis failed: {e}")
+            self.logger.error(f"[ERROR] Engagement intelligence analysis failed: {e}")
             return self._generate_error_response(batch_id, str(e))
 
     def _extract_posts_data(self, batch_data: Dict) -> Dict[str, Dict]:
@@ -324,7 +324,7 @@ class EngagementIntelligenceAgent:
         message_parts = []
         
         # Header
-        message_parts.append("📊 **Engagement Growth Report**")
+        message_parts.append("[ANALYTICS] **Engagement Growth Report**")
         message_parts.append("")
         
         # Summary metrics
@@ -334,9 +334,9 @@ class EngagementIntelligenceAgent:
         
         # Top performers
         if top_performers:
-            message_parts.append("🚀 **Top 5 Fastest Posts:**")
+            message_parts.append("[LAUNCH] **Top 5 Fastest Posts:**")
             
-            rank_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+            rank_emojis = ["[1]", "[2]", "[3]", "[4]", "[5]"]
             
             for performer in top_performers[:5]:
                 rank_emoji = rank_emojis[performer["rank"] - 1]
@@ -367,14 +367,14 @@ class EngagementIntelligenceAgent:
         replies_pct = composition.get("replies_percent", 0) 
         reposts_pct = composition.get("reposts_percent", 0)
         
-        message_parts.append("📈 **Engagement Composition:**")
-        message_parts.append(f"   ❤️ Likes {likes_pct}% | 💬 Replies {replies_pct}% | 🔁 Reposts {reposts_pct}%")
+        message_parts.append("[TRENDING_UP] **Engagement Composition:**")
+        message_parts.append(f"   ❤️ Likes {likes_pct}% | [CHAT] Replies {replies_pct}% | 🔁 Reposts {reposts_pct}%")
         message_parts.append("")
         
         # Additional insights
         if acceleration_data.get("posts_with_acceleration", 0) > 0:
             accel_count = acceleration_data["posts_with_acceleration"]
-            message_parts.append(f"⚡ **{accel_count} posts showing acceleration**")
+            message_parts.append(f"[FAST] **{accel_count} posts showing acceleration**")
         
         # Footer
         message_parts.append(f"📅 *Analysis: {batch_id}*")
@@ -431,7 +431,7 @@ class EngagementIntelligenceAgent:
             "error": True,
             "error_message": error_message,
             "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
-            "discord_message": f"❌ **Engagement Analysis Failed**\n\nError: {error_message}\n\n📅 *Batch: {batch_id}*",
+            "discord_message": f"[ERROR] **Engagement Analysis Failed**\n\nError: {error_message}\n\n📅 *Batch: {batch_id}*",
             "growth_summary": {
                 "avg_velocity_per_min": 0,
                 "avg_acceleration": 0,
@@ -454,9 +454,9 @@ class EngagementIntelligenceAgent:
             posts_growing = growth_data.get("posts_with_growth", 0)
             total_posts = len(growth_data.get("posts", []))
             
-            message = f"⚡ **Quick Engagement Update**\n"
-            message += f"📊 Avg Velocity: +{velocity:.2f}/min\n"
-            message += f"📈 Growing Posts: {posts_growing}/{total_posts}\n"
+            message = f"[FAST] **Quick Engagement Update**\n"
+            message += f"[ANALYTICS] Avg Velocity: +{velocity:.2f}/min\n"
+            message += f"[TRENDING_UP] Growing Posts: {posts_growing}/{total_posts}\n"
             
             # Add top performer if available
             posts = growth_data.get("posts", [])
@@ -466,13 +466,13 @@ class EngagementIntelligenceAgent:
                 top_author = top_post.get("author", {}).get("username", "unknown")
                 
                 if top_velocity > 0:
-                    message += f"🚀 Fastest: @{top_author} (+{top_velocity:.1f}/min)"
+                    message += f"[LAUNCH] Fastest: @{top_author} (+{top_velocity:.1f}/min)"
             
             return message
             
         except Exception as e:
             self.logger.error(f"Failed to format quick update: {e}")
-            return "⚡ **Engagement Update** - Analysis in progress..."
+            return "[FAST] **Engagement Update** - Analysis in progress..."
 
 
 # Utility function for standalone usage

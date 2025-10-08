@@ -93,7 +93,7 @@ class MetaTrendIntelligenceTask:
             # Step 1: Validate analysis timing (should run weekly)
             if not await self._should_run_weekly_analysis():
                 logger.info(
-                    "⏭️ Weekly analysis already completed recently, skipping...")
+                    "[NEXT] Weekly analysis already completed recently, skipping...")
                 return {
                     'status': 'skipped',
                     'batch_id': batch_id,
@@ -113,7 +113,7 @@ class MetaTrendIntelligenceTask:
                 }
 
             logger.info(
-                f"📊 Completed weekly analysis of {intelligence_results.get('total_posts', 0)} posts")
+                f"[ANALYTICS] Completed weekly analysis of {intelligence_results.get('total_posts', 0)} posts")
 
             # Step 3: Save comprehensive weekly analysis results
             await self._save_weekly_analysis_results(intelligence_results, batch_id)
@@ -145,12 +145,12 @@ class MetaTrendIntelligenceTask:
             }
 
             logger.info(
-                f"✅ Weekly meta-trend intelligence workflow completed successfully")
+                f"[OK] Weekly meta-trend intelligence workflow completed successfully")
             return workflow_results
 
         except Exception as e:
             logger.error(
-                f"❌ Error in weekly meta-trend intelligence workflow: {str(e)}")
+                f"[ERROR] Error in weekly meta-trend intelligence workflow: {str(e)}")
             return {
                 'status': 'error',
                 'batch_id': batch_id,
@@ -252,10 +252,10 @@ class MetaTrendIntelligenceTask:
                 json.dump(weekly_summary, f, indent=2,
                           ensure_ascii=False, default=str)
 
-            logger.info(f"💾 Weekly analysis results saved to {week_dir}")
+            logger.info(f"[SAVE] Weekly analysis results saved to {week_dir}")
 
         except Exception as e:
-            logger.error(f"❌ Error saving weekly analysis results: {str(e)}")
+            logger.error(f"[ERROR] Error saving weekly analysis results: {str(e)}")
 
     async def _generate_strategic_recommendations(self, analysis_results: Dict) -> Dict:
         """Generate strategic recommendations based on weekly analysis."""
@@ -279,14 +279,14 @@ class MetaTrendIntelligenceTask:
 
                 if viral_rate / total_posts < 0.1:  # Less than 10% viral rate
                     recommendations['content_strategy'].append(
-                        "📈 Increase viral content production - current viral rate below optimal threshold"
+                        "[TRENDING_UP] Increase viral content production - current viral rate below optimal threshold"
                     )
 
                 avg_engagement = performance_metrics.get(
                     'avg_engagement_score', 0)
                 if avg_engagement < 60:
                     recommendations['content_strategy'].append(
-                        "🎯 Focus on engagement optimization - current average below performance target"
+                        "[TARGET] Focus on engagement optimization - current average below performance target"
                     )
 
             # Timing strategy recommendations
@@ -300,7 +300,7 @@ class MetaTrendIntelligenceTask:
 
                 if best_times:
                     recommendations['timing_strategy'].append(
-                        f"⏰ Prioritize posting during high-performance windows: {', '.join(best_times[:3])}"
+                        f"[ALARM] Prioritize posting during high-performance windows: {', '.join(best_times[:3])}"
                     )
 
             # Hashtag strategy recommendations
@@ -316,13 +316,13 @@ class MetaTrendIntelligenceTask:
             if trends.get('emerging_trends'):
                 emerging = trends['emerging_trends'][0]
                 recommendations['trend_strategy'].append(
-                    f"📈 Capitalize on emerging trend: {emerging['tag']} shows {emerging['growth_percentage']} growth"
+                    f"[TRENDING_UP] Capitalize on emerging trend: {emerging['tag']} shows {emerging['growth_percentage']} growth"
                 )
 
             if trends.get('fading_trends'):
                 fading = trends['fading_trends'][0]
                 recommendations['trend_strategy'].append(
-                    f"📉 Reduce focus on declining trend: {fading['tag']} showing {fading['decline_percentage']} decline"
+                    f"[TRENDING_DOWN] Reduce focus on declining trend: {fading['tag']} showing {fading['decline_percentage']} decline"
                 )
 
             # Author strategy recommendations
@@ -350,10 +350,10 @@ class MetaTrendIntelligenceTask:
                           ensure_ascii=False, default=str)
 
             logger.info(
-                f"📋 Strategic recommendations saved to {recommendations_file}")
+                f"[REPORT] Strategic recommendations saved to {recommendations_file}")
 
         except Exception as e:
-            logger.error(f"❌ Error saving strategic recommendations: {str(e)}")
+            logger.error(f"[ERROR] Error saving strategic recommendations: {str(e)}")
 
     async def _send_weekly_discord_notification(self, analysis_results: Dict) -> bool:
         """Send Discord notification with weekly intelligence summary."""
@@ -374,7 +374,7 @@ class MetaTrendIntelligenceTask:
                     color=0x7B68EE,  # Medium slate blue for weekly reports
                     fields=[
                         {
-                            "name": "📊 Analysis Overview",
+                            "name": "[ANALYTICS] Analysis Overview",
                             "value": f"Posts: {analysis_results.get('total_posts', 0)}\nPeriod: 7 days\nEngines: 6 analysis systems",
                             "inline": True
                         },
@@ -384,7 +384,7 @@ class MetaTrendIntelligenceTask:
                             "inline": True
                         },
                         {
-                            "name": "📈 Trend Analysis",
+                            "name": "[TRENDING_UP] Trend Analysis",
                             "value": f"Emerging: {len(analysis_results.get('trend_analysis', {}).get('emerging_trends', []))}\nFading: {len(analysis_results.get('trend_analysis', {}).get('fading_trends', []))}",
                             "inline": True
                         }
@@ -393,7 +393,7 @@ class MetaTrendIntelligenceTask:
 
                 if success:
                     logger.info(
-                        "✅ Weekly Discord notification sent successfully")
+                        "[OK] Weekly Discord notification sent successfully")
                     return True
 
             except Exception as e:
@@ -404,12 +404,12 @@ class MetaTrendIntelligenceTask:
             success = await self.discord_sender.send_message(discord_message)
             if success:
                 logger.info(
-                    "✅ Weekly Discord notification sent (simple format)")
+                    "[OK] Weekly Discord notification sent (simple format)")
             return success
 
         except Exception as e:
             logger.error(
-                f"❌ Error sending weekly Discord notification: {str(e)}")
+                f"[ERROR] Error sending weekly Discord notification: {str(e)}")
             return False
 
     async def _archive_previous_week_data(self):
@@ -431,7 +431,7 @@ class MetaTrendIntelligenceTask:
 
             if archived_count > 0:
                 logger.info(
-                    f"📦 Archived {archived_count} previous week directories")
+                    f"[PACKAGE] Archived {archived_count} previous week directories")
 
         except Exception as e:
             logger.warning(f"Error archiving previous week data: {str(e)}")
@@ -446,7 +446,7 @@ class MetaTrendIntelligenceTask:
 
             # Data collection insights
             insights.append(
-                f"📊 Analyzed {total_posts} posts across {analysis_period.get('days_analyzed', 7)} days")
+                f"[ANALYTICS] Analyzed {total_posts} posts across {analysis_period.get('days_analyzed', 7)} days")
 
             # Pattern insights
             patterns = analysis_results.get('consistent_patterns', {})
@@ -467,11 +467,11 @@ class MetaTrendIntelligenceTask:
 
             if emerging_count > 0:
                 insights.append(
-                    f"📈 Detected {emerging_count} emerging trends for strategic focus")
+                    f"[TRENDING_UP] Detected {emerging_count} emerging trends for strategic focus")
 
             if fading_count > 0:
                 insights.append(
-                    f"📉 Identified {fading_count} declining trends to deprioritize")
+                    f"[TRENDING_DOWN] Identified {fading_count} declining trends to deprioritize")
 
             # Calendar insights
             calendar = analysis_results.get('calendar_recommendations', {})
@@ -484,7 +484,7 @@ class MetaTrendIntelligenceTask:
             strategic_insights = analysis_results.get('strategic_insights', [])
             if strategic_insights:
                 insights.append(
-                    f"💡 Provided {len(strategic_insights)} strategic recommendations")
+                    f"[IDEA] Provided {len(strategic_insights)} strategic recommendations")
 
             return insights
 
@@ -549,7 +549,7 @@ if __name__ == "__main__":
         task = MetaTrendIntelligenceTask()
         result = await task.run_weekly_intelligence_workflow("demo_weekly_meta_trend")
 
-        print(f"📊 Task Results:")
+        print(f"[ANALYTICS] Task Results:")
         print(f"Status: {result.get('status')}")
         print(f"Posts Analyzed: {result.get('total_posts_analyzed', 0)}")
         print(f"Top Tags: {result.get('top_tags_identified', 0)}")
@@ -559,7 +559,7 @@ if __name__ == "__main__":
             f"Discord Notification: {result.get('discord_notification', False)}")
 
         if result.get('workflow_insights'):
-            print("\n💡 Workflow Insights:")
+            print("\n[IDEA] Workflow Insights:")
             for insight in result['workflow_insights']:
                 print(f"  • {insight}")
 

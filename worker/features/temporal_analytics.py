@@ -48,7 +48,7 @@ class TemporalAnalyticsAgent:
         """
         try:
             self.logger.info(
-                f"⏰ Starting temporal analytics analysis for batch {batch_id}")
+                f"[ALARM] Starting temporal analytics analysis for batch {batch_id}")
 
             # Step 1: Extract and validate temporal data
             temporal_data = self._extract_temporal_data(posts)
@@ -57,7 +57,7 @@ class TemporalAnalyticsAgent:
                 return self._generate_empty_response(batch_id, "Insufficient posts for temporal analysis")
 
             self.logger.info(
-                f"📊 Temporal data: {len(temporal_data['posts'])} posts over {temporal_data['time_span_hours']:.1f} hours")
+                f"[ANALYTICS] Temporal data: {len(temporal_data['posts'])} posts over {temporal_data['time_span_hours']:.1f} hours")
 
             # Step 2: Calculate engagement patterns by time
             hourly_patterns = await self._analyze_hourly_patterns(temporal_data)
@@ -102,11 +102,11 @@ class TemporalAnalyticsAgent:
             }
 
             self.logger.info(
-                f"✅ Temporal analytics analysis completed successfully")
+                f"[OK] Temporal analytics analysis completed successfully")
             return results
 
         except Exception as e:
-            self.logger.error(f"❌ Temporal analytics analysis failed: {e}")
+            self.logger.error(f"[ERROR] Temporal analytics analysis failed: {e}")
             return self._generate_error_response(batch_id, str(e))
 
     def _extract_temporal_data(self, posts: List[Dict]) -> Dict:
@@ -675,7 +675,7 @@ class TemporalAnalyticsAgent:
                                batch_id: str) -> str:
         """Format temporal analysis results as Discord message"""
 
-        message_parts = ["⏰ **Temporal Analysis Report**", ""]
+        message_parts = ["[ALARM] **Temporal Analysis Report**", ""]
 
         # Best Days
         best_days = optimal_times.get("best_days", [])
@@ -723,7 +723,7 @@ class TemporalAnalyticsAgent:
             if primary_rec:
                 tip_text = f"Schedule key posts {primary_rec['recommendation'].lower()} to maximize visibility."
 
-        message_parts.append(f"💡 **Tip:** {tip_text}")
+        message_parts.append(f"[IDEA] **Tip:** {tip_text}")
 
         # Additional insights
         message_parts.append("")
@@ -733,15 +733,15 @@ class TemporalAnalyticsAgent:
 
         trending_posts = trend_analysis.get("trending_posts_count", 0)
         if trending_posts > 0:
-            insights.append(f"📈 {trending_posts} trending posts analyzed")
+            insights.append(f"[TRENDING_UP] {trending_posts} trending posts analyzed")
 
         if optimal_ranges:
             duration = optimal_ranges[0]["duration"]
-            insights.append(f"⏱️ {duration}-hour peak engagement window")
+            insights.append(f"[TIMER] {duration}-hour peak engagement window")
 
         if avg_trend_time > 0 and avg_momentum > 0:
             total_window = avg_trend_time / 60 + avg_momentum
-            insights.append(f"🎯 ~{total_window:.1f}h total visibility window")
+            insights.append(f"[TARGET] ~{total_window:.1f}h total visibility window")
 
         # Add insights to message
         for insight in insights[:2]:  # Limit to 2 insights
@@ -776,7 +776,7 @@ class TemporalAnalyticsAgent:
             "trend_analysis": {"trending_posts_count": 0, "avg_time_to_trend_minutes": 0},
             "momentum_analysis": {"avg_momentum_duration_hours": 0},
             "posting_recommendations": {"recommendations": [], "total_recommendations": 0},
-            "discord_message": f"⏰ **Temporal Analysis Report**\n\n⚠️ **Analysis Skipped**\nReason: {reason}\n\n📅 *{batch_id}*",
+            "discord_message": f"[ALARM] **Temporal Analysis Report**\n\n[WARNING] **Analysis Skipped**\nReason: {reason}\n\n📅 *{batch_id}*",
             "error": True,
             "error_message": reason
         }
@@ -788,7 +788,7 @@ class TemporalAnalyticsAgent:
             "error": True,
             "error_message": error_message,
             "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
-            "discord_message": f"❌ **Temporal Analysis Error**\n\nBatch: {batch_id}\nError: {error_message[:200]}\n\n📅 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
+            "discord_message": f"[ERROR] **Temporal Analysis Error**\n\nBatch: {batch_id}\nError: {error_message[:200]}\n\n📅 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
         }
 
 

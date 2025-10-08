@@ -83,12 +83,12 @@ class RedisManager:
             # Test connection
             await self.redis_client.ping()
             logger.info(
-                f"✅ Connected to Redis at {self.config['host']}:{self.config['port']}")
+                f"[OK] Connected to Redis at {self.config['host']}:{self.config['port']}")
 
             return True
 
         except Exception as e:
-            logger.error(f"❌ Failed to connect to Redis: {str(e)}")
+            logger.error(f"[ERROR] Failed to connect to Redis: {str(e)}")
             return False
 
     async def disconnect(self):
@@ -100,7 +100,7 @@ class RedisManager:
             if self.redis_client:
                 await self.redis_client.aclose()
 
-            logger.info("✅ Disconnected from Redis")
+            logger.info("[OK] Disconnected from Redis")
 
         except Exception as e:
             logger.error(f"Error disconnecting from Redis: {str(e)}")
@@ -131,7 +131,7 @@ class RedisManager:
                 key
             )
 
-            logger.debug(f"📝 Cached trending data: {key}")
+            logger.debug(f"[NOTE] Cached trending data: {key}")
             return True
 
         except Exception as e:
@@ -171,7 +171,7 @@ class RedisManager:
                 json.dumps(result, default=str)
             )
 
-            logger.debug(f"📝 Cached analysis result: {key}")
+            logger.debug(f"[NOTE] Cached analysis result: {key}")
             return True
 
         except Exception as e:
@@ -187,7 +187,7 @@ class RedisManager:
 
             data = await self.redis_client.get(key)
             if data:
-                logger.debug(f"🎯 Cache hit for analysis: {key}")
+                logger.debug(f"[TARGET] Cache hit for analysis: {key}")
                 return json.loads(data)
 
             return None
@@ -277,7 +277,7 @@ class RedisManager:
             )
 
             logger.debug(
-                f"📢 Published to {channel}: {message.get('type', 'unknown')}")
+                f"[ANNOUNCE] Published to {channel}: {message.get('type', 'unknown')}")
             return True
 
         except Exception as e:
@@ -292,7 +292,7 @@ class RedisManager:
             for channel in channels:
                 await self.pubsub.subscribe(channel)
 
-            logger.info(f"🔔 Subscribed to channels: {channels}")
+            logger.info(f"[BELL] Subscribed to channels: {channels}")
 
             # Listen for messages
             async for message in self.pubsub.listen():
@@ -333,7 +333,7 @@ class RedisManager:
             # Keep last 100 batches
             await self.redis_client.ltrim(batch_index_key, 0, 99)
 
-            logger.debug(f"📝 Stored trending batch: {batch_id}")
+            logger.debug(f"[NOTE] Stored trending batch: {batch_id}")
             return True
 
         except Exception as e:
@@ -413,7 +413,7 @@ class RedisManager:
 
             if keys:
                 deleted = await self.redis_client.delete(*keys)
-                logger.info(f"🗑️ Cleared {deleted} cache entries")
+                logger.info(f"[DELETE] Cleared {deleted} cache entries")
                 return deleted
 
             return 0
@@ -530,6 +530,33 @@ async def publish_trending_update(update_type: str, data: Dict) -> bool:
         return False
 
 
+# Sync Redis connection for leaderboard tasks
+def get_redis_connection():
+    """Get synchronous Redis connection for leaderboard tasks"""
+    try:
+        import redis
+        
+        redis_client = redis.Redis(
+            host=os.getenv("REDIS_HOST", "redis-11099.c296.ap-southeast-2-1.ec2.redns.redis-cloud.com"),
+            port=int(os.getenv("REDIS_PORT", "11099")),
+            db=int(os.getenv("REDIS_DB", "0")),
+            password=os.getenv("REDIS_PASSWORD", "btkL8Cbz19z3aTcOve2S1v6CW9bnlBTw"),
+            username=os.getenv("REDIS_USERNAME", "default"),
+            decode_responses=True,
+            socket_timeout=10,
+            socket_connect_timeout=10
+        )
+        
+        # Test connection
+        redis_client.ping()
+        logger.info("[OK] Sync Redis connection established for leaderboard")
+        return redis_client
+        
+    except Exception as e:
+        logger.error(f"[ERROR] Failed to get sync Redis connection: {e}")
+        return None
+
+
 if __name__ == "__main__":
     # Test Redis integration
     async def test_redis():
@@ -538,7 +565,7 @@ if __name__ == "__main__":
         # Test connection
         connected = await redis_mgr.connect()
         if not connected:
-            print("❌ Failed to connect to Redis")
+            print("[ERROR] Failed to connect to Redis")
             return
 
         # Test caching

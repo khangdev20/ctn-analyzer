@@ -32,7 +32,7 @@
     },
     {
       "title": "CONTENT_SUGGESTION_1",
-      "description": "Ready-to-post content: \"🗳️ Want to make a difference? Here’s how to get involved in local elections: 1️⃣ Research candidates. 2️⃣ Attend town halls. 3️⃣ Volunteer at campaigns. 4️⃣ Share info with friends! Empower your community now! #VoteHawthorne #LocalElections #CivicEngagement\" | Hashtags:  | Performance prediction: 70/100",
+      "description": "Ready-to-post content: \"🗳️ Want to make a difference? Here’s how to get involved in local elections: [1] Research candidates. [2] Attend town halls. [3] Volunteer at campaigns. [4] Share info with friends! Empower your community now! #VoteHawthorne #LocalElections #CivicEngagement\" | Hashtags:  | Performance prediction: 70/100",
       "category": "content_suggestions",
       "priority": 85,
       "actionable": true,
@@ -40,7 +40,7 @@
       "timeline": "immediate",
       "performance_prediction": 70,
       "ready_to_use": true,
-      "content_ready": "🗳️ Want to make a difference? Here’s how to get involved in local elections: 1️⃣ Research candidates. 2️⃣ Attend town halls. 3️⃣ Volunteer at campaigns. 4️⃣ Share info with friends! Empower your community now! #VoteHawthorne #LocalElections #CivicEngagement",
+      "content_ready": "🗳️ Want to make a difference? Here’s how to get involved in local elections: [1] Research candidates. [2] Attend town halls. [3] Volunteer at campaigns. [4] Share info with friends! Empower your community now! #VoteHawthorne #LocalElections #CivicEngagement",
       "hashtags_ready": [],
       "optimal_timing": "optimal",
       "quality_score": 114.0
@@ -62,7 +62,7 @@
     },
     {
       "title": "CONTENT_SUGGESTION_2",
-      "description": "Ready-to-post content: \"⚡ Myth Busting! “My vote doesn’t count.” FALSE! Every vote shapes elections! Here are 4 reasons your voice is vital in democracy. 🌍 Let’s change minds together! #VoteHawthorne #VotingMyths #CivicEducation\" | Hashtags:  | Performance prediction: 70/100",
+      "description": "Ready-to-post content: \"[FAST] Myth Busting! “My vote doesn’t count.” FALSE! Every vote shapes elections! Here are 4 reasons your voice is vital in democracy. 🌍 Let’s change minds together! #VoteHawthorne #VotingMyths #CivicEducation\" | Hashtags:  | Performance prediction: 70/100",
       "category": "content_suggestions",
       "priority": 80,
       "actionable": true,
@@ -70,7 +70,7 @@
       "timeline": "immediate",
       "performance_prediction": 70,
       "ready_to_use": true,
-      "content_ready": "⚡ Myth Busting! “My vote doesn’t count.” FALSE! Every vote shapes elections! Here are 4 reasons your voice is vital in democracy. 🌍 Let’s change minds together! #VoteHawthorne #VotingMyths #CivicEducation",
+      "content_ready": "[FAST] Myth Busting! “My vote doesn’t count.” FALSE! Every vote shapes elections! Here are 4 reasons your voice is vital in democracy. 🌍 Let’s change minds together! #VoteHawthorne #VotingMyths #CivicEducation",
       "hashtags_ready": [],
       "optimal_timing": "optimal",
       "quality_score": 112.0
@@ -113,7 +113,7 @@
     },
     {
       "title": "CALENDAR_WEDNESDAY",
-      "description": "Wednesday strategy: \"🚀 Curious about the #Castillo2025 initiative? Here’s a step-by-step breakdown to help you understand...\" | Focus: educational | Times: 17:00, 20:00, 21:00",
+      "description": "Wednesday strategy: \"[LAUNCH] Curious about the #Castillo2025 initiative? Here’s a step-by-step breakdown to help you understand...\" | Focus: educational | Times: 17:00, 20:00, 21:00",
       "category": "content_calendar",
       "priority": 80,
       "actionable": true,

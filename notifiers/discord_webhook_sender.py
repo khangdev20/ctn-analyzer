@@ -79,8 +79,45 @@ class DiscordWebhookSender:
             self.logger.error(f"[ERROR] Discord embed error: {e}")
             return False
 
+    async def send_rich_embed(self, title: str = None, description: str = None,
+                              color: int = None, fields: list = None,
+                              footer: dict = None, **kwargs) -> bool:
+        """
+        Send a rich embed to Discord with flexible parameters
 
-def send_discord_message_webhook(content):
+        Args:
+            title: Embed title
+            description: Embed description
+            color: Embed color (hex integer)
+            fields: List of field dictionaries
+            footer: Footer dictionary with 'text' key
+            **kwargs: Additional embed properties
+        """
+        try:
+            embed_data = {}
+
+            if title:
+                embed_data['title'] = title
+            if description:
+                embed_data['description'] = description
+            if color:
+                embed_data['color'] = color
+            if fields:
+                embed_data['fields'] = fields
+            if footer:
+                embed_data['footer'] = footer
+
+            # Add any additional properties from kwargs
+            embed_data.update(kwargs)
+
+            return await self.send_embed(embed_data)
+
+        except Exception as e:
+            self.logger.error(f"[ERROR] Rich embed error: {e}")
+            return False
+
+
+def send_discord_message_webhook(content, webhook_url=None):
     """
     Send Discord message with support for both text and embed payloads
 
@@ -88,9 +125,12 @@ def send_discord_message_webhook(content):
         content: Can be either:
                 - String: Simple text message
                 - Dict with 'embeds': Rich embed payload
+        webhook_url: Discord webhook URL (optional, uses config if not provided)
     """
     try:
-        webhook = DiscordWebhook(url=webhook_url)
+        # Use provided webhook_url or fall back to config
+        url_to_use = webhook_url or webhook_url
+        webhook = DiscordWebhook(url=url_to_use)
 
         # Handle different content types
         if isinstance(content, dict) and 'embeds' in content:

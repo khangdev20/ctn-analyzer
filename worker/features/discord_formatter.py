@@ -212,7 +212,7 @@ class DiscordMessageFormatter:
 
     def _build_discord_formatting_prompt(self, input_data: Dict) -> str:
         """Build the LLM prompt for Discord formatting"""
-        prompt = f"""# 🧠 PROMPT: "Use an LLM to format the Discord message (embed) from analysis outputs"
+        prompt = f"""# [AI] PROMPT: "Use an LLM to format the Discord message (embed) from analysis outputs"
 
 ## Role
 You are a **Message Composer LLM** that turns analytics outputs into a **Discord embed payload**.  
@@ -336,7 +336,7 @@ Generate the Discord embed payload now:"""
                 insights_text.append(f"[INSIGHT] {note}")
 
             embed["fields"].append({
-                "name": "🧠 Key Insights",
+                "name": "[AI] Key Insights",
                 "value": "\n".join(insights_text),
                 "inline": False
             })

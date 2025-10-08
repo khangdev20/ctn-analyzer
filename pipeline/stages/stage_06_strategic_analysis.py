@@ -30,7 +30,7 @@ class StrategicAnalysisStage:
 
     async def execute(self, batch_id: str, rubric_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute strategic and network analysis stage"""
-        logger.info("🧠 Stage 6: Analyzing content strategies and patterns...")
+        logger.info("[AI] Stage 6: Analyzing content strategies and patterns...")
         
         try:
             posts = rubric_data.get("posts", [])
@@ -77,7 +77,7 @@ class StrategicAnalysisStage:
             # Generate summary
             summary = self._generate_summary(network_data, batch_id)
             
-            logger.info(f"✅ Stage 6 completed: Strategic analysis for {len(posts)} posts")
+            logger.info(f"[OK] Stage 6 completed: Strategic analysis for {len(posts)} posts")
             logger.info(f"🏷️ Top tags: {[tag['tag'] for tag in summary['top_tags'][:3]]}")
             logger.info(f"👥 Author clusters: {len(summary['author_groups'])}")
             
@@ -88,7 +88,7 @@ class StrategicAnalysisStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 6 error: {e}")
+            logger.error(f"[ERROR] Stage 6 error: {e}")
             return None
 
     async def _build_hashtag_cooccurrence_graph(self, posts: List[Dict]) -> Dict:

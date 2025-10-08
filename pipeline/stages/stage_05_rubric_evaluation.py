@@ -50,7 +50,7 @@ class RubricEvaluationStage:
 
     async def execute(self, batch_id: str, scored_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute rubric evaluation stage"""
-        logger.info("🎯 Stage 5: Applying viral post rubric evaluation...")
+        logger.info("[TARGET] Stage 5: Applying viral post rubric evaluation...")
         
         try:
             posts = scored_data.get("posts", [])
@@ -97,9 +97,9 @@ class RubricEvaluationStage:
             # Generate summary
             summary = self._generate_summary(rubric_data, batch_id)
             
-            logger.info(f"✅ Stage 5 completed: Rubric evaluation for {len(rubric_posts)} posts")
-            logger.info(f"🎯 Average final score: {summary['average_final_score']:.2f}")
-            logger.info(f"📊 Classification distribution: {summary['classification_distribution']}")
+            logger.info(f"[OK] Stage 5 completed: Rubric evaluation for {len(rubric_posts)} posts")
+            logger.info(f"[TARGET] Average final score: {summary['average_final_score']:.2f}")
+            logger.info(f"[ANALYTICS] Classification distribution: {summary['classification_distribution']}")
             
             return {
                 **summary,
@@ -108,7 +108,7 @@ class RubricEvaluationStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 5 error: {e}")
+            logger.error(f"[ERROR] Stage 5 error: {e}")
             return None
 
     async def _calculate_rubric_components(self, post: Dict) -> Dict:

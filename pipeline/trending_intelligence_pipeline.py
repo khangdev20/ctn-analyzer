@@ -119,7 +119,7 @@ class TrendingIntelligencePipeline:
             logger.info(
                 f"[METRICS] Success rate: {pipeline_summary['success_rate']:.1%}")
             logger.info(
-                f"⏱️  Total execution time: {total_execution_time:.1f}s")
+                f"[TIMER]  Total execution time: {total_execution_time:.1f}s")
 
             return pipeline_summary
 
@@ -152,7 +152,7 @@ class TrendingIntelligencePipeline:
             stage_name = self.stage_names[stage_num]
             stage_instance = self.stages[stage_num]
 
-            logger.info(f"🔄 Stage {stage_num}: {stage_name} - Starting...")
+            logger.info(f"[REFRESH] Stage {stage_num}: {stage_name} - Starting...")
             stage_start_time = datetime.now(timezone.utc)
 
             try:
@@ -349,7 +349,7 @@ class TrendingIntelligencePipeline:
         batch_id = f"partial_{start_stage}_{end_stage}_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 
         logger.info(
-            f"🔄 Starting Partial Pipeline (Stages {start_stage}-{end_stage}) - Batch: {batch_id}")
+            f"[REFRESH] Starting Partial Pipeline (Stages {start_stage}-{end_stage}) - Batch: {batch_id}")
 
         if start_stage < 1 or end_stage > 10 or start_stage > end_stage:
             raise ValueError(
@@ -379,7 +379,7 @@ class TrendingIntelligencePipeline:
                 stage_name = self.stage_names[stage_num]
                 stage_instance = self.stages[stage_num]
 
-                logger.info(f"🔄 Stage {stage_num}: {stage_name} - Starting...")
+                logger.info(f"[REFRESH] Stage {stage_num}: {stage_name} - Starting...")
                 stage_start_time = datetime.now(timezone.utc)
 
                 try:
@@ -468,7 +468,7 @@ class TrendingIntelligencePipeline:
         # This would load the most recent data from the specified stage
         # For now, return None to indicate no previous data available
         logger.info(
-            f"📁 Attempting to load previous data from stage {stage_num}")
+            f"[FOLDER] Attempting to load previous data from stage {stage_num}")
         return None
 
     async def get_pipeline_status(self) -> Dict[str, Any]:

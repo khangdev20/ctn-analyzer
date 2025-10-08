@@ -47,7 +47,7 @@ class ScoreEstimationStage:
 
     async def execute(self, batch_id: str, growth_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute score estimation stage"""
-        logger.info("📈 Stage 4: Calculating performance scores...")
+        logger.info("[TRENDING_UP] Stage 4: Calculating performance scores...")
         
         try:
             posts = growth_data.get("posts", [])
@@ -94,9 +94,9 @@ class ScoreEstimationStage:
             # Generate summary
             summary = self._generate_summary(scored_data, batch_id)
             
-            logger.info(f"✅ Stage 4 completed: Scores calculated for {len(scored_posts)} posts")
-            logger.info(f"🎯 Average story score: {summary['average_story_score']:.2f}")
-            logger.info(f"🎯 Average engagement score: {summary['average_engagement_score']:.2f}")
+            logger.info(f"[OK] Stage 4 completed: Scores calculated for {len(scored_posts)} posts")
+            logger.info(f"[TARGET] Average story score: {summary['average_story_score']:.2f}")
+            logger.info(f"[TARGET] Average engagement score: {summary['average_engagement_score']:.2f}")
             
             return {
                 **summary,
@@ -105,7 +105,7 @@ class ScoreEstimationStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 4 error: {e}")
+            logger.error(f"[ERROR] Stage 4 error: {e}")
             return None
 
     async def _calculate_story_score(self, post: Dict) -> float:

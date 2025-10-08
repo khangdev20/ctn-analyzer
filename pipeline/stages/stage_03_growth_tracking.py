@@ -28,7 +28,7 @@ class GrowthTrackingStage:
 
     async def execute(self, batch_id: str, cleaned_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute growth tracking stage"""
-        logger.info("📈 Stage 3: Computing engagement growth and velocity...")
+        logger.info("[TRENDING_UP] Stage 3: Computing engagement growth and velocity...")
         
         try:
             current_posts = cleaned_data.get("posts", [])
@@ -37,7 +37,7 @@ class GrowthTrackingStage:
             previous_data = await self._load_previous_batch_data(batch_id)
             
             if not previous_data:
-                logger.info("📊 No previous batch data found - computing baseline metrics")
+                logger.info("[ANALYTICS] No previous batch data found - computing baseline metrics")
                 growth_data = await self._compute_baseline_metrics(current_posts, batch_id)
             else:
                 # Compute growth deltas with previous batch
@@ -49,8 +49,8 @@ class GrowthTrackingStage:
             # Generate summary
             summary = self._generate_summary(growth_data, batch_id)
             
-            logger.info(f"✅ Stage 3 completed: Growth analysis for {len(growth_data.get('posts', []))} posts")
-            logger.info(f"📁 Growth data saved to: {output_path}")
+            logger.info(f"[OK] Stage 3 completed: Growth analysis for {len(growth_data.get('posts', []))} posts")
+            logger.info(f"[FOLDER] Growth data saved to: {output_path}")
             
             return {
                 **summary,
@@ -59,7 +59,7 @@ class GrowthTrackingStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 3 error: {e}")
+            logger.error(f"[ERROR] Stage 3 error: {e}")
             return None
 
     async def _load_previous_batch_data(self, current_batch_id: str) -> Optional[Dict]:
@@ -85,7 +85,7 @@ class GrowthTrackingStage:
                         with open(latest_file, 'r', encoding='utf-8') as f:
                             previous_data = json.load(f)
                         
-                        logger.info(f"📊 Found previous batch: {previous_data.get('batch_id')}")
+                        logger.info(f"[ANALYTICS] Found previous batch: {previous_data.get('batch_id')}")
                         return previous_data
             
             return None

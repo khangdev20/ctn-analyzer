@@ -52,47 +52,47 @@ class EngagementIntelligenceTask:
             batch_id = f"engagement_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%MZ')}"
 
         logger.info(
-            f"🚀 Starting engagement intelligence workflow - Batch: {batch_id}")
+            f"[LAUNCH] Starting engagement intelligence workflow - Batch: {batch_id}")
 
         try:
             # Step 1: Collect current data snapshot
-            logger.info("📊 Step 1: Collecting current data snapshot...")
+            logger.info("[ANALYTICS] Step 1: Collecting current data snapshot...")
             current_data = await self._collect_current_data()
 
             if not current_data or not current_data.get("posts"):
                 logger.warning(
-                    "⚠️ No current data available - cannot perform analysis")
+                    "[WARNING] No current data available - cannot perform analysis")
                 return self._generate_no_data_response(batch_id, "current")
 
             # Step 2: Load previous data snapshot
-            logger.info("📈 Step 2: Loading previous data snapshot...")
+            logger.info("[TRENDING_UP] Step 2: Loading previous data snapshot...")
             previous_data = await self._load_previous_data()
 
             if not previous_data or not previous_data.get("posts"):
                 logger.warning(
-                    "⚠️ No previous data available - performing baseline analysis")
+                    "[WARNING] No previous data available - performing baseline analysis")
                 return await self._perform_baseline_analysis(current_data, batch_id, send_discord, save_results)
 
             # Step 3: Run engagement intelligence analysis
             logger.info(
-                "🧠 Step 3: Running engagement intelligence analysis...")
+                "[AI] Step 3: Running engagement intelligence analysis...")
             analysis_results = await self.agent.analyze_engagement_growth(
                 previous_data, current_data, batch_id
             )
 
             if analysis_results.get("error"):
                 logger.error(
-                    f"❌ Analysis failed: {analysis_results.get('error_message')}")
+                    f"[ERROR] Analysis failed: {analysis_results.get('error_message')}")
                 return analysis_results
 
             # Step 4: Save results if requested
             if save_results:
-                logger.info("💾 Step 4: Saving analysis results...")
+                logger.info("[SAVE] Step 4: Saving analysis results...")
                 await self._save_analysis_results(analysis_results, batch_id)
 
             # Step 5: Send Discord notification if requested
             if send_discord:
-                logger.info("📢 Step 5: Sending Discord notification...")
+                logger.info("[ANNOUNCE] Step 5: Sending Discord notification...")
                 discord_success = await self._send_discord_notification(analysis_results)
                 analysis_results["discord_sent"] = discord_success
 
@@ -101,8 +101,8 @@ class EngagementIntelligenceTask:
                 analysis_results)
 
             logger.info(
-                f"✅ Engagement intelligence workflow completed successfully")
-            logger.info(f"📊 Summary: {execution_summary['summary_text']}")
+                f"[OK] Engagement intelligence workflow completed successfully")
+            logger.info(f"[ANALYTICS] Summary: {execution_summary['summary_text']}")
 
             return {
                 **analysis_results,
@@ -111,7 +111,7 @@ class EngagementIntelligenceTask:
             }
 
         except Exception as e:
-            logger.error(f"❌ Engagement intelligence workflow failed: {e}")
+            logger.error(f"[ERROR] Engagement intelligence workflow failed: {e}")
             error_response = {
                 "batch_id": batch_id,
                 "workflow_status": "error",
@@ -183,7 +183,7 @@ class EngagementIntelligenceTask:
                             recent_data = json.load(f)
 
                         logger.info(
-                            f"📊 Using recent processed data: {latest_file}")
+                            f"[ANALYTICS] Using recent processed data: {latest_file}")
                         return recent_data
 
             return None
@@ -218,7 +218,7 @@ class EngagementIntelligenceTask:
                         with open(latest_file, 'r', encoding='utf-8') as f:
                             previous_data = json.load(f)
 
-                        logger.info(f"📊 Loaded previous data: {latest_file}")
+                        logger.info(f"[ANALYTICS] Loaded previous data: {latest_file}")
                         return previous_data
 
             # Fallback: look in raw data directory
@@ -261,7 +261,7 @@ class EngagementIntelligenceTask:
                                          save_results: bool) -> Dict:
         """Perform baseline analysis when no previous data exists"""
         try:
-            logger.info("📊 Performing baseline engagement analysis...")
+            logger.info("[ANALYTICS] Performing baseline engagement analysis...")
 
             posts = current_data.get("posts", [])
             total_engagement = sum(
@@ -314,12 +314,12 @@ class EngagementIntelligenceTask:
 
     def _format_baseline_discord_message(self, batch_id: str, post_count: int, total_engagement: int) -> str:
         """Format Discord message for baseline analysis"""
-        message = "📊 **Engagement Baseline Established**\n\n"
+        message = "[ANALYTICS] **Engagement Baseline Established**\n\n"
         message += f"• **Posts Analyzed:** {post_count}\n"
         message += f"• **Total Engagement:** {total_engagement:,}\n"
         message += f"• **Avg per Post:** {total_engagement / max(post_count, 1):.1f}\n\n"
-        message += "⏳ *Next analysis will show growth patterns*\n\n"
-        message += f"📅 *Baseline: {batch_id}*"
+        message += "[WAITING] *Next analysis will show growth patterns*\n\n"
+        message += f"[TIMER] *Baseline: {batch_id}*"
 
         return message
 
@@ -335,7 +335,7 @@ class EngagementIntelligenceTask:
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(results, f, ensure_ascii=False, indent=2)
 
-            logger.info(f"💾 Results saved to: {filepath}")
+            logger.info(f"[SAVE] Results saved to: {filepath}")
             return filepath
 
         except Exception as e:
@@ -353,9 +353,9 @@ class EngagementIntelligenceTask:
             success = await self.discord_sender.send_message(discord_message)
 
             if success:
-                logger.info("📢 Discord notification sent successfully")
+                logger.info("[ANNOUNCE] Discord notification sent successfully")
             else:
-                logger.warning("⚠️ Discord notification failed to send")
+                logger.warning("[WARNING] Discord notification failed to send")
 
             return success
 
@@ -366,10 +366,10 @@ class EngagementIntelligenceTask:
     async def _send_error_notification(self, batch_id: str, error_message: str):
         """Send error notification to Discord"""
         try:
-            error_msg = f"❌ **Engagement Analysis Error**\n\n"
+            error_msg = f"[ERROR] **Engagement Analysis Error**\n\n"
             error_msg += f"**Batch:** {batch_id}\n"
             error_msg += f"**Error:** {error_message[:500]}\n\n"
-            error_msg += f"📅 *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
+            error_msg += f"[TIMER] *{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}*"
 
             await self.discord_sender.send_message(error_msg)
 
@@ -403,21 +403,21 @@ class EngagementIntelligenceTask:
             "error": True,
             "error_message": f"No {data_type} data available for analysis",
             "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
-            "discord_message": f"⚠️ **Engagement Analysis Skipped**\n\nReason: No {data_type} data available\n\n📅 *{batch_id}*"
+            "discord_message": f"[WARNING] **Engagement Analysis Skipped**\n\nReason: No {data_type} data available\n\n[TIMER] *{batch_id}*"
         }
 
     async def quick_engagement_check(self) -> str:
         """Quick engagement check for real-time monitoring"""
         try:
-            logger.info("⚡ Running quick engagement check...")
+            logger.info("[FAST] Running quick engagement check...")
 
             current_data = await self._collect_current_data()
             if not current_data:
-                return "⚠️ **Quick Check Failed** - No data available"
+                return "[WARNING] **Quick Check Failed** - No data available"
 
             posts = current_data.get("posts", [])
             if not posts:
-                return "📊 **Quick Check** - No posts to analyze"
+                return "[ANALYTICS] **Quick Check** - No posts to analyze"
 
             # Calculate quick metrics
             total_engagement = sum(
@@ -442,16 +442,16 @@ class EngagementIntelligenceTask:
                 top_post.get("repost_count", 0)
             )
 
-            message = f"⚡ **Quick Engagement Check**\n"
-            message += f"📊 **{len(posts)} posts** | Avg: {avg_engagement:.1f}\n"
-            message += f"🏆 Top: @{top_author} ({top_engagement} total)\n"
-            message += f"📈 Total: {total_engagement:,} interactions"
+            message = f"[FAST] **Quick Engagement Check**\n"
+            message += f"[ANALYTICS] **{len(posts)} posts** | Avg: {avg_engagement:.1f}\n"
+            message += f"[WINNER] Top: @{top_author} ({top_engagement} total)\n"
+            message += f"[TRENDING_UP] Total: {total_engagement:,} interactions"
 
             return message
 
         except Exception as e:
             logger.error(f"Quick engagement check failed: {e}")
-            return f"❌ **Quick Check Error:** {str(e)[:100]}"
+            return f"[ERROR] **Quick Check Error:** {str(e)[:100]}"
 
 
 # Utility function for standalone task execution

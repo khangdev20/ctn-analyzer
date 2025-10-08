@@ -127,11 +127,11 @@ class MetaTrendIntelligenceAgent:
             }
 
             logger.info(
-                f"✅ Weekly meta-trend intelligence analysis completed successfully")
+                f"[OK] Weekly meta-trend intelligence analysis completed successfully")
             return weekly_report
 
         except Exception as e:
-            logger.error(f"❌ Error in weekly meta-trend analysis: {str(e)}")
+            logger.error(f"[ERROR] Error in weekly meta-trend analysis: {str(e)}")
             return await self._generate_error_report(batch_id, str(e))
 
     async def _collect_weekly_data(self) -> List[Dict]:
@@ -171,7 +171,7 @@ class MetaTrendIntelligenceAgent:
             return unique_data[:500]
 
         except Exception as e:
-            logger.error(f"❌ Error collecting weekly data: {str(e)}")
+            logger.error(f"[ERROR] Error collecting weekly data: {str(e)}")
             return await self._generate_weekly_mock_data()
 
     async def _collect_from_reports(self, cutoff_date: datetime) -> List[Dict]:
@@ -655,7 +655,7 @@ class MetaTrendIntelligenceAgent:
             'engagement': ['question', 'ask', 'opinion', 'thoughts', 'what do you think', '?'],
             'educational': ['learn', 'tip', 'guide', 'how to', 'tutorial', 'knowledge'],
             'inspirational': ['inspire', 'motivate', 'success', 'dream', 'achieve', 'hope'],
-            'entertainment': ['fun', 'funny', 'humor', 'laugh', 'entertainment', '😂', '🎉'],
+            'entertainment': ['fun', 'funny', 'humor', 'laugh', 'entertainment', '😂', '[SUCCESS]'],
             'community': ['community', 'together', 'unite', 'join', 'participate', 'family'],
             'reflection': ['reflect', 'think', 'consider', 'wisdom', 'insight', 'deep']
         }
@@ -696,12 +696,12 @@ class MetaTrendIntelligenceAgent:
         if time_distribution:
             peak_period = max(time_distribution, key=time_distribution.get)
             insights.append(
-                f"🕐 Optimal posting concentrated in {peak_period} hours")
+                f"[TIME] Optimal posting concentrated in {peak_period} hours")
 
         if type_distribution:
             popular_type = max(type_distribution, key=type_distribution.get)
             insights.append(
-                f"🎯 {popular_type.title()} content shows highest engagement potential")
+                f"[TARGET] {popular_type.title()} content shows highest engagement potential")
 
         # Performance-based insights
         high_performance_days = [
@@ -711,7 +711,7 @@ class MetaTrendIntelligenceAgent:
 
         if high_performance_days:
             insights.append(
-                f"⭐ High-performance days: {', '.join(high_performance_days)}")
+                f"[STAR] High-performance days: {', '.join(high_performance_days)}")
 
         return insights
 
@@ -828,18 +828,18 @@ class MetaTrendIntelligenceAgent:
         if trends.get('emerging_trends'):
             emerging = trends['emerging_trends'][0]
             insights.append(
-                f"📈 Fastest growing trend: {emerging['tag']} ({emerging['growth_percentage']} growth)")
+                f"[TRENDING_UP] Fastest growing trend: {emerging['tag']} ({emerging['growth_percentage']} growth)")
 
         if trends.get('fading_trends'):
             fading = trends['fading_trends'][0]
             insights.append(
-                f"📉 Declining trend: {fading['tag']} ({fading['decline_percentage']} decline)")
+                f"[TRENDING_DOWN] Declining trend: {fading['tag']} ({fading['decline_percentage']} decline)")
 
         # Performance insights
         if metrics.get('weekly_growth'):
             growth = metrics['weekly_growth']
             insights.append(
-                f"📊 Weekly performance trend: {growth['trend']} ({growth['growth_rate']})")
+                f"[ANALYTICS] Weekly performance trend: {growth['trend']} ({growth['growth_rate']})")
 
         # Category distribution insights
         performance_dist = metrics.get('performance_distribution', {})
@@ -848,7 +848,7 @@ class MetaTrendIntelligenceAgent:
             total_posts = metrics.get('total_posts', 1)
             viral_rate = (viral_count / total_posts) * 100
             insights.append(
-                f"🔥 Viral content rate: {viral_rate:.1f}% ({viral_count}/{total_posts} posts)")
+                f"[HOT] Viral content rate: {viral_rate:.1f}% ({viral_count}/{total_posts} posts)")
 
         return insights
 
@@ -892,7 +892,7 @@ class MetaTrendIntelligenceAgent:
 
         # Footer with timestamp
         current_time = datetime.now(timezone.utc)
-        discord_message += f"⏰ **Report Generated:** {current_time.strftime('%Y-%m-%d %H:%M')} UTC"
+        discord_message += f"[ALARM] **Report Generated:** {current_time.strftime('%Y-%m-%d %H:%M')} UTC"
 
         return discord_message
 
@@ -1030,7 +1030,7 @@ class MetaTrendIntelligenceAgent:
    - Monday 17:00 — Visual
    - Tuesday 19:00 — Engagement Q&A
    - Thursday 18:00 — Inspirational Story
-⏰ **Report Generated:** {current_time.strftime('%Y-%m-%d %H:%M')} UTC"""
+[ALARM] **Report Generated:** {current_time.strftime('%Y-%m-%d %H:%M')} UTC"""
         }
 
     def _generate_error_report(self, batch_id: str, error_message: str) -> Dict:
@@ -1044,7 +1044,7 @@ class MetaTrendIntelligenceAgent:
             'trend_analysis': {'emerging_trends': [], 'fading_trends': []},
             'calendar_recommendations': {'weekly_schedule': {}},
             'strategic_insights': [f'Analysis failed: {error_message}'],
-            'discord_message': f"📆 **Weekly Intelligence Summary**\n• ❌ Analysis Error: {error_message}"
+            'discord_message': f"📆 **Weekly Intelligence Summary**\n• [ERROR] Analysis Error: {error_message}"
         }
 
 
@@ -1121,7 +1121,7 @@ if __name__ == "__main__":
         agent = MetaTrendIntelligenceAgent()
         result = await agent.analyze_weekly_intelligence("demo_meta_trend")
 
-        print(f"📊 Weekly Analysis Results:")
+        print(f"[ANALYTICS] Weekly Analysis Results:")
         print(f"Total Posts: {result.get('total_posts', 0)}")
         print(
             f"Analysis Period: {result.get('analysis_period', {}).get('days_analyzed', 0)} days")

@@ -75,7 +75,7 @@ class TrendingPredictionAgent:
             batch_id = f"trending_prediction_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 
         logger.info(
-            f"🔥 Starting trending prediction analysis for batch {batch_id}")
+            f"[HOT] Starting trending prediction analysis for batch {batch_id}")
 
         if not posts_data:
             logger.warning("No posts data provided for trending analysis")
@@ -115,11 +115,11 @@ class TrendingPredictionAgent:
             }
 
             logger.info(
-                f"✅ Trending prediction analysis completed successfully for batch {batch_id}")
+                f"[OK] Trending prediction analysis completed successfully for batch {batch_id}")
             return analysis_report
 
         except Exception as e:
-            logger.error(f"❌ Error in trending prediction analysis: {str(e)}")
+            logger.error(f"[ERROR] Error in trending prediction analysis: {str(e)}")
             return self._generate_error_report(batch_id, str(e))
 
     async def _normalize_post_metrics(self, posts_data: List[Dict]) -> List[Dict]:
@@ -408,16 +408,16 @@ class TrendingPredictionAgent:
         # Insight 1: Overall trending potential
         if trending_count > 0:
             insights.append(
-                f"🔥 {trending_count} posts show strong trending potential (≥{self.trending_threshold} probability)")
+                f"[HOT] {trending_count} posts show strong trending potential (≥{self.trending_threshold} probability)")
         else:
             insights.append(
-                "📊 No posts currently meet trending threshold - consider content optimization")
+                "[ANALYTICS] No posts currently meet trending threshold - consider content optimization")
 
         # Insight 2: High potential content
         if high_potential_count > trending_count:
             near_trending = high_potential_count - trending_count
             insights.append(
-                f"⚡ {near_trending} additional posts show high potential (≥0.7) - minor optimization could push them to trending")
+                f"[FAST] {near_trending} additional posts show high potential (≥0.7) - minor optimization could push them to trending")
 
         # Insight 3: Component analysis
         avg_scores = {
@@ -432,7 +432,7 @@ class TrendingPredictionAgent:
         insights.append(
             f"💪 Strongest factor: {strongest_component.title()} ({avg_scores[strongest_component]:.1f})")
         insights.append(
-            f"⚠️ Improvement opportunity: {weakest_component.title()} ({avg_scores[weakest_component]:.1f})")
+            f"[WARNING] Improvement opportunity: {weakest_component.title()} ({avg_scores[weakest_component]:.1f})")
 
         return insights
 
@@ -440,20 +440,20 @@ class TrendingPredictionAgent:
                                      top_factors: List[str], batch_id: str) -> str:
         """Format the comprehensive Discord trending prediction report."""
         if not probability_posts:
-            return "🔥 **Trending Prediction Report**\n• No data available for analysis"
+            return "[HOT] **Trending Prediction Report**\n• No data available for analysis"
 
         avg_final_score = statistics.mean(
             [p['final_score'] for p in probability_posts])
 
         # Build Discord message
-        discord_message = "🔥 **Trending Prediction Report**\n"
+        discord_message = "[HOT] **Trending Prediction Report**\n"
         discord_message += f"• **Avg Final Score:** {avg_final_score:.1f}\n"
 
         # Trending candidates section
         if trending_candidates:
             discord_message += "• **Trending Candidates:**\n"
             for i, candidate in enumerate(trending_candidates[:3]):  # Top 3
-                rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"{i+1}."
+                rank_emoji = ["[FIRST_PLACE]", "🥈", "🥉"][i] if i < 3 else f"{i+1}."
                 post_id = candidate['post_id']
                 probability = candidate['trending_probability']
                 discord_message += f"   {rank_emoji} Post #{post_id} — {probability:.2f} probability\n"
@@ -486,7 +486,7 @@ class TrendingPredictionAgent:
             'score_distribution': {},
             'detailed_scores': [],
             'trending_insights': ['No posts provided for analysis'],
-            'discord_message': "🔥 **Trending Prediction Report**\n• No data available for analysis"
+            'discord_message': "[HOT] **Trending Prediction Report**\n• No data available for analysis"
         }
 
     def _generate_error_report(self, batch_id: str, error_message: str) -> Dict:
@@ -502,7 +502,7 @@ class TrendingPredictionAgent:
             'score_distribution': {},
             'detailed_scores': [],
             'trending_insights': [f'Analysis failed: {error_message}'],
-            'discord_message': f"🔥 **Trending Prediction Report**\n• ❌ Analysis Error: {error_message}"
+            'discord_message': f"[HOT] **Trending Prediction Report**\n• [ERROR] Analysis Error: {error_message}"
         }
 
 
@@ -576,7 +576,7 @@ def get_trending_metrics() -> Dict:
 if __name__ == "__main__":
     # Demo usage
     async def demo():
-        print("🔥 Trending Prediction System Demo")
+        print("[HOT] Trending Prediction System Demo")
         print("=" * 50)
 
         # Sample post data
@@ -616,7 +616,7 @@ if __name__ == "__main__":
         # Run analysis
         result = await analyze_trending_potential(sample_posts, "demo_batch")
 
-        print(f"📊 Analysis Results:")
+        print(f"[ANALYTICS] Analysis Results:")
         print(f"Posts Analyzed: {result['posts_analyzed']}")
         print(f"Average Final Score: {result['average_final_score']}")
         print(f"Trending Candidates: {len(result['trending_candidates'])}")

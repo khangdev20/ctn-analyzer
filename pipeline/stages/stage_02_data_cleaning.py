@@ -29,7 +29,7 @@ class DataCleaningStage:
 
     async def execute(self, batch_id: str, raw_data: Dict, **kwargs) -> Optional[Dict]:
         """Execute data cleaning stage"""
-        logger.info("🧹 Stage 2: Cleaning and preprocessing data...")
+        logger.info("[CLEANUP] Stage 2: Cleaning and preprocessing data...")
         
         try:
             # Step 1: Remove deleted or duplicate posts
@@ -60,8 +60,8 @@ class DataCleaningStage:
             # Generate summary
             summary = self._generate_summary(cleaned_data, batch_id)
             
-            logger.info(f"✅ Stage 2 completed: {summary['cleaned_count']} posts cleaned")
-            logger.info(f"📁 Cleaned data saved to: {output_path}")
+            logger.info(f"[OK] Stage 2 completed: {summary['cleaned_count']} posts cleaned")
+            logger.info(f"[FOLDER] Cleaned data saved to: {output_path}")
             
             return {
                 **summary,
@@ -70,7 +70,7 @@ class DataCleaningStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 2 error: {e}")
+            logger.error(f"[ERROR] Stage 2 error: {e}")
             return None
 
     async def _remove_invalid_posts(self, posts: List[Dict]) -> List[Dict]:

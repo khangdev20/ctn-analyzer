@@ -32,7 +32,7 @@ class DataCollectionStage:
 
     async def execute(self, batch_id: str, **kwargs) -> Optional[Dict]:
         """Execute data collection stage"""
-        logger.info("📊 Stage 1: Collecting trending data...")
+        logger.info("[ANALYTICS] Stage 1: Collecting trending data...")
         
         try:
             # Use existing data collector with async wrapper
@@ -47,7 +47,7 @@ class DataCollectionStage:
             filename = await loop.run_in_executor(None, collect_data)
 
             if not filename:
-                logger.error("❌ No data collected from API")
+                logger.error("[ERROR] No data collected from API")
                 return None
 
             # Read the collected data
@@ -63,8 +63,8 @@ class DataCollectionStage:
             # Extract summary statistics
             summary = self._generate_summary(processed_data, batch_id)
             
-            logger.info(f"✅ Stage 1 completed: {summary['collected_count']} posts collected")
-            logger.info(f"📁 Data saved to: {output_path}")
+            logger.info(f"[OK] Stage 1 completed: {summary['collected_count']} posts collected")
+            logger.info(f"[FOLDER] Data saved to: {output_path}")
             
             return {
                 **summary,
@@ -73,7 +73,7 @@ class DataCollectionStage:
             }
 
         except Exception as e:
-            logger.error(f"❌ Stage 1 error: {e}")
+            logger.error(f"[ERROR] Stage 1 error: {e}")
             return None
 
     async def _process_raw_data(self, raw_data: Dict, batch_id: str) -> Dict:

@@ -36,7 +36,7 @@
     },
     {
       "title": "CONTENT_SUGGESTION_1",
-      "description": "Ready-to-post content: \"What does #castillo2025 mean to you? 🤔 Share your thoughts and experiences with us! Let’s celebrate our diverse perspectives and support one another on this journey. 💬 #VoteHawthorne #TideTurning\" | Hashtags:  | Performance prediction: 70/100",
+      "description": "Ready-to-post content: \"What does #castillo2025 mean to you? 🤔 Share your thoughts and experiences with us! Let’s celebrate our diverse perspectives and support one another on this journey. [CHAT] #VoteHawthorne #TideTurning\" | Hashtags:  | Performance prediction: 70/100",
       "category": "content_suggestions",
       "priority": 85,
       "actionable": true,
@@ -44,7 +44,7 @@
       "timeline": "immediate",
       "performance_prediction": 70,
       "ready_to_use": true,
-      "content_ready": "What does #castillo2025 mean to you? 🤔 Share your thoughts and experiences with us! Let’s celebrate our diverse perspectives and support one another on this journey. 💬 #VoteHawthorne #TideTurning",
+      "content_ready": "What does #castillo2025 mean to you? 🤔 Share your thoughts and experiences with us! Let’s celebrate our diverse perspectives and support one another on this journey. [CHAT] #VoteHawthorne #TideTurning",
       "hashtags_ready": [],
       "optimal_timing": "optimal",
       "quality_score": 114.0

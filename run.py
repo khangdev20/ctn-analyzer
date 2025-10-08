@@ -13,7 +13,7 @@ def main():
         app = create_app()
         print("[START] Starting Trending Intelligence System...")
         print("[INFO] Enhanced LLM Pipeline Active")
-        print("🔄 Background Worker: ENABLED")
+        print("[REFRESH] Background Worker: ENABLED")
         print("🌐 Flask API: http://localhost:5000")
         print("\n[INFO] Press Ctrl+C to stop")
 
