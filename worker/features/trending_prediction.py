@@ -60,13 +60,14 @@ class TrendingPredictionAgent:
             'timing_score': (0, 100)
         }
 
-    async def analyze_trending_potential(self, posts_data: List[Dict], batch_id: str = None) -> Dict:
+    async def analyze_trending_potential(self, posts_data: List[Dict], batch_id: str = None, content_patterns: Dict = None) -> Dict:
         """
         Main analysis function that evaluates trending potential for a batch of posts.
 
         Args:
             posts_data: List of post dictionaries with metrics
             batch_id: Optional batch identifier for tracking
+            content_patterns: Trending patterns from content analysis (NEW)
 
         Returns:
             Dictionary containing trending analysis results
@@ -82,22 +83,28 @@ class TrendingPredictionAgent:
             return self._generate_empty_report(batch_id)
 
         try:
-            # Step 1: Normalize and prepare metrics
+            # Step 1: Apply content analysis patterns to enhance scoring
+            if content_patterns:
+                logger.info(
+                    f"🎯 [PATTERNS] Applying {len(content_patterns.get('successful_patterns', []))} content analysis patterns")
+                posts_data = await self._apply_content_patterns(posts_data, content_patterns)
+
+            # Step 2: Normalize and prepare metrics
             normalized_posts = await self._normalize_post_metrics(posts_data)
 
-            # Step 2: Calculate weighted scores for each post
+            # Step 3: Calculate weighted scores for each post
             scored_posts = await self._calculate_weighted_scores(normalized_posts)
 
-            # Step 3: Compute trending probabilities
+            # Step 4: Compute trending probabilities
             probability_posts = await self._compute_trending_probabilities(scored_posts)
 
-            # Step 4: Identify trending candidates
+            # Step 5: Identify trending candidates
             trending_candidates = await self._identify_trending_candidates(probability_posts)
 
-            # Step 5: Analyze influencing factors
+            # Step 6: Analyze influencing factors
             top_factors = await self._analyze_influencing_factors(probability_posts)
 
-            # Step 6: Generate comprehensive analysis report
+            # Step 7: Generate comprehensive analysis report
             analysis_report = {
                 'batch_id': batch_id,
                 'timestamp': datetime.now(timezone.utc).isoformat(),
@@ -119,8 +126,81 @@ class TrendingPredictionAgent:
             return analysis_report
 
         except Exception as e:
-            logger.error(f"[ERROR] Error in trending prediction analysis: {str(e)}")
+            logger.error(
+                f"[ERROR] Error in trending prediction analysis: {str(e)}")
             return self._generate_error_report(batch_id, str(e))
+
+    async def _apply_content_patterns(self, posts_data: List[Dict], content_patterns: Dict) -> List[Dict]:
+        """
+        Apply content analysis patterns to enhance post scoring.
+        This uses insights from trending content analysis to better predict latest posts.
+        """
+        enhanced_posts = []
+
+        successful_patterns = content_patterns.get('successful_patterns', [])
+        engagement_triggers = content_patterns.get('engagement_triggers', [])
+        quality_indicators = content_patterns.get(
+            'high_quality_indicators', [])
+
+        logger.info(
+            f"🧠 [PATTERNS] Applying content analysis insights to {len(posts_data)} posts")
+
+        for post in posts_data:
+            enhanced_post = post.copy()
+            content = post.get('content', '').lower()
+
+            # Pattern-based score adjustments
+            pattern_boost = 0
+
+            # Check against successful patterns
+            for pattern in successful_patterns[:10]:  # Use top 10 patterns
+                pattern_content = pattern.get('content_preview', '').lower()
+                if pattern_content and len(pattern_content) > 20:
+                    # Simple similarity check (can be enhanced with NLP)
+                    common_words = set(content.split()) & set(
+                        pattern_content.split())
+                    if len(common_words) >= 3:  # At least 3 common words
+                        pattern_boost += pattern.get('quality_score', 70) * 0.1
+                        logger.debug(
+                            f"📈 [PATTERN MATCH] Post matched successful pattern ({len(common_words)} common words)")
+
+            # Check for engagement triggers from content analysis
+            trigger_boost = 0
+            for trigger in engagement_triggers:
+                if trigger.lower() in content:
+                    trigger_boost += 10
+                    logger.debug(
+                        f"🎯 [TRIGGER] Found engagement trigger: {trigger}")
+
+            # Apply pattern-based enhancements
+            if pattern_boost > 0:
+                enhanced_post['pattern_boost'] = min(
+                    pattern_boost, 30)  # Cap at 30 points
+                enhanced_post['story_score'] = min(
+                    100, enhanced_post.get('story_score', 50) + pattern_boost)
+
+            if trigger_boost > 0:
+                enhanced_post['engagement_boost'] = min(
+                    trigger_boost, 20)  # Cap at 20 points
+                enhanced_post['engagement_score'] = enhanced_post.get(
+                    'engagement_score', 0) + trigger_boost
+
+            # Add pattern metadata
+            enhanced_post['content_analysis_applied'] = True
+            enhanced_post['pattern_matches'] = pattern_boost > 0
+            enhanced_post['trigger_matches'] = trigger_boost > 0
+
+            enhanced_posts.append(enhanced_post)
+
+        pattern_matched = len(
+            [p for p in enhanced_posts if p.get('pattern_matches', False)])
+        trigger_matched = len(
+            [p for p in enhanced_posts if p.get('trigger_matches', False)])
+
+        logger.info(
+            f"✅ [PATTERNS] Enhanced posts: {pattern_matched} pattern matches, {trigger_matched} trigger matches")
+
+        return enhanced_posts
 
     async def _normalize_post_metrics(self, posts_data: List[Dict]) -> List[Dict]:
         """Normalize post metrics to 0-1 scale for consistent scoring."""
@@ -453,7 +533,8 @@ class TrendingPredictionAgent:
         if trending_candidates:
             discord_message += "• **Trending Candidates:**\n"
             for i, candidate in enumerate(trending_candidates[:3]):  # Top 3
-                rank_emoji = ["[FIRST_PLACE]", "🥈", "🥉"][i] if i < 3 else f"{i+1}."
+                rank_emoji = ["[FIRST_PLACE]", "🥈",
+                              "🥉"][i] if i < 3 else f"{i+1}."
                 post_id = candidate['post_id']
                 probability = candidate['trending_probability']
                 discord_message += f"   {rank_emoji} Post #{post_id} — {probability:.2f} probability\n"

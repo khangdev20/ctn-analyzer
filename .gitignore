@@ -177,3 +177,6 @@ cache/
 *.bak
 *.backup
 *.old
+
+# Test reports directory
+test_reports/

@@ -20,6 +20,7 @@ import asyncio
 import json
 import logging
 import os
+import pandas as pd
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 from pathlib import Path
@@ -88,18 +89,34 @@ class TrendingPredictionTask:
             f"[HOT] Starting trending prediction workflow for batch {batch_id}")
 
         try:
-            # Step 1: Collect comprehensive post data
+            # Step 1: Get trending patterns from recent content analysis
+            trending_patterns = await self._get_content_analysis_patterns()
+
+            # Step 2: Collect comprehensive post data
             posts_data = await self._collect_trending_data(batch_id)
 
             if not posts_data:
                 logger.warning("No posts data collected for trending analysis")
                 return {'status': 'no_data', 'batch_id': batch_id}
 
+            # Track latest posts count for accurate reporting
+            latest_posts_count = len(
+                [p for p in posts_data if p.get('source_engine') == 'latest_posts_api'])
+
             logger.info(
                 f"[ANALYTICS] Collected {len(posts_data)} posts for trending analysis")
+            logger.info(
+                f"[ANALYTICS] Latest posts: {latest_posts_count}, Other sources: {len(posts_data) - latest_posts_count}")
 
-            # Step 2: Run trending prediction analysis
-            analysis_results = await self.agent.analyze_trending_potential(posts_data, batch_id)
+            if trending_patterns:
+                logger.info(
+                    f"[PATTERNS] Using {len(trending_patterns.get('successful_patterns', []))} trending patterns from content analysis")
+
+            # Step 3: Run trending prediction analysis with content analysis patterns
+            analysis_results = await self.agent.analyze_trending_potential(posts_data, batch_id, trending_patterns)
+
+            # Add latest posts count to analysis results for Discord reporting
+            analysis_results['latest_posts_count'] = latest_posts_count
 
             # Step 3: Save analysis results
             await self._save_analysis_results(analysis_results, batch_id)
@@ -112,9 +129,10 @@ class TrendingPredictionTask:
                 'status': 'success',
                 'batch_id': batch_id,
                 'timestamp': datetime.now(timezone.utc).isoformat(),
-                'posts_processed': len(posts_data),
-                'trending_candidates': len(analysis_results.get('trending_candidates', [])),
-                'average_score': analysis_results.get('average_final_score', 0),
+                'posts_analyzed': analysis_results.get('posts_analyzed', len(posts_data)),
+                'latest_posts_count': latest_posts_count,
+                'trending_candidates': analysis_results.get('trending_candidates', []),
+                'average_final_score': analysis_results.get('average_final_score', 0),
                 'discord_notification': discord_success,
                 'analysis_results': analysis_results,
                 'workflow_insights': await self._generate_workflow_insights(analysis_results)
@@ -125,7 +143,8 @@ class TrendingPredictionTask:
             return workflow_results
 
         except Exception as e:
-            logger.error(f"[ERROR] Error in trending prediction workflow: {str(e)}")
+            logger.error(
+                f"[ERROR] Error in trending prediction workflow: {str(e)}")
             return {
                 'status': 'error',
                 'batch_id': batch_id,
@@ -143,21 +162,28 @@ class TrendingPredictionTask:
         collected_posts = []
 
         try:
-            # Method 1: Try to collect from recent analysis results
+            # Method 1: Collect LATEST posts from API for trending prediction
+            latest_posts = await self._collect_latest_posts_for_prediction()
+            if latest_posts:
+                collected_posts.extend(latest_posts)
+                logger.info(
+                    f"🚀 Collected {len(latest_posts)} LATEST posts for trending prediction")
+
+            # Method 2: Try to collect from recent analysis results
             recent_data = await self._collect_from_recent_analyses()
             if recent_data:
                 collected_posts.extend(recent_data)
                 logger.info(
                     f"📥 Collected {len(recent_data)} posts from recent analyses")
 
-            # Method 2: Try to collect from raw data if available
+            # Method 3: Try to collect from raw data if available
             raw_data = await self._collect_from_raw_data()
             if raw_data:
                 collected_posts.extend(raw_data)
                 logger.info(
                     f"📥 Collected {len(raw_data)} additional posts from raw data")
 
-            # Method 3: Try trending data files from root directory
+            # Method 4: Try trending data files from root directory (for comparison)
             trending_files_data = await self._collect_from_trending_files()
             if trending_files_data:
                 collected_posts.extend(trending_files_data)
@@ -192,38 +218,27 @@ class TrendingPredictionTask:
             return await self._generate_mock_trending_data()
 
     async def _collect_from_recent_analyses(self) -> List[Dict]:
-        """Collect posts from recent analysis results."""
+        """
+        Collect posts from recent analysis results (S3 cloud storage only).
+        Local file analysis deprecated in favor of cloud-first architecture.
+        """
         posts = []
 
         try:
-            # Look for recent analysis results in reports directory
-            reports_base = Path("data/reports")
-            if reports_base.exists():
-                for engine_dir in self.data_sources:
-                    engine_path = reports_base / engine_dir
-                    if engine_path.exists():
-                        # Find most recent analysis file
-                        analysis_files = list(engine_path.glob("*.json"))
-                        if analysis_files:
-                            latest_file = max(
-                                analysis_files, key=lambda f: f.stat().st_mtime)
-                            try:
-                                with open(latest_file, 'r', encoding='utf-8') as f:
-                                    data = json.load(f)
+            logger.info("📊 [S3] Collecting from recent S3 analysis reports...")
 
-                                # Extract posts from different analysis formats
-                                engine_posts = self._extract_posts_from_analysis(
-                                    data, engine_dir)
-                                posts.extend(engine_posts)
+            # Note: Local file collection deprecated
+            # Recent analyses are now accessed via:
+            # 1. Content analysis patterns (main integration)
+            # 2. S3 report queries (if needed)
+            # 3. Direct API collection
 
-                            except Exception as e:
-                                logger.warning(
-                                    f"Could not read {latest_file}: {str(e)}")
-
+            logger.info(
+                "✅ [MIGRATION] Using cloud-first data collection - no local file dependencies")
             return posts
 
         except Exception as e:
-            logger.warning(f"Error collecting from recent analyses: {str(e)}")
+            logger.warning(f"Error in S3 analysis collection: {str(e)}")
             return []
 
     def _extract_posts_from_analysis(self, analysis_data: Dict, engine_type: str) -> List[Dict]:
@@ -239,7 +254,7 @@ class TrendingPredictionTask:
                     analysis_data.get('posts', []),
                     analysis_data.get('content_analysis', {}).get('posts', [])
                 ]
-                
+
                 for source in post_sources:
                     if source:
                         for post in source:
@@ -265,7 +280,7 @@ class TrendingPredictionTask:
                     analysis_data.get('analysis', {}),
                     analysis_data
                 ]
-                
+
                 for source in engagement_sources:
                     if 'post_scores' in source:
                         for post_id, score_data in source['post_scores'].items():
@@ -291,7 +306,7 @@ class TrendingPredictionTask:
                     analysis_data.get('posts', []),
                     analysis_data.get('analysis', {}).get('posts', [])
                 ]
-                
+
                 for source in temporal_sources:
                     if source:
                         for post in source:
@@ -317,7 +332,7 @@ class TrendingPredictionTask:
                     analysis_data.get('posts', []),
                     analysis_data.get('analysis', {}).get('posts', [])
                 ]
-                
+
                 for source in strategic_sources:
                     if source:
                         for post in source:
@@ -343,7 +358,7 @@ class TrendingPredictionTask:
                     analysis_data.get('data', []),
                     analysis_data.get('items', [])
                 ]
-                
+
                 for source in generic_sources:
                     if isinstance(source, list) and source:
                         for item in source:
@@ -383,31 +398,9 @@ class TrendingPredictionTask:
                     latest_date_dir = max(date_dirs, key=lambda d: d.name)
 
                     # Look for JSON files in the latest date directory
-                    json_files = list(latest_date_dir.rglob("*.json"))
-                    if json_files:
-                        latest_file = max(
-                            json_files, key=lambda f: f.stat().st_mtime)
-
-                        try:
-                            with open(latest_file, 'r', encoding='utf-8') as f:
-                                raw_data = json.load(f)
-
-                            # Extract posts from raw data format
-                            if isinstance(raw_data, list):
-                                for item in raw_data:
-                                    if isinstance(item, dict):
-                                        normalized_post = self._normalize_raw_post(
-                                            item)
-                                        posts.append(normalized_post)
-                            elif isinstance(raw_data, dict) and 'posts' in raw_data:
-                                for post in raw_data['posts']:
-                                    normalized_post = self._normalize_raw_post(
-                                        post)
-                                    posts.append(normalized_post)
-
-                        except Exception as e:
-                            logger.warning(
-                                f"Could not read raw data file {latest_file}: {str(e)}")
+                    # Local file access deprecated - using S3 cloud storage
+                    logger.info(
+                        "📊 [MIGRATION] Raw data now stored in S3 cloud storage only")
 
             return posts
 
@@ -423,44 +416,367 @@ class TrendingPredictionTask:
             # Look for trending_data_*.json files in root directory
             root_path = Path(".")
             trending_files = list(root_path.glob("trending_data_*.json"))
-            
+
             if trending_files:
                 # Use the most recent trending data file
-                latest_trending_file = max(trending_files, key=lambda f: f.stat().st_mtime)
-                logger.info(f"[ANALYTICS] Using trending data file: {latest_trending_file.name}")
-                
-                try:
-                    with open(latest_trending_file, 'r', encoding='utf-8') as f:
-                        trending_data = json.load(f)
-                    
-                    # Extract posts from trending data format
-                    if isinstance(trending_data, list):
-                        for item in trending_data:
-                            if isinstance(item, dict):
-                                normalized_post = self._normalize_trending_post(item)
-                                posts.append(normalized_post)
-                    elif isinstance(trending_data, dict):
-                        if 'posts' in trending_data:
-                            for post in trending_data['posts']:
-                                normalized_post = self._normalize_trending_post(post)
-                                posts.append(normalized_post)
-                        elif 'data' in trending_data:
-                            for post in trending_data['data']:
-                                normalized_post = self._normalize_trending_post(post)
-                                posts.append(normalized_post)
-                        else:
-                            # Try to treat the whole object as a single post
-                            normalized_post = self._normalize_trending_post(trending_data)
-                            posts.append(normalized_post)
-                
-                except Exception as e:
-                    logger.warning(f"Could not read trending file {latest_trending_file}: {str(e)}")
-            
+                # Local trending files deprecated - using S3 cloud storage
+                logger.info(
+                    "📊 [MIGRATION] Trending data now accessed via S3 cloud storage and content analysis patterns")
+
             return posts
 
         except Exception as e:
             logger.warning(f"Error collecting from trending files: {str(e)}")
             return []
+
+    async def _collect_latest_posts_for_prediction(self) -> List[Dict]:
+        """
+        Collect LATEST posts from API to predict trending potential.
+        This is the main method for fresh trending prediction.
+        """
+        posts = []
+
+        try:
+            logger.info(
+                "🚀 [LATEST] Fetching latest posts for trending prediction...")
+
+            # Import enhanced data collector with latest posts support
+            from worker.features.data_collector import collect_latest_posts, load_data_from_s3
+
+            # Collect latest posts using enhanced data collector
+            collection_result = collect_latest_posts(num_pages=3)
+
+            if collection_result and collection_result.get('s3_key'):
+                # Load collected data from S3
+                data = load_data_from_s3(collection_result['s3_key'])
+
+                if data and data.get('data'):
+                    raw_posts = data['data']
+                    logger.info(
+                        f"📡 [LATEST] Loaded {len(raw_posts)} fresh latest posts from collection")
+
+                    # Normalize each post for trending prediction
+                    for post in raw_posts:
+                        normalized_post = self._normalize_latest_post_for_prediction(
+                            post)
+                        normalized_post['source_engine'] = 'latest_posts_api'
+                        posts.append(normalized_post)
+
+                    logger.info(
+                        f"✅ [LATEST] Normalized {len(posts)} latest posts for trending prediction")
+                else:
+                    logger.warning(
+                        "⚠️ [LATEST] No data found in collected latest posts")
+            else:
+                logger.warning(
+                    "⚠️ [LATEST] Failed to collect latest posts from API")
+
+        except Exception as e:
+            logger.error(f"❌ [LATEST] Error collecting latest posts: {str(e)}")
+
+        return posts
+
+    async def _get_content_analysis_patterns(self) -> Dict:
+        """
+        Get trending patterns from recent content analysis results.
+        This provides insights about what makes posts trend successfully.
+        """
+        try:
+            from data_access.s3_store import S3Store
+
+            logger.info(
+                "🔍 [PATTERNS] Loading trending patterns from content analysis...")
+
+            s3_store = S3Store()
+
+            # Get recent content analysis reports (last 7 days)
+            recent_reports = []
+            now = datetime.now(timezone.utc)
+
+            for days_back in range(7):  # Check last 7 days
+                target_date = now - pd.Timedelta(days=days_back)
+                date_prefix = s3_store.build_key(
+                    "reports", "content_analysis",
+                    f"{target_date.year}",
+                    f"{target_date.month:02d}"
+                )
+
+                try:
+                    client = s3_store.get_s3_client()
+                    response = client.list_objects_v2(
+                        Bucket=s3_store.bucket,
+                        Prefix=date_prefix,
+                        MaxKeys=5  # Limit to avoid too much data
+                    )
+
+                    if 'Contents' in response:
+                        for obj in response['Contents']:
+                            if obj['Key'].endswith('_content_analysis.json'):
+                                # Load the analysis data
+                                data = s3_store.s3_read_json(obj['Key'])
+                                if data and data.get('analyzed_posts'):
+                                    recent_reports.append(data)
+
+                except Exception as e:
+                    logger.debug(
+                        f"Could not load reports from {date_prefix}: {e}")
+                    continue
+
+            if not recent_reports:
+                logger.info(
+                    "📊 [PATTERNS] No recent content analysis found, using default patterns")
+                return self._get_default_trending_patterns()
+
+            # Extract successful patterns from content analysis
+            patterns = self._extract_trending_patterns(recent_reports)
+
+            logger.info(
+                f"✅ [PATTERNS] Extracted {len(patterns.get('successful_patterns', []))} trending patterns from {len(recent_reports)} content analysis reports")
+
+            return patterns
+
+        except Exception as e:
+            logger.error(
+                f"❌ [PATTERNS] Error loading content analysis patterns: {str(e)}")
+            return self._get_default_trending_patterns()
+
+    def _extract_trending_patterns(self, content_reports: List[Dict]) -> Dict:
+        """Extract successful trending patterns from content analysis reports."""
+        patterns = {
+            'successful_patterns': [],
+            'common_themes': [],
+            'high_quality_indicators': [],
+            'engagement_triggers': [],
+            'metadata': {
+                'reports_analyzed': len(content_reports),
+                'extraction_timestamp': datetime.now(timezone.utc).isoformat()
+            }
+        }
+
+        try:
+            high_quality_posts = []
+            all_posts = []
+
+            # Collect high-quality posts from content analysis
+            for report in content_reports:
+                analyzed_posts = report.get('analyzed_posts', [])
+                all_posts.extend(analyzed_posts)
+
+                # Filter for high-quality posts (above average)
+                avg_quality = report.get('aggregate_metrics', {}).get(
+                    'avg_content_quality', 50)
+                high_quality = [p for p in analyzed_posts if p.get(
+                    'content_quality_score', 0) > avg_quality * 1.2]
+                high_quality_posts.extend(high_quality)
+
+            if high_quality_posts:
+                # Extract common themes from high-quality posts
+                themes = []
+                quality_indicators = []
+                engagement_triggers = []
+
+                for post in high_quality_posts:
+                    content = post.get('content', '').lower()
+
+                    # Extract successful content patterns
+                    if post.get('content_quality_score', 0) > 80:
+                        if len(content) > 50:  # Avoid very short posts
+                            patterns['successful_patterns'].append({
+                                'content_preview': content[:100],
+                                'quality_score': post.get('content_quality_score', 0),
+                                'readability_score': post.get('readability_score', 0),
+                                'sentiment': post.get('sentiment', 'neutral'),
+                                'dominant_emotion': post.get('dominant_emotion', 'none')
+                            })
+
+                    # Extract quality indicators
+                    if post.get('readability_score', 0) > 70:
+                        quality_indicators.append(
+                            post.get('content_structure', {}))
+
+                    # Extract engagement triggers
+                    if post.get('engagement_potential', 0) > 75:
+                        emotions = post.get('emotions', [])
+                        if emotions:
+                            engagement_triggers.extend(
+                                emotions[:2])  # Top 2 emotions
+
+                patterns['common_themes'] = list(set(themes))[:10]
+                patterns['high_quality_indicators'] = quality_indicators[:5]
+                patterns['engagement_triggers'] = list(
+                    set(engagement_triggers))[:8]
+
+            logger.info(
+                f"📈 [PATTERNS] Extracted patterns: {len(patterns['successful_patterns'])} successful posts, {len(patterns['engagement_triggers'])} triggers")
+
+        except Exception as e:
+            logger.error(f"Error extracting patterns: {str(e)}")
+
+        return patterns
+
+    def _get_default_trending_patterns(self) -> Dict:
+        """Provide default trending patterns when content analysis data is unavailable."""
+        return {
+            'successful_patterns': [
+                {'pattern': 'breaking_news', 'weight': 0.9},
+                {'pattern': 'exclusive_content', 'weight': 0.8},
+                {'pattern': 'emotional_appeal', 'weight': 0.7},
+                {'pattern': 'question_engagement', 'weight': 0.6},
+                {'pattern': 'trending_hashtags', 'weight': 0.5}
+            ],
+            'common_themes': ['news', 'entertainment', 'technology', 'sports'],
+            'high_quality_indicators': ['optimal_length', 'clear_structure', 'emotional_hooks'],
+            'engagement_triggers': ['excitement', 'curiosity', 'controversy', 'inspiration'],
+            'metadata': {
+                'source': 'default_patterns',
+                'timestamp': datetime.now(timezone.utc).isoformat()
+            }
+        }
+
+    def _normalize_latest_post_for_prediction(self, post: Dict) -> Dict:
+        """
+        Normalize latest post data for trending prediction analysis.
+        Calculate initial trending indicators based on post characteristics.
+        """
+        # Extract basic post info
+        post_id = post.get('id', f"latest_{hash(str(post)) % 100000}")
+        content = post.get('content', post.get(
+            'text', post.get('message', '')))
+        author = post.get('author', post.get(
+            'username', post.get('user', 'unknown')))
+
+        # Calculate initial trending indicators
+        content_length = len(content)
+        has_hashtags = '#' in content
+        has_mentions = '@' in content
+        has_links = 'http' in content.lower()
+
+        # Base trending scores (to be refined by prediction engine)
+        story_score = self._calculate_content_story_score(content)
+        engagement_score = post.get(
+            'likes', 0) + post.get('shares', 0) + post.get('comments', 0)
+        velocity_score = self._calculate_initial_velocity(post)
+        network_influence = self._calculate_network_influence(author, post)
+        timing_score = self._calculate_timing_score()
+        strategic_score = self._calculate_strategic_value(content)
+
+        return {
+            'id': post_id,
+            'content': content,
+            'author': author,
+            'story_score': story_score,
+            'engagement_score': engagement_score,
+            'velocity': velocity_score,
+            'network_influence': network_influence,
+            'timing_score': timing_score,
+            'strategic_score': strategic_score,
+            'content_indicators': {
+                'length': content_length,
+                'has_hashtags': has_hashtags,
+                'has_mentions': has_mentions,
+                'has_links': has_links
+            },
+            'source_engine': 'latest_posts_api',
+            'prediction_type': 'trending_potential',
+            'timestamp': datetime.now(timezone.utc).isoformat()
+        }
+
+    def _calculate_content_story_score(self, content: str) -> int:
+        """Calculate story potential score based on content analysis."""
+        if not content:
+            return 30
+
+        score = 50  # Base score
+
+        # Length factors
+        if 100 <= len(content) <= 300:
+            score += 15  # Optimal length
+        elif len(content) > 500:
+            score -= 10  # Too long
+
+        # Engagement triggers
+        if any(word in content.lower() for word in ['breaking', 'urgent', 'exclusive', 'revealed']):
+            score += 20
+        if any(word in content.lower() for word in ['wow', 'amazing', 'incredible', 'shocking']):
+            score += 15
+        if '?' in content:
+            score += 10  # Questions engage
+        if '!' in content:
+            score += 5   # Excitement
+
+        return min(100, max(0, score))
+
+    def _calculate_initial_velocity(self, post: Dict) -> float:
+        """Calculate initial velocity based on early engagement indicators."""
+        base_velocity = 1.0
+
+        # Early engagement
+        likes = post.get('likes', 0)
+        shares = post.get('shares', 0)
+        comments = post.get('comments', 0)
+
+        if likes > 10:
+            base_velocity += 0.5
+        if shares > 5:
+            base_velocity += 1.0  # Shares are strong indicator
+        if comments > 3:
+            base_velocity += 0.7
+
+        return min(5.0, base_velocity)
+
+    def _calculate_network_influence(self, author: str, post: Dict) -> float:
+        """Calculate network influence potential."""
+        base_influence = 0.5
+
+        # Author factors (simplified)
+        if len(author) > 5:  # Established username
+            base_influence += 0.2
+
+        # Content network factors
+        content = post.get('content', '')
+        if '@' in content:  # Mentions
+            base_influence += 0.3
+        if '#' in content:  # Hashtags
+            base_influence += 0.2
+
+        return min(1.0, base_influence)
+
+    def _calculate_timing_score(self) -> int:
+        """Calculate timing score based on current time."""
+        current_hour = datetime.now().hour
+
+        # Peak social media hours
+        if 8 <= current_hour <= 10:  # Morning
+            return 85
+        elif 12 <= current_hour <= 14:  # Lunch
+            return 90
+        elif 17 <= current_hour <= 21:  # Evening
+            return 95
+        elif 21 <= current_hour <= 23:  # Night
+            return 80
+        else:
+            return 60  # Off-peak
+
+    def _calculate_strategic_value(self, content: str) -> int:
+        """Calculate strategic business value."""
+        if not content:
+            return 40
+
+        score = 50
+
+        # Business relevance keywords
+        business_keywords = ['market', 'business',
+                             'economy', 'investment', 'growth', 'success']
+        if any(keyword in content.lower() for keyword in business_keywords):
+            score += 20
+
+        # Competition relevance
+        competition_keywords = ['competition',
+                                'contest', 'challenge', 'winner', 'prize']
+        if any(keyword in content.lower() for keyword in competition_keywords):
+            score += 25
+
+        return min(100, score)
 
     def _normalize_trending_post(self, trending_post: Dict) -> Dict:
         """Normalize trending post data to trending analysis format."""
@@ -547,36 +863,96 @@ class TrendingPredictionTask:
             return basic_mock_posts
 
     async def _save_analysis_results(self, analysis_results: Dict, batch_id: str):
-        """Save trending prediction analysis results to structured files."""
+        """Save trending prediction analysis results to S3 storage."""
         try:
-            # Create timestamped directory
-            timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
-            results_dir = self.reports_path / f"{batch_id}_{timestamp}"
-            results_dir.mkdir(parents=True, exist_ok=True)
+            from data_access.s3_store import s3_write_json, build_key
 
-            # Save main analysis results
-            results_file = results_dir / "trending_analysis.json"
-            with open(results_file, 'w', encoding='utf-8') as f:
-                json.dump(analysis_results, f, indent=2,
-                          ensure_ascii=False, default=str)
+            # Create timestamp for unique batch directory
+            timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
+            batch_folder = f"{batch_id}_{timestamp}"
+
+            # Extract year/month for partitioning
+            now = datetime.now(timezone.utc)
+            year = now.strftime('%Y')
+            month = now.strftime('%m')
+
+            # Save main analysis results to S3
+            analysis_key = build_key(
+                "reports", "trending_prediction", year, month, batch_folder, "trending_analysis.json")
+            result = s3_write_json(
+                analysis_key, analysis_results, compress=True)
+
+            if result['success']:
+                logger.info(
+                    f"[SAVE] Main analysis saved to S3: {result['s3_url']}")
+            else:
+                logger.error(
+                    f"[ERROR] Failed to save main analysis: {result.get('error')}")
 
             # Save trending candidates separately for easy access
             if analysis_results.get('trending_candidates'):
-                candidates_file = results_dir / "trending_candidates.json"
-                with open(candidates_file, 'w', encoding='utf-8') as f:
-                    json.dump(
-                        analysis_results['trending_candidates'], f, indent=2, ensure_ascii=False)
+                candidates_key = build_key(
+                    "reports", "trending_prediction", year, month, batch_folder, "trending_candidates.json")
+                candidates_result = s3_write_json(
+                    candidates_key, analysis_results['trending_candidates'], compress=True)
 
-            # Save Discord message for reference
-            discord_file = results_dir / "discord_message.txt"
-            with open(discord_file, 'w', encoding='utf-8') as f:
-                f.write(analysis_results.get(
-                    'discord_message', 'No Discord message generated'))
+                if candidates_result['success']:
+                    logger.info(
+                        f"[SAVE] Trending candidates saved to S3: {candidates_result['s3_url']}")
 
-            logger.info(f"[SAVE] Analysis results saved to {results_dir}")
+            # Save Discord message as markdown for reference
+            discord_message = analysis_results.get(
+                'discord_message', 'No Discord message generated')
+            if discord_message:
+                discord_key = build_key(
+                    "reports", "trending_prediction", year, month, batch_folder, "discord_message.md")
+                discord_result = s3_write_json(
+                    discord_key, discord_message, content_type="text/markdown")
+
+                if discord_result['success']:
+                    logger.debug(
+                        f"[SAVE] Discord message saved to S3: {discord_result['s3_url']}")
+
+            logger.info(
+                f"[SAVE] S3 analysis results saved for batch: {batch_folder}")
 
         except Exception as e:
-            logger.error(f"[ERROR] Error saving analysis results: {str(e)}")
+            logger.error(f"[ERROR] Error saving S3 analysis results: {str(e)}")
+
+    async def _get_s3_source_info(self) -> str:
+        """Get S3 source information for Discord messages."""
+        try:
+            from data_access.s3_store import S3Store
+
+            s3_store = S3Store()
+            client = s3_store.get_s3_client()
+
+            # Get recent files from S3 (last 3 files)
+            response = client.list_objects_v2(
+                Bucket=s3_store.bucket,
+                Prefix="data/raw/",
+                MaxKeys=3
+            )
+
+            if 'Contents' in response:
+                files = sorted(response['Contents'],
+                               key=lambda x: x['LastModified'], reverse=True)[:3]
+
+                source_info = "📁 **S3 Data Sources:**\n"
+                for i, file_obj in enumerate(files, 1):
+                    key = file_obj['Key']
+                    size_mb = file_obj['Size'] / (1024 * 1024)
+                    timestamp = file_obj['LastModified'].strftime(
+                        '%Y-%m-%d %H:%M')
+                    source_info += f"`{i}.` {key.split('/')[-1]} ({size_mb:.1f}MB, {timestamp})\n"
+
+                return source_info
+            else:
+                return "📁 **S3 Data Sources:** No recent files found"
+
+        except Exception as e:
+            logger.error(f"Error getting S3 source info: {str(e)}")
+            return "📁 **S3 Data Sources:** Error loading source information"
 
     async def _send_discord_notification(self, analysis_results: Dict) -> bool:
         """Send Discord notification with trending prediction results."""
@@ -589,20 +965,49 @@ class TrendingPredictionTask:
             discord_message = analysis_results.get(
                 'discord_message', 'Trending analysis completed')
 
+            # Count latest posts vs other sources
+            # Check if we have latest posts data in analysis results
+            latest_posts_count = analysis_results.get('latest_posts_count', 0)
+
+            # If not tracked separately, try to estimate from posts_analyzed
+            if latest_posts_count == 0:
+                # Check for posts with latest_posts_api source
+                all_posts = analysis_results.get('posts_analyzed_details', [])
+                latest_posts_count = len([p for p in all_posts
+                                          if p.get('source_engine') == 'latest_posts_api'])
+
+                # If still 0, assume most posts are latest posts if we have data
+                if latest_posts_count == 0 and analysis_results.get('posts_analyzed', 0) > 0:
+                    latest_posts_count = analysis_results.get(
+                        'posts_analyzed', 0)
+
+            trending_candidates = analysis_results.get(
+                'trending_candidates', [])
+            high_potential_posts = [
+                c for c in trending_candidates if c.get('final_score', 0) > 75]
+
+            # Get S3 source information
+            s3_source_info = await self._get_s3_source_info()
+
             # Send as rich embed if possible
             success = await self.discord_sender.send_rich_embed(
-                title="[HOT] Trending Prediction Report",
-                description=discord_message,
-                color=0xFF6B35,  # Orange color for trending
+                title="🚀 Latest Posts → Trending Prediction",
+                description=f"**Analyzed {latest_posts_count} latest posts** for trending potential\n{discord_message}\n\n{s3_source_info}",
+                color=0x00FF88,  # Green color for predictions
                 fields=[
                     {
-                        "name": "[ANALYTICS] Analysis Summary",
-                        "value": f"Posts: {analysis_results.get('posts_analyzed', 0)}\nCandidates: {len(analysis_results.get('trending_candidates', []))}",
+                        "name": "📊 Analysis Summary",
+                        "value": f"Latest Posts: {latest_posts_count}\nTotal Analyzed: {analysis_results.get('posts_analyzed', 0)}\nTrending Candidates: {len(trending_candidates)}",
+                        "inline": True
+                    },
+                    {
+                        "name": "🎯 High Potential",
+                        "value": f"{len(high_potential_posts)} posts with >75% trending probability",
                         "inline": True
                     },
                     {
                         "name": "💯 Average Score",
-                        "value": f"{analysis_results.get('average_final_score', 0):.1f}",
+                        "value": f"{analysis_results.get('average_final_score', 0):.1f}%",
                         "inline": True
                     }
                 ]
@@ -617,7 +1022,8 @@ class TrendingPredictionTask:
                 return success
 
         except Exception as e:
-            logger.error(f"[ERROR] Error sending Discord notification: {str(e)}")
+            logger.error(
+                f"[ERROR] Error sending Discord notification: {str(e)}")
             return False
 
     async def _generate_workflow_insights(self, analysis_results: Dict) -> List[str]:

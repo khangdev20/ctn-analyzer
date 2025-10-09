@@ -9,26 +9,12 @@ import threading
 from datetime import datetime, timezone
 from .scheduler import run_scheduler_loop
 
-# Import all 7 analysis engine tasks
+# Import active analysis engine tasks
 from .tasks.content_analysis_task import run_content_analysis_task
-from .tasks.engagement_intelligence_task import run_engagement_intelligence_task
-from .tasks.network_intelligence_task import run_network_intelligence_task
-from .tasks.temporal_analytics_task import run_temporal_analytics_task
-from .tasks.strategic_intelligence_task import run_strategic_intelligence_task
 from .tasks.trending_prediction_task import run_trending_prediction_task
-from .tasks.meta_trend_intelligence_task import run_weekly_meta_trend_task
 
 # Import leaderboard tasks
 from .tasks.leaderboard_worker import leaderboard_daily_task, leaderboard_bidaily_task
-from .tasks.engagement_intelligence_task import run_engagement_intelligence_task
-from .tasks.network_intelligence_task import run_network_intelligence_task
-from .tasks.temporal_analytics_task import run_temporal_analytics_task
-from .tasks.strategic_intelligence_task import run_strategic_intelligence_task
-from .tasks.trending_prediction_task import run_trending_prediction_task
-from .tasks.meta_trend_intelligence_task import run_weekly_meta_trend_task
-
-# Import leaderboard task
-from .tasks.leaderboard_worker import leaderboard_daily_task
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +100,8 @@ class BackgroundWorker:
                 total_engines = result.get('total_engines', 7)
                 execution_time = result.get('execution_time_seconds', 0)
 
-                logger.info(f"[OK] [MAIN FLOW] Pipeline completed successfully!")
+                logger.info(
+                    f"[OK] [MAIN FLOW] Pipeline completed successfully!")
                 logger.info(
                     f"[ANALYTICS] [MAIN FLOW] Engines: {successful_engines}/{total_engines} successful")
                 logger.info(
@@ -123,7 +110,8 @@ class BackgroundWorker:
                     f"[REPORT] [MAIN FLOW] Batch ID: {result.get('batch_id')}")
             else:
                 error_msg = result.get('error', 'Unknown error')
-                logger.error(f"[ERROR] [MAIN FLOW] Pipeline failed: {error_msg}")
+                logger.error(
+                    f"[ERROR] [MAIN FLOW] Pipeline failed: {error_msg}")
 
             return result
 
@@ -136,7 +124,8 @@ class BackgroundWorker:
                 'timestamp': str(datetime.now(timezone.utc))
             }
         except Exception as e:
-            logger.error(f"[ERROR] [MAIN FLOW] Main flow orchestrator error: {e}")
+            logger.error(
+                f"[ERROR] [MAIN FLOW] Main flow orchestrator error: {e}")
             return {
                 'status': 'error',
                 'error': str(e),
@@ -158,49 +147,25 @@ class BackgroundWorker:
         except Exception as e:
             logger.error(f"[ENGINE] Content Analysis Engine error: {e}")
 
-    async def _run_engagement_intelligence_task(self):
-        """Engagement Intelligence Engine - audience interaction patterns"""
-        try:
-            logger.info("[ENGINE] Starting Engagement Intelligence Engine")
-            result = await run_engagement_intelligence_task()
-            logger.info(
-                f"[ENGINE] Engagement Intelligence completed: {result.get('status', 'unknown')}")
-            return result
-        except Exception as e:
-            logger.error(f"[ENGINE] Engagement Intelligence Engine error: {e}")
+    # async def _run_engagement_intelligence_task(self):
+    #     """Engagement Intelligence Engine - audience interaction patterns"""
+    #     # DISABLED - Task moved to disabled folder
+    #     pass
 
-    async def _run_network_intelligence_task(self):
-        """Network Intelligence Engine - social network influence mapping"""
-        try:
-            logger.info("[ENGINE] Starting Network Intelligence Engine")
-            result = await run_network_intelligence_task()
-            logger.info(
-                f"[ENGINE] Network Intelligence completed: {result.get('status', 'unknown')}")
-            return result
-        except Exception as e:
-            logger.error(f"[ENGINE] Network Intelligence Engine error: {e}")
+    # async def _run_network_intelligence_task(self):
+    #     """Network Intelligence Engine - social network influence mapping"""
+    #     # DISABLED - Task moved to disabled folder
+    #     pass
 
-    async def _run_temporal_analytics_task(self):
-        """Temporal Analytics Engine - time-based performance optimization"""
-        try:
-            logger.info("[ENGINE] Starting Temporal Analytics Engine")
-            result = await run_temporal_analytics_task()
-            logger.info(
-                f"[ENGINE] Temporal Analytics completed: {result.get('status', 'unknown')}")
-            return result
-        except Exception as e:
-            logger.error(f"[ENGINE] Temporal Analytics Engine error: {e}")
+    # async def _run_temporal_analytics_task(self):
+    #     """Temporal Analytics Engine - time-based performance optimization"""
+    #     # DISABLED - Task moved to disabled folder
+    #     pass
 
-    async def _run_strategic_intelligence_task(self):
-        """Strategic Intelligence Engine - campaign effectiveness analysis"""
-        try:
-            logger.info("[ENGINE] Starting Strategic Intelligence Engine")
-            result = await run_strategic_intelligence_task()
-            logger.info(
-                f"[ENGINE] Strategic Intelligence completed: {result.get('status', 'unknown')}")
-            return result
-        except Exception as e:
-            logger.error(f"[ENGINE] Strategic Intelligence Engine error: {e}")
+    # async def _run_strategic_intelligence_task(self):
+    #     """Strategic Intelligence Engine - campaign effectiveness analysis"""
+    #     # DISABLED - Task moved to disabled folder
+    #     pass
 
     async def _run_trending_prediction_task(self):
         """Trending Prediction Engine - viral content forecasting"""
@@ -229,13 +194,53 @@ class BackgroundWorker:
     async def _run_leaderboard_bidaily_task(self):
         """Leaderboard Bi-Daily Logger - competition analysis and Discord reporting (every 12 hours)"""
         try:
-            logger.info("[LEADERBOARD] Starting Bi-Daily Leaderboard Logger (12-hour interval)")
+            logger.info(
+                "[LEADERBOARD] Starting Bi-Daily Leaderboard Logger (12-hour interval)")
             result = await leaderboard_bidaily_task()
             logger.info(
                 f"[LEADERBOARD] Bi-Daily Leaderboard completed: {result.get('status', 'unknown')}")
             return result
         except Exception as e:
-            logger.error(f"[LEADERBOARD] Bi-Daily Leaderboard Logger error: {e}")
+            logger.error(
+                f"[LEADERBOARD] Bi-Daily Leaderboard Logger error: {e}")
+
+    # ===============================
+    # DEBATE STRATEGY MONITORING
+    # ===============================
+
+    async def _run_debate_strategy_task(self):
+        """Debate Strategy Monitor - AI agent for competition debate analysis"""
+        try:
+            logger.info(
+                "[🎯] Starting Debate Strategy Monitor (Competition AI Agent)")
+
+            # Import debate strategy task
+            from .tasks.debate_strategy_task import run_debate_strategy_task
+
+            # Execute debate monitoring workflow
+            result = await run_debate_strategy_task()
+
+            status = result.get('status', 'unknown')
+            stats = result.get('statistics', {})
+            replies_count = stats.get('replies_generated', 0)
+
+            logger.info(f"[🎯] Debate Strategy completed: {status}")
+            logger.info(f"[💬] Generated {replies_count} strategic replies")
+
+            return result
+
+        except ImportError as e:
+            logger.error(f"[🎯] Debate Strategy import error: {e}")
+            return {
+                'status': 'error',
+                'error': f'Debate strategy import failed: {str(e)}'
+            }
+        except Exception as e:
+            logger.error(f"[🎯] Debate Strategy Monitor error: {e}")
+            return {
+                'status': 'error',
+                'error': str(e)
+            }
 
     # ===============================
     # LEGACY CLEANUP (DEPRECATED)
@@ -254,7 +259,7 @@ class BackgroundWorker:
                 engine_patterns = [
                     'content_analysis', 'engagement_intelligence', 'network_intelligence',
                     'temporal_analytics', 'strategic_intelligence', 'trending_prediction',
-                    'meta_trend_intelligence'
+                    'meta_trend_intelligence', 'debate_strategy'
                 ]
 
                 self.active_tasks = [
@@ -272,26 +277,9 @@ class BackgroundWorker:
         except Exception as e:
             logger.error(f"[ERROR] Error in periodic cleanup: {e}")
 
-    async def _disk_cleanup_task(self):
-        """Disk cleanup maintenance task"""
-        try:
-            logger.info("[DISK] Starting disk cleanup maintenance task...")
-
-            # Import disk cleanup task
-            from .tasks.disk_cleanup_task import run_disk_cleanup_task
-
-            # Run disk cleanup
-            result = await run_disk_cleanup_task(self)
-
-            if result.get("status") == "error":
-                logger.error(
-                    f"[DISK] Disk cleanup failed: {result.get('error')}")
-            else:
-                logger.info(
-                    f"[DISK] Disk cleanup completed: {result.get('files_cleaned', 0)} files cleaned")
-
-            return result
-
-        except Exception as e:
+    # async def _disk_cleanup_task(self):
+    #     """Disk cleanup maintenance task"""
+    #     # DISABLED - Task moved to disabled folder
+    #     pass
             logger.error(f"[DISK] Disk cleanup task error: {e}")
             return {"status": "error", "error": str(e)}

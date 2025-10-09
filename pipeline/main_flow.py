@@ -131,15 +131,33 @@ class MainFlowOrchestrator:
 
     async def collect_data(self) -> Dict:
         """Stage 0: Collect trending data for analysis."""
-        logger.info(f"[STAGE 0] [REFRESH] Data Collection - Batch: {self.batch_id}")
+        logger.info(
+            f"[STAGE 0] [REFRESH] Data Collection - Batch: {self.batch_id}")
 
         try:
             # Try to collect real data first (5 pages)
-            # Note: collect_trending_data returns a filename, not data directly
-            data_filename = collect_trending_data(5)
+            # Note: collect_trending_data now returns enhanced result with S3 support
+            collection_result = collect_trending_data(5)
 
-            if data_filename:
-                # Load the data from the saved file
+            if collection_result:
+                # Handle both legacy string return and new dict return
+                if isinstance(collection_result, dict):
+                    # New format with S3 support
+                    data_filename = collection_result.get('filename')
+                    s3_key = collection_result.get('s3_key')
+                    storage_mode = collection_result.get('storage', 'unknown')
+
+                    logger.info(f"[COLLECTION] Storage: {storage_mode}")
+                    if s3_key:
+                        logger.info(f"[COLLECTION] S3 Key: {s3_key}")
+                elif isinstance(collection_result, str):
+                    # Legacy format (just filename)
+                    data_filename = collection_result
+                    storage_mode = 'local_only'
+                else:
+                    raise ValueError("Unexpected collection result format")
+
+                # Load the data from the local file (always available as backup)
                 import json
                 from pathlib import Path
 
@@ -247,9 +265,11 @@ class MainFlowOrchestrator:
                 report_sent = await self.unified_reporter.send_unified_discord_report(self.batch_id)
 
                 if report_sent:
-                    logger.info("[OK] Unified Discord report sent successfully")
+                    logger.info(
+                        "[OK] Unified Discord report sent successfully")
                 else:
-                    logger.warning("[WARNING] Failed to send unified Discord report")
+                    logger.warning(
+                        "[WARNING] Failed to send unified Discord report")
                     # Fallback to basic completion summary
                     await self._send_completion_summary(execution_time, successful_engines)
             else:
@@ -302,15 +322,16 @@ class MainFlowOrchestrator:
     async def run_weekly_meta_analysis(self) -> Dict:
         """
         DEPRECATED: Execute weekly meta-trend intelligence analysis (Engine 7).
-        
+
         This method has been moved to run_weekly_meta_scheduler.py
         Use the separate weekly scheduler instead of this method.
         """
         batch_id = f"meta_weekly_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 
         logger.warning("⚠️  DEPRECATION WARNING: This method is deprecated!")
-        logger.warning("📅 Use run_weekly_meta_scheduler.py for weekly meta-trend analysis")
-        
+        logger.warning(
+            "📅 Use run_weekly_meta_scheduler.py for weekly meta-trend analysis")
+
         try:
             logger.info(
                 f"📅 Starting Weekly Meta-Trend Analysis - Batch: {batch_id}")
@@ -390,19 +411,23 @@ class MainFlowOrchestrator:
 
         try:
             # Create engine instance and call appropriate workflow method
-            logger.info(f"[STAGE {stage_num}] [INIT] Creating {engine_name} instance...")
-            
+            logger.info(
+                f"[STAGE {stage_num}] [INIT] Creating {engine_name} instance...")
+
             try:
                 engine_instance = engine['class']()
-                logger.info(f"[STAGE {stage_num}] [OK] {engine_name} instance created successfully")
+                logger.info(
+                    f"[STAGE {stage_num}] [OK] {engine_name} instance created successfully")
             except Exception as init_e:
-                logger.error(f"[STAGE {stage_num}] [ERROR] Failed to create {engine_name} instance: {init_e}")
+                logger.error(
+                    f"[STAGE {stage_num}] [ERROR] Failed to create {engine_name} instance: {init_e}")
                 raise init_e
 
             # Call the appropriate workflow method based on engine type
             # All engines run with send_discord=False for unified reporting
-            logger.info(f"[STAGE {stage_num}] [EXECUTE] Running {engine_name} workflow...")
-            
+            logger.info(
+                f"[STAGE {stage_num}] [EXECUTE] Running {engine_name} workflow...")
+
             try:
                 if engine_name == "Content Analysis":
                     result = await engine_instance.run_content_analysis_workflow(
@@ -439,11 +464,13 @@ class MainFlowOrchestrator:
                     )
                 else:
                     raise ValueError(f"Unknown engine: {engine_name}")
-                    
-                logger.info(f"[STAGE {stage_num}] [WORKFLOW] {engine_name} workflow completed")
-                
+
+                logger.info(
+                    f"[STAGE {stage_num}] [WORKFLOW] {engine_name} workflow completed")
+
             except Exception as workflow_e:
-                logger.error(f"[STAGE {stage_num}] [ERROR] {engine_name} workflow failed: {workflow_e}")
+                logger.error(
+                    f"[STAGE {stage_num}] [ERROR] {engine_name} workflow failed: {workflow_e}")
                 raise workflow_e
 
             execution_time = (datetime.now(timezone.utc) -
@@ -451,12 +478,16 @@ class MainFlowOrchestrator:
 
             # Check for success using multiple possible formats
             success_indicators = [
-                result and result.get('status') == 'success',  # Format 1: status: 'success' 
-                result and result.get('success') == True,      # Format 2: success: True
-                result and result.get('workflow_status') == 'success',  # Format 3: workflow_status: 'success'
-                result and result.get('workflow_status') == 'success_baseline'  # Format 4: workflow_status: 'success_baseline'
+                # Format 1: status: 'success'
+                result and result.get('status') == 'success',
+                # Format 2: success: True
+                result and result.get('success') == True,
+                # Format 3: workflow_status: 'success'
+                result and result.get('workflow_status') == 'success',
+                # Format 4: workflow_status: 'success_baseline'
+                result and result.get('workflow_status') == 'success_baseline'
             ]
-            
+
             if any(success_indicators):
                 logger.info(
                     f"[STAGE {stage_num}] [OK] {engine_name} completed in {execution_time:.2f}s")
@@ -488,21 +519,25 @@ class MainFlowOrchestrator:
         except Exception as e:
             execution_time = (datetime.now(timezone.utc) -
                               engine_start).total_seconds()
-            
+
             # Enhanced error logging with traceback
             import traceback
             error_traceback = traceback.format_exc()
-            
+
             logger.error(
                 f"[STAGE {stage_num}] [ERROR] {engine_name} failed after {execution_time:.2f}s: {str(e)}")
-            logger.error(f"[STAGE {stage_num}] [TRACEBACK] {engine_name} error details:\n{error_traceback}")
-            
+            logger.error(
+                f"[STAGE {stage_num}] [TRACEBACK] {engine_name} error details:\n{error_traceback}")
+
             # Log engine-specific debug info
             try:
-                logger.error(f"[STAGE {stage_num}] [DEBUG] Engine class: {engine['class']}")
-                logger.error(f"[STAGE {stage_num}] [DEBUG] Batch ID: {self.batch_id}")
+                logger.error(
+                    f"[STAGE {stage_num}] [DEBUG] Engine class: {engine['class']}")
+                logger.error(
+                    f"[STAGE {stage_num}] [DEBUG] Batch ID: {self.batch_id}")
             except Exception as debug_e:
-                logger.error(f"[STAGE {stage_num}] [DEBUG] Failed to log debug info: {debug_e}")
+                logger.error(
+                    f"[STAGE {stage_num}] [DEBUG] Failed to log debug info: {debug_e}")
 
             return {
                 'stage': stage_num,
@@ -525,7 +560,8 @@ class MainFlowOrchestrator:
                     f"[ANALYTICS] Posts: **{result['total_posts_analyzed']}**")
 
             if 'posts_analyzed' in result:
-                metrics.append(f"[ANALYTICS] Posts: **{result['posts_analyzed']}**")
+                metrics.append(
+                    f"[ANALYTICS] Posts: **{result['posts_analyzed']}**")
 
             # Engine-specific metrics
             if engine_name == 'Content Analysis':
@@ -552,7 +588,8 @@ class MainFlowOrchestrator:
                 if 'top_influencers' in result and result['top_influencers']:
                     influencer_count = len(result['top_influencers']) if isinstance(
                         result['top_influencers'], list) else 0
-                    metrics.append(f"[CHAMPION] Influencers: **{influencer_count}**")
+                    metrics.append(
+                        f"[CHAMPION] Influencers: **{influencer_count}**")
 
             elif engine_name == 'Temporal Analytics':
                 if 'optimal_posting_time' in result:
@@ -585,6 +622,41 @@ class MainFlowOrchestrator:
                 f"Error extracting metrics for {engine_name}: {str(e)}")
             return "[ANALYTICS] Analysis completed"
 
+    async def _get_s3_source_info(self) -> str:
+        """Get S3 source information for Discord messages."""
+        try:
+            from data_access.s3_store import S3Store
+
+            s3_store = S3Store()
+            client = s3_store.get_s3_client()
+
+            # Get recent files from S3 (last 3 files)
+            response = client.list_objects_v2(
+                Bucket=s3_store.bucket,
+                Prefix="data/raw/",
+                MaxKeys=3
+            )
+
+            if 'Contents' in response:
+                files = sorted(response['Contents'],
+                               key=lambda x: x['LastModified'], reverse=True)[:3]
+
+                source_info = "\n\n📁 **S3 Data Sources:**\n"
+                for i, file_obj in enumerate(files, 1):
+                    key = file_obj['Key']
+                    size_mb = file_obj['Size'] / (1024 * 1024)
+                    timestamp = file_obj['LastModified'].strftime(
+                        '%m-%d %H:%M')
+                    source_info += f"`{i}.` {key.split('/')[-1]} ({size_mb:.1f}MB, {timestamp})\n"
+
+                return source_info
+            else:
+                return "\n\n📁 **S3 Data Sources:** No recent files found"
+
+        except Exception as e:
+            logger.error(f"Error getting S3 source info: {str(e)}")
+            return "\n\n📁 **S3 Data Sources:** Error loading source information"
+
     async def _send_completion_summary(self, execution_time: float, successful_engines: int):
         """Send final completion summary to Discord."""
         total_engines = len(self.engines)
@@ -592,16 +664,16 @@ class MainFlowOrchestrator:
 
         # Choose emoji based on success rate
         if success_rate == 100:
-            status_emoji = "[SUCCESS]"
+            status_emoji = "✅"
             status_text = "Perfect Execution"
         elif success_rate >= 80:
-            status_emoji = "[OK]"
+            status_emoji = "🟢"
             status_text = "Mostly Successful"
         elif success_rate >= 50:
-            status_emoji = "[WARNING]"
+            status_emoji = "🟡"
             status_text = "Partial Success"
         else:
-            status_emoji = "[ERROR]"
+            status_emoji = "🔴"
             status_text = "Multiple Failures"
 
         # Build detailed results for each engine
@@ -613,25 +685,29 @@ class MainFlowOrchestrator:
                 metrics = self._extract_engine_metrics(
                     result.get('result', {}), engine_name)
                 engine_details.append(
-                    f"[OK] **{engine_name}**: {result['execution_time']:.1f}s\n{metrics}"
+                    f"✅ **{engine_name}**: {result['execution_time']:.1f}s\n{metrics}"
                 )
             else:
                 engine_details.append(
-                    f"[ERROR] **{result['engine']}**: {result['execution_time']:.1f}s - {result.get('error', 'Unknown error')}"
+                    f"❌ **{result['engine']}**: {result['execution_time']:.1f}s - {result.get('error', 'Unknown error')}"
                 )
+
+        # Get S3 source information
+        s3_source_info = await self._get_s3_source_info()
 
         summary_message = (
             f"{status_emoji} **Intelligence Flow Complete**\n"
-            f"[ANALYTICS] **{status_text}**\n"
-            f"[OK] Successful: **{successful_engines}/{total_engines}** engines\n"
-            f"[TRENDING_UP] Success Rate: **{success_rate:.1f}%**\n"
-            f"[TIMER] Total Runtime: **{execution_time:.1f}s**\n\n"
-            f"[REPORT] **Engine Results:**\n" + "\n\n".join(engine_details) + "\n\n"
+            f"📊 **{status_text}**\n"
+            f"✅ Successful: **{successful_engines}/{total_engines}** engines\n"
+            f"📈 Success Rate: **{success_rate:.1f}%**\n"
+            f"⏱️ Total Runtime: **{execution_time:.1f}s**\n\n"
+            f"📋 **Engine Results:**\n" +
+            "\n\n".join(engine_details) + s3_source_info + "\n\n"
             f"🆔 Batch ID: `{self.batch_id}`\n"
-            f"[ALARM] Completed: {datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}"
+            f"🕐 Completed: {datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}"
         )
 
-        await self._send_discord_notification("[SUCCESS] **Flow Complete**", summary_message)
+        await self._send_discord_notification("🤖 **Main Flow Complete**", summary_message)
 
     async def _send_discord_notification(self, title: str, message: str):
         """Send notification to Discord with error handling."""
@@ -689,7 +765,7 @@ async def run_main_flow() -> Dict:
 async def run_weekly_meta_analysis() -> Dict:
     """
     DEPRECATED: Standalone function to execute weekly meta-trend analysis.
-    
+
     Use run_weekly_meta_scheduler.py instead for weekly meta-trend analysis.
     """
     print("⚠️  DEPRECATION WARNING: This function is deprecated!")
@@ -718,6 +794,7 @@ if __name__ == "__main__":
         if result.get('status') == 'success':
             print("[OK] Main intelligence flow completed successfully!")
         else:
-            print(f"[ERROR] Flow failed: {result.get('error', 'Unknown error')}")
+            print(
+                f"[ERROR] Flow failed: {result.get('error', 'Unknown error')}")
 
     asyncio.run(demo())

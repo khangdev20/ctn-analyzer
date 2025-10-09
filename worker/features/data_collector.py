@@ -2,8 +2,12 @@ import json
 import os
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 import twooter.sdk
 import pandas as pd
+
+# Import S3 storage for cloud persistence
+from data_access.s3_store import S3Store
 
 
 def _iso_now():
@@ -42,9 +46,10 @@ def _print_sdk_error(prefix: str, err: Exception):
         print(f"  -> SDK Error Message: {err.message}")
 
 
-def _safe_get_feed(key: str = 'trending', cursor: str = None):
+def _safe_get_feed(key: str = 'latest', cursor: str = None):
     """
     Use twooter SDK to get feed data and return parsed dict, or None on any error.
+    Supports both 'trending' and 'latest' feed keys for different data collection strategies.
     Errors are printed but not raised.
     """
     try:
@@ -65,8 +70,11 @@ def _safe_get_feed(key: str = 'trending', cursor: str = None):
         return None
 
 
-def fetch_pages(num_pages, key='trending'):
-    """Fetch specified number of pages using twooter SDK. Returns list (possibly empty)."""
+def fetch_pages(num_pages, key='latest'):
+    """Fetch specified number of pages using twooter SDK. 
+    Default to 'latest' posts for fresh content analysis.
+    Also supports 'trending' for existing trending posts.
+    Returns list (possibly empty)."""
     combined = []
     next_cursor = None
 
@@ -98,15 +106,15 @@ def fetch_pages(num_pages, key='trending'):
     return combined
 
 
-def generate_filename(key="trending"):
-    """Generate filename with current timestamp."""
+def generate_filename(key="latest"):
+    """Generate filename with current timestamp. Default to 'latest' for fresh posts."""
     now = datetime.now()
     timestamp = now.strftime("%Y%m%d_%H%M%S")
     return f"{key}_data_{timestamp}.json"
 
 
 def save_data_to_file(filename, items):
-    """Save items to specified file after cleaning the data."""
+    """Save items to both local file and S3 storage after cleaning the data."""
     # Clean the data before saving
     cleaned_items = []
     for item in items:
@@ -128,22 +136,131 @@ def save_data_to_file(filename, items):
 
     print(f"Cleaned {len(cleaned_items)} out of {len(items)} items")
 
+    # Save directly to S3 storage (cloud-only approach)
+    s3_success = False
     try:
-        with open(filename, "w", encoding="utf-8") as fh:
-            json.dump(payload, fh, ensure_ascii=False, indent=2)
-        print(
-            f"SUCCESS: Saved {len(cleaned_items)} cleaned items to {filename}")
-        return True
-    except OSError as e:
-        print(f"ERROR: Failed to save data to {filename}: {e}")
-        return False
+        s3_store = S3Store()
+
+        # Create S3 key with timestamp structure: raw/YYYY/MM/DD/filename
+        now = datetime.now(timezone.utc)
+        s3_key = s3_store.build_key(
+            "raw",
+            f"{now.year}",
+            f"{now.month:02d}",
+            f"{now.day:02d}",
+            filename
+        )
+
+        print(f"Uploading to S3: s3://{s3_store.bucket}/{s3_key}")
+
+        # Upload to S3 with compression for efficiency
+        result = s3_store.s3_write_json(
+            key=s3_key,
+            data=payload,
+            compress=True,
+            content_type="application/json"
+        )
+
+        if result.get('success'):
+            print(f"SUCCESS: Uploaded to S3 - {result['s3_url']}")
+            print(
+                f"S3 Details: Size={result['size_bytes']} bytes, Compressed={result['compressed']}")
+            s3_success = True
+        else:
+            print(
+                f"ERROR: S3 upload failed - {result.get('error', 'Unknown error')}")
+
+    except Exception as e:
+        print(f"ERROR: S3 upload exception - {e}")
+
+    # Return success based on S3 upload only (cloud-only approach)
+    if s3_success:
+        return {'success': True, 's3': True, 's3_key': s3_key, 'storage': 'cloud_only'}
+    else:
+        return {'success': False, 's3': False, 'error': 'S3 upload failed', 'storage': 'failed'}
 
 
-def collect_trending_data(num_pages, key='trending'):
-    """Main function to collect trending data using twooter SDK."""
+def load_data_from_s3(s3_key):
+    """Load trending data from S3 storage."""
+    try:
+        s3_store = S3Store()
+        print(f"Loading data from S3: s3://{s3_store.bucket}/{s3_key}")
+
+        data = s3_store.s3_read_json(s3_key)
+
+        if data:
+            print(f"✅ Successfully loaded data from S3")
+            print(f"📊 Items: {data.get('total_items', 'Unknown')}")
+            return data
+        else:
+            print(f"❌ No data found at S3 key: {s3_key}")
+            return None
+
+    except Exception as e:
+        print(f"ERROR: Failed to load from S3 - {e}")
+        return None
+
+
+def get_recent_data_from_s3(days_back=7, key='latest'):
+    """Get list of recent data files from S3 within specified days. 
+    Default to 'latest' posts for fresh content analysis."""
+    try:
+        s3_store = S3Store()
+
+        # Build list of possible S3 keys for recent days
+        recent_keys = []
+        now = datetime.now(timezone.utc)
+
+        for days_ago in range(days_back):
+            target_date = now - pd.Timedelta(days=days_ago)
+            date_prefix = s3_store.build_key(
+                "raw",
+                f"{target_date.year}",
+                f"{target_date.month:02d}",
+                f"{target_date.day:02d}"
+            )
+
+            # List objects with this prefix
+            try:
+                client = s3_store.get_s3_client()
+                response = client.list_objects_v2(
+                    Bucket=s3_store.bucket,
+                    Prefix=date_prefix
+                )
+
+                if 'Contents' in response:
+                    for obj in response['Contents']:
+                        if obj['Key'].endswith('.json') and key in obj['Key']:
+                            recent_keys.append({
+                                'key': obj['Key'],
+                                'last_modified': obj['LastModified'],
+                                'size': obj['Size']
+                            })
+            except Exception as e:
+                print(
+                    f"Warning: Failed to list S3 objects for {date_prefix}: {e}")
+                continue
+
+        # Sort by last modified (most recent first)
+        recent_keys.sort(key=lambda x: x['last_modified'], reverse=True)
+
+        print(f"Found {len(recent_keys)} recent data files in S3")
+        return recent_keys
+
+    except Exception as e:
+        print(f"ERROR: Failed to get recent S3 data - {e}")
+        return []
+
+
+def collect_trending_data(num_pages, key='latest'):
+    """Main function to collect social media data using twooter SDK with S3 storage.
+    Default to 'latest' posts for fresh content. Also supports 'trending' for existing trending posts."""
     print("=" * 60)
     print(
         f"Starting data collection for {num_pages} pages using feed key '{key}'...")
+    print(
+        f"Target: {'Fresh Latest Posts' if key == 'latest' else 'Existing Trending Posts'}")
+    print(f"Storage: S3 cloud storage only (cloud-first architecture)")
 
     # Fetch data
     items = fetch_pages(num_pages, key=key)
@@ -155,8 +272,37 @@ def collect_trending_data(num_pages, key='trending'):
     # Generate filename with current timestamp
     filename = generate_filename(key=key)
 
-    # Save data
-    if save_data_to_file(filename, items):
-        return filename
+    # Save data directly to S3 cloud storage
+    save_result = save_data_to_file(filename, items)
+
+    if isinstance(save_result, dict):
+        if save_result.get('success'):
+            print(f"✅ Data collection completed successfully!")
+            print(
+                f"☁️  S3 storage: {save_result.get('s3_key', 'Unknown key')}")
+            return {
+                's3_key': save_result.get('s3_key'),
+                'storage': 'cloud_only',
+                'items_count': len(items),
+                'filename': filename  # Keep for reference but not saved locally
+            }
+        else:
+            print("❌ S3 cloud storage failed")
+            print(f"Error: {save_result.get('error', 'Unknown error')}")
+            return None
     else:
+        # Legacy fallback
+        print("❌ Data save failed - cloud storage unavailable")
         return None
+
+
+def collect_latest_posts(num_pages=3):
+    """Convenience function to collect latest posts specifically for trending prediction."""
+    print("🚀 [LATEST POSTS] Collecting fresh posts for trending prediction...")
+    return collect_trending_data(num_pages=num_pages, key='latest')
+
+
+def collect_existing_trending(num_pages=5):
+    """Convenience function to collect existing trending posts for analysis."""
+    print("📊 [TRENDING] Collecting existing trending posts for analysis...")
+    return collect_trending_data(num_pages=num_pages, key='trending')

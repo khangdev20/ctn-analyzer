@@ -15,9 +15,18 @@ import asyncio
 import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from .features.trending_config import get_config
-from .tasks.meta_trend_intelligence_task import get_meta_trend_task_config
 
 logger = logging.getLogger(__name__)
+
+# Import dynamic scheduler config
+try:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    from config.scheduler_config import get_scheduler_config
+except ImportError as e:
+    logger.warning(f"Could not import scheduler config: {e}")
+    get_scheduler_config = None
 
 
 async def run_scheduler_loop(worker):
@@ -34,150 +43,147 @@ async def run_scheduler_loop(worker):
     # Load configuration
     config = get_config()
 
+    # Load dynamic scheduler configuration
+    scheduler_config = None
+    if get_scheduler_config:
+        try:
+            scheduler_config = get_scheduler_config()
+            logger.info("[CONFIG] Using dynamic scheduler intervals")
+        except Exception as e:
+            logger.warning(
+                f"[CONFIG] Failed to load dynamic config: {e}, using hardcoded intervals")
+
+    # Get intervals from config or use defaults
+    content_analysis_minutes = 12
+    trending_prediction_minutes = 10
+    leaderboard_hours = 1
+
+    if scheduler_config:
+        content_analysis_minutes = scheduler_config.get_interval(
+            'content_analysis') or 12
+        trending_prediction_minutes = scheduler_config.get_interval(
+            'trending_prediction') or 10
+        leaderboard_hours = scheduler_config.get_interval('leaderboard') or 1
+
     logger.info(
-        "[LAUNCH] ENHANCED SCHEDULER: Main Flow Orchestrator Focus")
+        "[LAUNCH] DYNAMIC SCHEDULER: Content Analysis + Trending Prediction + Leaderboard")
     logger.info("=" * 80)
-    logger.info("[TARGET] PRIMARY: Main Flow (6-engine pipeline) - Every 2 hours")
-    logger.info("[DISABLED] SECONDARY: Individual engines - Temporarily disabled") 
-    logger.info("[SEPARATED] WEEKLY: Meta-trend analysis - Separate scheduler")
+    logger.info(
+        f"[ACTIVE] Content Analysis Engine - Every {content_analysis_minutes} minutes (Latest Posts)")
+    logger.info(
+        f"[ACTIVE] Trending Prediction Engine - Every {trending_prediction_minutes} minutes")
+    logger.info(
+        f"[ACTIVE] Leaderboard Logger - Every {leaderboard_hours} hour(s) (DYNAMIC)")
+    logger.info(
+        "[DISABLED] Main Flow, Debate Strategy, Maintenance - Temporarily disabled")
     logger.info("=" * 80)
 
     # === PRIMARY SCHEDULER: Main Flow Orchestrator ===
+    # TEMPORARILY DISABLED - Only using individual engines
 
-    # Main Intelligence Flow - Every 2 hours (Complete 7-engine pipeline)
-    scheduler.add_job(
-        worker._run_main_flow_orchestrator,
-        'interval',
-        hours=2,
-        id='main_intelligence_flow',
-        max_instances=1,
-        misfire_grace_time=1800,  # 30 minutes grace period
-        name='Main Intelligence Flow (7-Engine Pipeline)'
-    )
-    logger.info("[LAUNCH] Main Intelligence Flow scheduled (2 hour intervals)")
+    # # Main Intelligence Flow - Every 2 hours (Complete 7-engine pipeline)
+    # scheduler.add_job(
+    #     worker._run_main_flow_orchestrator,
+    #     'interval',
+    #     hours=2,
+    #     id='main_intelligence_flow',
+    #     max_instances=1,
+    #     misfire_grace_time=1800,  # 30 minutes grace period
+    #     name='Main Intelligence Flow (7-Engine Pipeline)'
+    # )
+    # logger.info("[LAUNCH] Main Intelligence Flow scheduled (2 hour intervals)")
 
     # === SECONDARY SCHEDULER: Individual Engines ===
-    # TEMPORARILY DISABLED - Only using Main Flow (every 2 hours)
-    
-    # # Content Analysis Engine (every 12 minutes)
-    # scheduler.add_job(
-    #     worker._run_content_analysis_task,
-    #     'interval',
-    #     minutes=12,
-    #     id='content_analysis_engine',
-    #     max_instances=1,
-    #     misfire_grace_time=300,
-    #     name='Content Analysis Engine (Standalone)'
-    # )
-    # logger.info("[OK] Content Analysis Engine scheduled (12min intervals)")
+    # ENABLED - Only Content Analysis
 
-    # # Engagement Intelligence Engine (every 18 minutes)
-    # scheduler.add_job(
-    #     worker._run_engagement_intelligence_task,
-    #     'interval',
-    #     minutes=18,
-    #     id='engagement_intelligence_engine',
-    #     max_instances=1,
-    #     misfire_grace_time=300,
-    #     name='Engagement Intelligence Engine (Standalone)'
-    # )
-    # logger.info("[OK] Engagement Intelligence Engine scheduled (18min intervals)")
+    # Content Analysis Engine (dynamic interval)
+    scheduler.add_job(
+        worker._run_content_analysis_task,
+        'interval',
+        minutes=content_analysis_minutes,
+        id='content_analysis_engine',
+        max_instances=1,
+        misfire_grace_time=300,
+        name=f'Content Analysis Engine (Every {content_analysis_minutes}min)'
+    )
+    logger.info(
+        f"[OK] Content Analysis Engine scheduled ({content_analysis_minutes}min intervals)")
 
-    # # Network Intelligence Engine (every 20 minutes)
-    # scheduler.add_job(
-    #     worker._run_network_intelligence_task,
-    #     'interval',
-    #     minutes=20,
-    #     id='network_intelligence_engine',
-    #     max_instances=1,
-    #     misfire_grace_time=300,
-    #     name='Network Intelligence Engine (Standalone)'
-    # )
-    # logger.info("[OK] Network Intelligence Engine scheduled (20min intervals)")
+    # Trending Prediction Engine (dynamic interval)
+    scheduler.add_job(
+        worker._run_trending_prediction_task,
+        'interval',
+        minutes=trending_prediction_minutes,
+        id='trending_prediction_engine',
+        max_instances=1,
+        misfire_grace_time=300,
+        name=f'Trending Prediction Engine (Every {trending_prediction_minutes}min)'
+    )
+    logger.info(
+        f"[OK] Trending Prediction Engine scheduled ({trending_prediction_minutes}min intervals)")
 
-    # # Temporal Analytics Engine (every 22 minutes)
-    # scheduler.add_job(
-    #     worker._run_temporal_analytics_task,
-    #     'interval',
-    #     minutes=22,
-    #     id='temporal_analytics_engine',
-    #     max_instances=1,
-    #     misfire_grace_time=300,
-    #     name='Temporal Analytics Engine (Standalone)'
-    # )
-    # logger.info("[OK] Temporal Analytics Engine scheduled (22min intervals)")
-
-    # # Strategic Intelligence Engine (every 25 minutes)
-    # scheduler.add_job(
-    #     worker._run_strategic_intelligence_task,
-    #     'interval',
-    #     minutes=25,
-    #     id='strategic_intelligence_engine',
-    #     max_instances=1,
-    #     misfire_grace_time=300,
-    #     name='Strategic Intelligence Engine (Standalone)'
-    # )
-    # logger.info("[OK] Strategic Intelligence Engine scheduled (25min intervals)")
-
-    # # Trending Prediction Engine (every 10 minutes)
-    # scheduler.add_job(
-    #     worker._run_trending_prediction_task,
-    #     'interval',
-    #     minutes=10,
-    #     id='trending_prediction_engine',
-    #     max_instances=1,
-    #     misfire_grace_time=300,
-    #     name='Trending Prediction Engine (Standalone)'
-    # )
-    # logger.info("[OK] Trending Prediction Engine scheduled (10min intervals)")
-    
-    logger.info("[INFO] Individual engines temporarily disabled - using Main Flow only")
+    logger.info(
+        "[INFO] Other engines temporarily disabled - using Content Analysis + Trending Prediction only")
 
     # === WEEKLY SCHEDULER: Meta-Trend Intelligence ===
     # MOVED TO SEPARATE SCHEDULER: run_weekly_meta_scheduler.py
-    logger.info("[INFO] Weekly Meta-Trend Intelligence moved to separate scheduler")
+    logger.info(
+        "[INFO] Weekly Meta-Trend Intelligence moved to separate scheduler")
     logger.info("[TIMER] Run: python run_weekly_meta_scheduler.py")
 
-    # === BI-DAILY SCHEDULER: Leaderboard Logger ===
+    # === HOURLY SCHEDULER: Leaderboard Logger (TEST MODE) ===
 
-    # Leaderboard Bi-Daily Logger (every 12 hours - 09:00 & 21:00 AEST/Brisbane time)
-    # Note: AEST = UTC+10, AEDT = UTC+11 (daylight saving)
-    # Brisbane doesn't observe daylight saving, so always UTC+10
+    # Leaderboard Logger (dynamic interval)
     scheduler.add_job(
         worker._run_leaderboard_bidaily_task,
-        'cron',
-        hour='11,23',  # 09:00 & 21:00 AEST = 23:00 & 11:00 UTC (Brisbane = UTC+10)
-        minute=0,
-        timezone='Australia/Brisbane',  # Let APScheduler handle timezone
-        id='leaderboard_bidaily_logger',
+        'interval',
+        hours=leaderboard_hours,
+        id='leaderboard_dynamic_logger',
         max_instances=1,
-        misfire_grace_time=3600,  # 1 hour grace period
-        name='Leaderboard Bi-Daily Logger (09:00 & 21:00 AEST)'
+        misfire_grace_time=900,  # 15 minutes grace period
+        name=f'Leaderboard Logger (Every {leaderboard_hours} hour(s) - DYNAMIC)'
     )
-    logger.info("[CHAMPION] Leaderboard Bi-Daily Logger scheduled (09:00 & 21:00 AEST - every 12 hours)")
+    logger.info(
+        f"[DYNAMIC] Leaderboard Logger scheduled ({leaderboard_hours} hour intervals - API configurable)")
+
+    # === DEBATE STRATEGY SCHEDULER ===
+    # TEMPORARILY DISABLED
+
+    # # Debate Strategy Monitor - Every 2 hours
+    # scheduler.add_job(
+    #     worker._run_debate_strategy_task,
+    #     'interval',
+    #     hours=2,
+    #     id='debate_strategy_monitor',
+    #     max_instances=1,
+    #     misfire_grace_time=1800,  # 30 minutes grace period
+    #     name='Debate Strategy Monitor (Competition AI Agent)'
+    # )
+    # logger.info("[🎯] Debate Strategy Monitor scheduled (2 hour intervals)")
 
     # === MAINTENANCE SCHEDULER ===
+    # TEMPORARILY DISABLED
 
-    # Cleanup task (maintenance)
-    scheduler.add_job(
-        worker._cleanup_stuck_jobs,
-        'interval',
-        minutes=30,
-        id='cleanup_maintenance',
-        max_instances=1,
-        name='System Cleanup (Maintenance)'
-    )
-    logger.info("[CLEANUP] System cleanup scheduled (30min intervals)")
+    # # Cleanup task (maintenance)
+    # scheduler.add_job(
+    #     worker._cleanup_stuck_jobs,
+    #     'interval',
+    #     minutes=30,
+    #     id='cleanup_maintenance',
+    #     max_instances=1,
+    #     name='System Cleanup (Maintenance)'
+    # )
+    # logger.info("[CLEANUP] System cleanup scheduled (30min intervals)")
 
-    # Disk cleanup task (maintenance) - Every 6 hours
-    scheduler.add_job(
-        worker._disk_cleanup_task,
-        'interval',
-        hours=6,
-        id='disk_cleanup_maintenance',
-        max_instances=1,
-        name='Disk Cleanup (Storage Management)'
-    )
+    # # Disk cleanup task (maintenance) - Every 6 hours
+    # scheduler.add_job(
+    #     worker._disk_cleanup_task,
+    #     'interval',
+    #     hours=6,
+    #     id='disk_cleanup_maintenance',
+    #     max_instances=1,
+    #     name='Disk Cleanup (Storage Management)'
+    # )
     logger.info("[SAVE] Disk cleanup scheduled (6hr intervals)")
 
     # === SCHEDULER STARTUP ===
@@ -189,17 +195,20 @@ async def run_scheduler_loop(worker):
     individual_engine_jobs = 6
     weekly_jobs = 1
     daily_jobs = 1  # Leaderboard logger
+    debate_jobs = 1  # Debate strategy monitor
     maintenance_jobs = 2
 
     logger.info("=" * 80)
-    logger.info("[OK] ENHANCED SCHEDULER STARTED SUCCESSFULLY!")
-    logger.info(f"[LAUNCH] Main Flow Jobs: {main_flow_jobs}")
-    logger.info(f"[FAST] Individual Engine Jobs: {individual_engine_jobs}")
-    logger.info(f"[TIMER] Weekly Analysis Jobs: {weekly_jobs}")
-    logger.info(f"[CHAMPION] Daily Logger Jobs: {daily_jobs}")
-    logger.info(f"[CLEANUP] Maintenance Jobs: {maintenance_jobs}")
-    logger.info(f"[ANALYTICS] Total Scheduled Jobs: {total_jobs}")
-    logger.info("[TARGET] Multi-mode scheduling: Orchestrated + Individual + Daily logging")
+    logger.info("[OK] FOCUSED SCHEDULER STARTED SUCCESSFULLY!")
+    logger.info(f"[ACTIVE] Content Analysis Jobs: 1 (Latest Posts)")
+    logger.info(f"[ACTIVE] Trending Prediction Jobs: 1")
+    logger.info(f"[ACTIVE] Leaderboard Logger Jobs: 1 (TEST MODE)")
+    logger.info(f"[DISABLED] Main Flow Jobs: 0 (temporarily disabled)")
+    logger.info(f"[DISABLED] Debate Strategy Jobs: 0 (temporarily disabled)")
+    logger.info(f"[DISABLED] Maintenance Jobs: 0 (temporarily disabled)")
+    logger.info(f"[ANALYTICS] Total Active Jobs: 3")
+    logger.info(
+        f"[DYNAMIC MODE] Content Analysis ({content_analysis_minutes}min) + Trending Prediction ({trending_prediction_minutes}min) + Leaderboard ({leaderboard_hours}h) - API CONFIGURABLE")
     logger.info("=" * 80)
 
     try:

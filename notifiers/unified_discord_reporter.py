@@ -243,6 +243,41 @@ class UnifiedDiscordReporter:
             logger.error(f"Failed to send unified Discord report: {e}")
             return False
 
+    async def _get_s3_source_info(self) -> str:
+        """Get S3 source information for Discord messages."""
+        try:
+            from data_access.s3_store import S3Store
+
+            s3_store = S3Store()
+            client = s3_store.get_s3_client()
+
+            # Get recent files from S3 (last 3 files)
+            response = client.list_objects_v2(
+                Bucket=s3_store.bucket,
+                Prefix="data/raw/",
+                MaxKeys=3
+            )
+
+            if 'Contents' in response:
+                files = sorted(response['Contents'],
+                               key=lambda x: x['LastModified'], reverse=True)[:3]
+
+                source_info = "\n📁 **Data Sources:**\n"
+                for i, file_obj in enumerate(files, 1):
+                    key = file_obj['Key']
+                    size_mb = file_obj['Size'] / (1024 * 1024)
+                    timestamp = file_obj['LastModified'].strftime(
+                        '%m-%d %H:%M')
+                    source_info += f"`{i}.` {key.split('/')[-1]} ({size_mb:.1f}MB, {timestamp})\n"
+
+                return source_info
+            else:
+                return "\n📁 **Data Sources:** No recent files found"
+
+        except Exception as e:
+            logger.error(f"Error getting S3 source info: {str(e)}")
+            return "\n📁 **Data Sources:** Error loading source information"
+
     async def _create_discord_embed(self, report: Dict) -> Dict:
         """Create professional Discord embed from report data"""
 
@@ -251,13 +286,16 @@ class UnifiedDiscordReporter:
 
         # Status emoji and colors
         status_config = {
-            "success": {"emoji": "[OK]", "color": 0x00ff00, "title_suffix": "All Systems Operational"},
-            "warning": {"emoji": "[WARNING]", "color": 0xff9900, "title_suffix": "Minor Issues Detected"},
+            "success": {"emoji": "✅", "color": 0x00ff00, "title_suffix": "All Systems Operational"},
+            "warning": {"emoji": "⚠️", "color": 0xff9900, "title_suffix": "Minor Issues Detected"},
             "partial": {"emoji": "🔶", "color": 0xff6600, "title_suffix": "Partial Success"},
-            "error": {"emoji": "[ERROR]", "color": 0xff0000, "title_suffix": "Critical Issues"}
+            "error": {"emoji": "❌", "color": 0xff0000, "title_suffix": "Critical Issues"}
         }
 
         config = status_config.get(overall_status, status_config["warning"])
+
+        # Get S3 source information
+        s3_source_info = await self._get_s3_source_info()
 
         # Main title and description
         title = f"{config['emoji']} Trending Intelligence Report - {config['title_suffix']}"
@@ -265,7 +303,7 @@ class UnifiedDiscordReporter:
         description = f"""
 **Batch ID**: `{report['batch_id']}`
 **Execution Time**: {execution_summary['total_execution_time']:.1f}s
-**Engines**: {execution_summary['successful']}/{execution_summary['total_engines']} successful
+**Engines**: {execution_summary['successful']}/{execution_summary['total_engines']} successful{s3_source_info}
 """
 
         # Build fields

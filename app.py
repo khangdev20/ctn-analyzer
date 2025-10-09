@@ -4,6 +4,7 @@ Main application file for the background worker bot.
 """
 import os
 import logging
+from datetime import datetime, timezone
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 from config.config import Config
@@ -62,15 +63,13 @@ def register_api_routes(app):
             "current_time": datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
             "endpoints": [
                 "/metrics",
-                "/topics", 
+                "/topics",
                 "/config",
                 "/status",
                 "/health",
                 "/heartbeat",
                 "/trigger-intelligence",
-                "/trigger-content-analysis",
-                "/trigger-engagement-analysis",
-                "/engagement-quick-check"
+                "/trigger-content-analysis"
             ]
         })
 
@@ -320,19 +319,24 @@ def register_api_routes(app):
                 from worker.tasks.content_analysis_task import ContentAnalysisTask
 
                 # Get parameters from request
-                data_source = request.json.get('data_source', 'api') if request.json else 'api'
-                num_posts = request.json.get('num_posts', 20) if request.json else 20
+                data_source = request.json.get(
+                    'data_source', 'api') if request.json else 'api'
+                num_posts = request.json.get(
+                    'num_posts', 20) if request.json else 20
 
-                logger.info(f"[TRIGGER] Starting content analysis - Source: {data_source}, Posts: {num_posts}")
+                logger.info(
+                    f"[TRIGGER] Starting content analysis - Source: {data_source}, Posts: {num_posts}")
 
                 # Schedule content analysis task
                 task = ContentAnalysisTask()
                 future = asyncio.run_coroutine_threadsafe(
-                    task.run_content_analysis_workflow(data_source=data_source, num_posts=num_posts),
+                    task.run_content_analysis_workflow(
+                        data_source=data_source, num_posts=num_posts),
                     _worker.loop
                 )
 
-                logger.info("[TRIGGER] Content analysis task scheduled successfully")
+                logger.info(
+                    "[TRIGGER] Content analysis task scheduled successfully")
 
                 return jsonify({
                     "status": "triggered",
@@ -380,7 +384,7 @@ def register_api_routes(app):
             },
             "features": [
                 "Content quality analysis",
-                "Sentiment and emotion detection", 
+                "Sentiment and emotion detection",
                 "Hashtag effectiveness scoring",
                 "AI-generated Discord reports",
                 "Readability assessment"
@@ -391,164 +395,162 @@ def register_api_routes(app):
             "timestamp": datetime.now(timezone.utc).isoformat()
         })
 
-    @app.route('/trigger-engagement-analysis', methods=['POST'])
-    def trigger_engagement_analysis():
-        """Manually trigger engagement intelligence analysis"""
-        from datetime import datetime, timezone
-        import asyncio
+    # === SCHEDULER MANAGEMENT ENDPOINTS ===
 
-        logger.info("[TRIGGER] Manual engagement analysis trigger requested")
-
+    @app.route('/scheduler/intervals')
+    def get_scheduler_intervals():
+        """Get current scheduler intervals"""
         try:
-            if _worker and _worker.is_running and _worker.loop:
-                # Import the engagement intelligence task
-                from worker.tasks.engagement_intelligence_task import EngagementIntelligenceTask
+            from config.scheduler_config import get_scheduler_config
 
-                # Get parameters from request
-                send_discord = request.json.get('send_discord', True) if request.json else True
-                save_results = request.json.get('save_results', True) if request.json else True
+            config = get_scheduler_config()
+            intervals = config.get_all_intervals()
 
-                logger.info(f"[TRIGGER] Starting engagement analysis - Discord: {send_discord}, Save: {save_results}")
+            return jsonify({
+                "status": "success",
+                "intervals": intervals,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
 
-                # Schedule engagement analysis task
-                task = EngagementIntelligenceTask()
-                future = asyncio.run_coroutine_threadsafe(
-                    task.run_engagement_analysis_workflow(
-                        send_discord=send_discord,
-                        save_results=save_results
-                    ),
-                    _worker.loop
-                )
+        except Exception as e:
+            logger.error(f"Failed to get scheduler intervals: {e}")
+            return jsonify({
+                "error": str(e),
+                "status": "failed"
+            }), 500
 
-                logger.info("[TRIGGER] Engagement analysis task scheduled successfully")
+    @app.route('/scheduler/intervals/<job_name>', methods=['PUT'])
+    def update_scheduler_interval(job_name):
+        """Update scheduler interval for a specific job"""
+        try:
+            from config.scheduler_config import get_scheduler_config
+
+            data = request.get_json()
+            if not data:
+                return jsonify({
+                    "error": "JSON data required",
+                    "status": "failed"
+                }), 400
+
+            value = data.get('value')
+            unit = data.get('unit', 'minutes')
+            updated_by = data.get('updated_by', 'api_user')
+
+            if value is None:
+                return jsonify({
+                    "error": "Missing 'value' field",
+                    "status": "failed"
+                }), 400
+
+            if not isinstance(value, int) or value <= 0:
+                return jsonify({
+                    "error": "Value must be a positive integer",
+                    "status": "failed"
+                }), 400
+
+            if unit not in ['minutes', 'hours']:
+                return jsonify({
+                    "error": "Unit must be 'minutes' or 'hours'",
+                    "status": "failed"
+                }), 400
+
+            config = get_scheduler_config()
+            success = config.update_interval(job_name, value, unit, updated_by)
+
+            if success:
+                # If worker is running, notify about config change
+                if _worker and hasattr(_worker, 'notify_config_change'):
+                    try:
+                        _worker.notify_config_change(job_name, value, unit)
+                    except Exception as notify_e:
+                        logger.warning(
+                            f"Failed to notify worker of config change: {notify_e}")
 
                 return jsonify({
-                    "status": "triggered",
-                    "message": "Engagement intelligence analysis started",
+                    "status": "success",
+                    "message": f"Updated {job_name} interval to {value} {unit}",
+                    "job_name": job_name,
+                    "new_value": value,
+                    "unit": unit,
+                    "updated_by": updated_by,
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                    "parameters": {
-                        "send_discord": send_discord,
-                        "save_results": save_results
-                    },
-                    "task_info": {
-                        "estimated_duration": "30-60 seconds",
-                        "worker_running": _worker.is_running,
-                        "description": "Analyzes engagement growth between current and previous data snapshots"
-                    },
-                    "analysis_features": [
-                        "Engagement deltas (Δlikes, Δreplies, Δreposts)",
-                        "Engagement velocity calculation",
-                        "Engagement acceleration analysis", 
-                        "Top 5 fastest growing posts identification",
-                        "Discord-formatted growth reports"
-                    ],
-                    "monitoring": {
-                        "logs": "Monitor bot.log for detailed execution progress",
-                        "status_endpoint": "/status",
-                        "results_path": "data/reports/engagement/"
-                    }
+                    "note": "Change will take effect on next scheduler restart"
                 })
             else:
                 return jsonify({
-                    "error": "Worker event loop not available",
-                    "worker_status": "loop_unavailable"
+                    "error": "Failed to update interval",
+                    "status": "failed"
                 }), 500
 
         except Exception as e:
-            logger.error(f"Failed to trigger engagement analysis task: {e}")
+            logger.error(f"Failed to update scheduler interval: {e}")
             return jsonify({
                 "error": str(e),
-                "status": "failed",
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "status": "failed"
             }), 500
 
-    @app.route('/trigger-engagement-analysis', methods=['GET'])
-    def get_engagement_analysis_info():
-        """Get information about the engagement analysis endpoint"""
-        from datetime import datetime, timezone
-
-        return jsonify({
-            "endpoint": "/trigger-engagement-analysis",
-            "method": "POST",
-            "description": "Social engagement intelligence analysis with growth tracking",
-            "parameters": {
-                "send_discord": "Send Discord notification (true/false) - default: true",
-                "save_results": "Save results to disk (true/false) - default: true"
-            },
-            "features": [
-                "Engagement velocity computation (Δtotal_engagement / Δtime)",
-                "Engagement acceleration analysis (velocity change rate)",
-                "Top 5 fastest growing posts identification",
-                "Engagement composition analysis (likes/replies/reposts %)",
-                "Discord-formatted growth reports with emojis"
-            ],
-            "analysis_outputs": {
-                "velocity_metrics": "Average growth velocity per minute",
-                "top_performers": "Ranked list of fastest growing posts",
-                "composition_breakdown": "Percentage distribution of engagement types",
-                "discord_message": "Emoji-rich Discord report format"
-            },
-            "sample_discord_output": [
-                "[ANALYTICS] **Engagement Growth Report**",
-                "• Avg Growth Velocity: +0.73 /min",
-                "[LAUNCH] **Top 5 Fastest Posts:**",
-                "   [1] @user1 — +1.2/min (+45 likes, +20 replies)",
-                "[TRENDING_UP] **Engagement Composition:**",
-                "   [HEART] Likes 62% | [CHAT] Replies 25% | [REPOST] Reposts 13%"
-            ],
-            "usage": {
-                "curl_example": 'curl -X POST http://localhost:5000/trigger-engagement-analysis -H "Content-Type: application/json" -d \'{"send_discord": true, "save_results": true}\''
-            },
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        })
-
-    @app.route('/engagement-quick-check', methods=['GET'])
-    def engagement_quick_check():
-        """Quick engagement metrics check for real-time monitoring"""
-        from datetime import datetime, timezone
-        import asyncio
-
+    @app.route('/scheduler/intervals/reset', methods=['POST'])
+    def reset_scheduler_intervals():
+        """Reset all scheduler intervals to defaults"""
         try:
-            if _worker and _worker.is_running and _worker.loop:
-                from worker.tasks.engagement_intelligence_task import EngagementIntelligenceTask
+            from config.scheduler_config import get_scheduler_config
 
-                # Run quick check
-                task = EngagementIntelligenceTask()
-                future = asyncio.run_coroutine_threadsafe(
-                    task.quick_engagement_check(),
-                    _worker.loop
-                )
+            data = request.get_json() or {}
+            updated_by = data.get('updated_by', 'api_user')
 
-                # Wait for result with timeout
-                try:
-                    quick_result = future.result(timeout=30)
-                    
-                    return jsonify({
-                        "status": "success",
-                        "timestamp": datetime.now(timezone.utc).isoformat(),
-                        "quick_check_result": quick_result,
-                        "description": "Real-time engagement metrics snapshot"
-                    })
-                    
-                except asyncio.TimeoutError:
-                    return jsonify({
-                        "status": "timeout",
-                        "message": "Quick check timed out after 30 seconds",
-                        "timestamp": datetime.now(timezone.utc).isoformat()
-                    }), 408
-                    
+            config = get_scheduler_config()
+            success = config.reset_to_defaults(updated_by)
+
+            if success:
+                return jsonify({
+                    "status": "success",
+                    "message": "Reset all scheduler intervals to defaults",
+                    "updated_by": updated_by,
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "note": "Changes will take effect on next scheduler restart"
+                })
             else:
                 return jsonify({
-                    "error": "Worker not available",
-                    "status": "unavailable"
-                }), 503
+                    "error": "Failed to reset intervals",
+                    "status": "failed"
+                }), 500
 
         except Exception as e:
-            logger.error(f"Quick engagement check failed: {e}")
+            logger.error(f"Failed to reset scheduler intervals: {e}")
             return jsonify({
                 "error": str(e),
-                "status": "failed",
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "status": "failed"
+            }), 500
+
+    @app.route('/scheduler/restart', methods=['POST'])
+    def restart_scheduler():
+        """Restart scheduler with new intervals (if supported)"""
+        try:
+            if _worker and hasattr(_worker, 'restart_scheduler'):
+                success = _worker.restart_scheduler()
+                if success:
+                    return jsonify({
+                        "status": "success",
+                        "message": "Scheduler restarted with new intervals",
+                        "timestamp": datetime.now(timezone.utc).isoformat()
+                    })
+                else:
+                    return jsonify({
+                        "error": "Failed to restart scheduler",
+                        "status": "failed"
+                    }), 500
+            else:
+                return jsonify({
+                    "status": "not_supported",
+                    "message": "Dynamic scheduler restart not implemented",
+                    "note": "Please restart the application to apply new intervals"
+                })
+
+        except Exception as e:
+            logger.error(f"Failed to restart scheduler: {e}")
+            return jsonify({
+                "error": str(e),
+                "status": "failed"
             }), 500
 
 
