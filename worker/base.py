@@ -35,10 +35,9 @@ class BackgroundWorker:
 
     def start(self):
         if self.is_running:
-            logger.warning("Worker already running")
             return
 
-        logger.info("Starting async background worker...")
+        logger.info("Starting worker...")
         self.is_running = True
         self.start_timestamp = datetime.now(timezone.utc)
 
@@ -50,10 +49,7 @@ class BackgroundWorker:
     def _run_loop(self):
         asyncio.set_event_loop(self._loop)
         try:
-            logger.info("[START] Starting scheduler loop...")
             self._loop.run_until_complete(run_scheduler_loop(self))
-            # Should not reach here
-            logger.info("[OK] Scheduler loop completed normally")
         except Exception as e:
             logger.error(f"[CRASH] Worker loop crashed: {e}")
             import traceback
@@ -62,7 +58,6 @@ class BackgroundWorker:
             self.is_running = False
 
     def stop(self):
-        logger.info("Stopping worker...")
         self.is_running = False
         if self._loop and not self._loop.is_closed():
             try:
@@ -72,7 +67,6 @@ class BackgroundWorker:
                 logger.debug(f"Loop stop error (ignored): {e}")
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=5)
-        logger.info("Worker stopped")
 
     # ===============================
     # MAIN FLOW ORCHESTRATOR
@@ -139,13 +133,37 @@ class BackgroundWorker:
     async def _run_content_analysis_task(self):
         """Content Analysis Engine - content quality and topic analysis"""
         try:
-            logger.info("[ENGINE] Starting Content Analysis Engine")
+            logger.info("[CONTENT] Starting analysis")
             result = await run_content_analysis_task(self)
             logger.info(
-                f"[ENGINE] Content Analysis completed: {result.get('status', 'unknown')}")
+                f"[CONTENT] Completed: {result.get('status', 'unknown')}")
             return result
         except Exception as e:
-            logger.error(f"[ENGINE] Content Analysis Engine error: {e}")
+            logger.error(f"[CONTENT] Error: {e}")
+
+    async def _run_content_analysis_latest_task(self):
+        """Content Analysis Engine - Latest Posts"""
+        try:
+            from worker.tasks.content_analysis_task import trigger_content_analysis_latest
+            logger.info("[CONTENT] Starting latest posts analysis")
+            result = await trigger_content_analysis_latest()
+            logger.info(
+                f"[CONTENT] Latest completed: {result.get('status', 'unknown')}")
+            return result
+        except Exception as e:
+            logger.error(f"[CONTENT] Latest error: {e}")
+
+    async def _run_content_analysis_trending_task(self):
+        """Content Analysis Engine - Trending Posts"""
+        try:
+            from worker.tasks.content_analysis_task import trigger_content_analysis_trending
+            logger.info("[CONTENT] Starting trending posts analysis")
+            result = await trigger_content_analysis_trending()
+            logger.info(
+                f"[CONTENT] Trending completed: {result.get('status', 'unknown')}")
+            return result
+        except Exception as e:
+            logger.error(f"[CONTENT] Trending error: {e}")
 
     # async def _run_engagement_intelligence_task(self):
     #     """Engagement Intelligence Engine - audience interaction patterns"""
@@ -168,15 +186,16 @@ class BackgroundWorker:
     #     pass
 
     async def _run_trending_prediction_task(self):
-        """Trending Prediction Engine - viral content forecasting"""
-        try:
-            logger.info("[ENGINE] Starting Trending Prediction Engine")
-            result = await run_trending_prediction_task()
-            logger.info(
-                f"[ENGINE] Trending Prediction completed: {result.get('status', 'unknown')}")
-            return result
-        except Exception as e:
-            logger.error(f"[ENGINE] Trending Prediction Engine error: {e}")
+        """Trending Prediction Engine - TEMPORARILY DISABLED"""
+        return {"status": "disabled", "message": "Trending prediction temporarily disabled"}
+        # try:
+        #     logger.info("[ENGINE] Starting Trending Prediction Engine")
+        #     result = await run_trending_prediction_task()
+        #     logger.info(
+        #         f"[ENGINE] Trending Prediction completed: {result.get('status', 'unknown')}")
+        #     return result
+        # except Exception as e:
+        #     logger.error(f"[ENGINE] Trending Prediction Engine error: {e}")
 
     # DEPRECATED: Meta-Trend Intelligence moved to separate scheduler
     # async def _run_meta_trend_intelligence_task(self):

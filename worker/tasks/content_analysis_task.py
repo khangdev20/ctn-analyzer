@@ -31,12 +31,13 @@ class ContentAnalysisTask:
         now = datetime.now(timezone.utc)
         return f"content_analysis_{now.strftime('%Y%m%dT%H%MZ')}"
 
-    async def run_content_analysis_workflow(self, data_source: str = "api", num_posts: int = 25, send_discord: bool = True) -> Dict:
+    async def run_content_analysis_workflow(self, data_source: str = "api", data_type: str = "latest", num_posts: int = 25, send_discord: bool = True) -> Dict:
         """
         Run complete content analysis workflow with Discord reporting
 
         Args:
             data_source: "api" for real data, "mock" for test data
+            data_type: "latest" for newest posts, "trending" for trending posts (when data_source="api")
             num_posts: Number of posts to analyze (default 25)
             send_discord: Whether to send Discord notifications (default True)
 
@@ -46,15 +47,11 @@ class ContentAnalysisTask:
         self.batch_id = self.generate_batch_id()
         start_time = datetime.now(timezone.utc)
 
-        logger.info(
-            f"[CONTENT_ANALYSIS] Starting workflow - Batch: {self.batch_id}")
-        logger.info(
-            f"[SETTINGS] Data source: {data_source}, Posts: {num_posts}")
+        logger.info(f"[CONTENT] Starting analysis - {data_type.upper()}")
 
         try:
-            # Step 1: Collect Data
-            logger.info("[STEP1] Collecting social media data...")
-            posts_data = await self._collect_posts_data(data_source, num_posts)
+            # Step 1: Data Collection
+            posts_data = await self._collect_posts_data(data_source, data_type, num_posts)
 
             if not posts_data:
                 logger.error("[ERROR] No data collected for analysis")
@@ -64,11 +61,9 @@ class ContentAnalysisTask:
                     "batch_id": self.batch_id
                 }
 
-            logger.info(
-                f"[SUCCESS] Collected {len(posts_data)} posts for analysis")
+            logger.info(f"[DATA] Collected {len(posts_data)} posts")
 
             # Step 2: Run Content Analysis
-            logger.info("[STEP2] Running comprehensive content analysis...")
             analysis_results = await self.content_analyzer.analyze_content_batch(posts_data)
 
             if not analysis_results.get("analyzed_posts"):
@@ -82,15 +77,11 @@ class ContentAnalysisTask:
             # Step 3 & 4: Discord Reporting (conditional)
             discord_success = False
             if send_discord:
-                logger.info(
-                    "[STEP3] Generating Discord-ready content report...")
-                discord_report = await self.prompt_handler.generate_content_analysis_discord_report(posts_data)
+                discord_report = await self.prompt_handler.generate_content_analysis_discord_report(posts_data, data_type)
 
-                logger.info("[STEP4] Sending report to Discord...")
                 discord_success = await self._send_discord_report(discord_report)
-            else:
                 logger.info(
-                    "[STEP3-4] Skipping Discord reporting (send_discord=False)")
+                    f"[DISCORD] {'✅ Sent' if discord_success else '❌ Failed'}")
 
             # Step 5: Save Results
             await self._save_analysis_results(analysis_results, posts_data)
@@ -115,8 +106,7 @@ class ContentAnalysisTask:
                 }
             }
 
-            logger.info(
-                f"[SUCCESS] Content analysis workflow completed in {processing_time:.1f}s")
+            logger.info(f"[CONTENT] Completed in {processing_time:.1f}s")
             return result
 
         except Exception as e:
@@ -132,7 +122,7 @@ class ContentAnalysisTask:
                 "processing_time_seconds": processing_time
             }
 
-    async def _collect_posts_data(self, data_source: str, num_posts: int) -> List[Dict]:
+    async def _collect_posts_data(self, data_source: str, data_type: str, num_posts: int) -> List[Dict]:
         """Collect posts data from specified source"""
         try:
             if data_source == "mock":
@@ -141,11 +131,18 @@ class ContentAnalysisTask:
                 return mock_data.get("data", [])
             else:
                 logger.info(
-                    "[API] Collecting real data from API - Priority: Latest Posts")
-                # Try to collect latest posts first (fresh content for analysis)
+                    f"[API] Collecting real data from API - Type: {data_type.upper()} Posts")
+                # Collect data based on specified type (latest or trending)
 
                 def collect_data():
-                    return collect_trending_data(num_pages=max(1, num_posts // 10), key='latest')
+                    # Calculate pages needed to get at least 40 items (minimum 2 pages, up to 5 pages max)
+                    # Each page typically has ~20 items
+                    min_items = max(40, num_posts)  # Ensure at least 40 items
+                    # Round up, min 2 pages, max 5 pages
+                    pages_needed = max(2, min(5, (min_items + 19) // 20))
+                    logger.info(
+                        f"[DATA_COLLECTION] Requesting {pages_needed} pages to collect minimum {min_items} items")
+                    return collect_trending_data(num_pages=pages_needed, key=data_type)
 
                 loop = asyncio.get_event_loop()
                 collection_result = await loop.run_in_executor(None, collect_data)
@@ -177,75 +174,72 @@ class ContentAnalysisTask:
             except:
                 return []
 
-    async def _get_s3_source_info(self) -> str:
-        """Get S3 source information for Discord messages."""
-        try:
-            from data_access.s3_store import S3Store
-
-            s3_store = S3Store()
-            client = s3_store.get_s3_client()
-
-            # Get recent files from S3 (last 3 files)
-            response = client.list_objects_v2(
-                Bucket=s3_store.bucket,
-                Prefix="data/raw/",
-                MaxKeys=3
-            )
-
-            if 'Contents' in response:
-                files = sorted(response['Contents'],
-                               key=lambda x: x['LastModified'], reverse=True)[:3]
-
-                source_info = "\n📁 **S3 Data Sources:**\n"
-                for i, file_obj in enumerate(files, 1):
-                    key = file_obj['Key']
-                    size_mb = file_obj['Size'] / (1024 * 1024)
-                    timestamp = file_obj['LastModified'].strftime(
-                        '%Y-%m-%d %H:%M')
-                    source_info += f"`{i}.` {key.split('/')[-1]} ({size_mb:.1f}MB, {timestamp})\n"
-
-                return source_info
-            else:
-                return "\n📁 **S3 Data Sources:** No recent files found"
-
-        except Exception as e:
-            logger.error(f"Error getting S3 source info: {str(e)}")
-            return "\n📁 **S3 Data Sources:** Error loading source information"
-
     async def _send_discord_report(self, discord_report: str) -> bool:
-        """Send content analysis report to Discord"""
+        """Send full content analysis report to Discord using rich embeds"""
         try:
             if not discord_report:
                 logger.warning("[DISCORD] No report content to send")
                 return False
 
-            # Get S3 source information
-            s3_source_info = await self._get_s3_source_info()
+            # Import Discord webhook sender for rich embeds
+            from notifiers.discord_webhook_sender import DiscordWebhookSender
+            discord_sender = DiscordWebhookSender()
 
-            # Truncate report if too long for Discord (2000 char limit)
-            # Leave room for source info
-            max_content_length = 1600 - len(s3_source_info)
-            if len(discord_report) > max_content_length:
-                discord_report = discord_report[:max_content_length] + \
-                    "...\n*[Report truncated]*"
+            # Split long reports into multiple embed fields if needed
+            max_description_length = 4000  # Discord embed description limit
 
-            # Add header to identify this as a content analysis report
-            enhanced_report = f"""
-            🔍 **AI Content Analysis Report**
-                {discord_report}{s3_source_info}
-                *Report ID: {self.batch_id}*
-            """
+            if len(discord_report) <= max_description_length:
+                # Send as single embed
+                success = await discord_sender.send_rich_embed(
+                    title="🔍 AI Content Analysis Report",
+                    description=discord_report,
+                    color=0x00FF88,  # Green color
+                    footer={
+                        "text": f"Report ID: {self.batch_id} • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"}
+                )
+            else:
+                # Split into multiple fields for very long reports
+                # First send title and summary
+                summary_section = discord_report[:max_description_length]
+                remaining_content = discord_report[max_description_length:]
 
-            # Send to Discord
-            def send_message():
-                return send_discord_message_webhook(enhanced_report)
+                # Find a good break point (end of line)
+                if '\n' in summary_section[-200:]:
+                    break_point = summary_section.rfind('\n', -200)
+                    if break_point > max_description_length - 300:
+                        remaining_content = summary_section[break_point:] + \
+                            remaining_content
+                        summary_section = summary_section[:break_point]
 
-            loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(None, send_message)
+                # Send main report
+                success = await discord_sender.send_rich_embed(
+                    title="🔍 AI Content Analysis Report (Full)",
+                    description=summary_section,
+                    color=0x00FF88,
+                    footer={
+                        "text": f"Report ID: {self.batch_id} • Full report (continued below)"}
+                )
 
-            if result:
+                # Send continuation if there's remaining content
+                if remaining_content.strip() and success:
+                    # Split remaining content into 1000-char chunks for fields
+                    chunk_size = 1000
+                    chunks = [remaining_content[i:i+chunk_size]
+                              for i in range(0, len(remaining_content), chunk_size)]
+
+                    for i, chunk in enumerate(chunks):
+                        if chunk.strip():
+                            await discord_sender.send_rich_embed(
+                                title=f"📋 Report Continuation {i+1}",
+                                description=chunk,
+                                color=0x00AA66,
+                                footer={
+                                    "text": f"Report ID: {self.batch_id} • Part {i+2}"}
+                            )
+
+            if success:
                 logger.info(
-                    "[DISCORD] Content analysis report sent successfully")
+                    "[DISCORD] Full content analysis report sent successfully")
                 return True
             else:
                 logger.error(
@@ -380,3 +374,49 @@ async def run_content_analysis_task(worker):
         if task_id in worker.active_tasks:
             worker.active_tasks.remove(task_id)
             logger.info(f"[REMOVED] Removed {task_id} from active tasks")
+
+
+# Direct trigger functions for manual execution
+async def trigger_content_analysis_latest():
+    """Trigger content analysis for latest posts"""
+    logger.info("🚀 TRIGGERING CONTENT ANALYSIS - LATEST POSTS")
+
+    try:
+        task = ContentAnalysisTask()
+        result = await task.run_content_analysis_workflow(data_source="api", data_type="latest", num_posts=20)
+
+        if result["status"] == "success":
+            logger.info(
+                f"✅ Latest posts analysis completed: {result.get('posts_analyzed', 0)} posts")
+            return result
+        else:
+            logger.error(
+                f"❌ Latest posts analysis failed: {result.get('error', 'Unknown error')}")
+            return result
+
+    except Exception as e:
+        logger.error(f"❌ Latest posts analysis error: {str(e)}")
+        return {"status": "error", "error": str(e)}
+
+
+async def trigger_content_analysis_trending():
+    """Trigger content analysis for trending posts"""
+    logger.info("🔥 TRIGGERING CONTENT ANALYSIS - TRENDING POSTS")
+
+    try:
+        task = ContentAnalysisTask()
+        # Use trending data type with higher post count for trending analysis
+        result = await task.run_content_analysis_workflow(data_source="api", data_type="trending", num_posts=50)
+
+        if result["status"] == "success":
+            logger.info(
+                f"✅ Trending posts analysis completed: {result.get('posts_analyzed', 0)} posts")
+            return result
+        else:
+            logger.error(
+                f"❌ Trending posts analysis failed: {result.get('error', 'Unknown error')}")
+            return result
+
+    except Exception as e:
+        logger.error(f"❌ Trending posts analysis error: {str(e)}")
+        return {"status": "error", "error": str(e)}
