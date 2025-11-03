@@ -85,8 +85,7 @@ class TrendingPredictionTask:
         if not batch_id:
             batch_id = f"trending_prediction_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
 
-        logger.info(
-            f"[HOT] Starting trending prediction workflow for batch {batch_id}")
+        logger.debug(f"Trending prediction workflow started (disabled) - {batch_id}")
 
         try:
             # Step 1: Get trending patterns from recent content analysis
@@ -103,14 +102,10 @@ class TrendingPredictionTask:
             latest_posts_count = len(
                 [p for p in posts_data if p.get('source_engine') == 'latest_posts_api'])
 
-            logger.info(
-                f"[ANALYTICS] Collected {len(posts_data)} posts for trending analysis")
-            logger.info(
-                f"[ANALYTICS] Latest posts: {latest_posts_count}, Other sources: {len(posts_data) - latest_posts_count}")
+            logger.debug(f"Collected {len(posts_data)} posts ({latest_posts_count} latest)")
 
             if trending_patterns:
-                logger.info(
-                    f"[PATTERNS] Using {len(trending_patterns.get('successful_patterns', []))} trending patterns from content analysis")
+                logger.debug(f"Using {len(trending_patterns.get('successful_patterns', []))} patterns")
 
             # Step 3: Run trending prediction analysis with content analysis patterns
             analysis_results = await self.agent.analyze_trending_potential(posts_data, batch_id, trending_patterns)
@@ -138,8 +133,7 @@ class TrendingPredictionTask:
                 'workflow_insights': await self._generate_workflow_insights(analysis_results)
             }
 
-            logger.info(
-                f"[OK] Trending prediction workflow completed successfully for batch {batch_id}")
+            logger.debug(f"Trending prediction workflow completed - {batch_id}")
             return workflow_results
 
         except Exception as e:

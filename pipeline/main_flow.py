@@ -27,14 +27,11 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
-# Import all 7 analysis engines (classes and functions)
+# Import available analysis engines (classes and functions)
 from worker.tasks.content_analysis_task import ContentAnalysisTask
-from worker.tasks.engagement_intelligence_task import EngagementIntelligenceTask
-from worker.tasks.network_intelligence_task import NetworkIntelligenceTask
-from worker.tasks.temporal_analytics_task import TemporalAnalyticsTask
-from worker.tasks.strategic_intelligence_task import StrategicIntelligenceTask
-from worker.tasks.trending_prediction_task import TrendingPredictionTask
-from worker.tasks.meta_trend_intelligence_task import MetaTrendIntelligenceTask
+# from worker.tasks.engagement_intelligence_task import EngagementIntelligenceTask  # Disabled
+# from worker.tasks.trending_prediction_task import TrendingPredictionTask  # TEMPORARILY DISABLED
+# Note: Other intelligence tasks may be added later as needed
 
 # Import shared utilities
 from worker.features.data_collector import collect_trending_data
@@ -68,55 +65,26 @@ class MainFlowOrchestrator:
         else:
             self.unified_reporter = None
 
-        # Engine configuration with Discord formatting
+        # Available analysis engines (only those that exist)
         self.engines = [
             {
                 'name': 'Content Analysis',
                 'emoji': '[TARGET]',
                 'class': ContentAnalysisTask,
                 'description': 'Content quality and topic analysis'
-            },
-            {
-                'name': 'Engagement Intelligence',
-                'emoji': '[ANALYTICS]',
-                'class': EngagementIntelligenceTask,
-                'description': 'Audience interaction patterns'
-            },
-            {
-                'name': 'Network Intelligence',
-                'emoji': '🌐',
-                'class': NetworkIntelligenceTask,
-                'description': 'Social network influence mapping'
-            },
-            {
-                'name': 'Temporal Analytics',
-                'emoji': '[ALARM]',
-                'class': TemporalAnalyticsTask,
-                'description': 'Time-based performance optimization'
-            },
-            {
-                'name': 'Strategic Intelligence',
-                'emoji': '🧭',
-                'class': StrategicIntelligenceTask,
-                'description': 'Campaign effectiveness analysis'
-            },
-            {
-                'name': 'Trending Prediction',
-                'emoji': '[HOT]',
-                'class': TrendingPredictionTask,
-                'description': 'Viral content forecasting'
             }
+            # Disabled engines (temporarily disabled):
+            # - Trending Prediction (trending_prediction_task) - TEMPORARILY DISABLED
+            # - Engagement Intelligence (engagement_intelligence_task)
+            # - Network Intelligence (network_intelligence_task)
+            # - Temporal Analytics (temporal_analytics_task)
+            # - Strategic Intelligence (strategic_intelligence_task)
         ]
 
-        # Weekly meta-trend engine (MOVED TO SEPARATE SCHEDULER)
-        # Note: Meta-Trend Intelligence now runs via run_weekly_meta_scheduler.py
-        # This is kept for reference but not used in main flow
-        self.meta_engine = {
-            'name': 'Meta-Trend Intelligence',
-            'emoji': '📅',
-            'class': MetaTrendIntelligenceTask,
-            'description': 'Weekly cross-engine analysis (SEPARATE SCHEDULER)'
-        }
+        # Weekly meta-trend engine (DISABLED - not available)
+        # Note: Meta-Trend Intelligence task not implemented
+        # This is kept for reference but not used
+        self.meta_engine = None  # Disabled - MetaTrendIntelligenceTask not available
 
         # Setup data paths
         self.data_path = Path("data")

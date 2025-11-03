@@ -471,10 +471,9 @@ class ReportingStage:
                 "inline": False
             })
 
-        # LLM recommendations (truncated for Discord)
+        # LLM recommendations (full version for Discord embeds)
         if llm_analysis.get('strategic_recommendations'):
-            recommendations = llm_analysis['strategic_recommendations'][:500] + "..." if len(
-                llm_analysis['strategic_recommendations']) > 500 else llm_analysis['strategic_recommendations']
+            recommendations = llm_analysis['strategic_recommendations']
             embed["fields"].append({
                 "name": "[LAUNCH] AI Recommendations",
                 "value": recommendations,

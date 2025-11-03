@@ -129,7 +129,7 @@ def send_discord_message_webhook(content, webhook_url=None):
     """
     try:
         # Use provided webhook_url or fall back to config
-        url_to_use = webhook_url or webhook_url
+        url_to_use = webhook_url or Config.DISCORD_WEBHOOK
         webhook = DiscordWebhook(url=url_to_use)
 
         # Handle different content types

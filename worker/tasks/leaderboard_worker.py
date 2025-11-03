@@ -64,8 +64,7 @@ def fetch_all_pages(api_url: str, timeout: int = 15, max_retries: int = 5, max_p
     try:
         while True:
             page_count += 1
-            logger.info(
-                f"[ANALYTICS] Fetching leaderboard page {page_count} (cursor: {next_cursor})")
+            logger.debug(f"Fetching page {page_count}")
 
             try:
                 # Build request parameters
@@ -77,8 +76,7 @@ def fetch_all_pages(api_url: str, timeout: int = 15, max_retries: int = 5, max_p
                 response = None  # Initialize response variable
                 for attempt in range(max_retries + 1):
                     try:
-                        logger.info(
-                            f"[REQUEST] Page {page_count}, attempt {attempt + 1}/{max_retries + 1}")
+                        logger.debug(f"Page {page_count}, attempt {attempt + 1}")
                         response = session.get(
                             api_url, params=params, timeout=timeout)
 
@@ -167,8 +165,7 @@ def fetch_all_pages(api_url: str, timeout: int = 15, max_retries: int = 5, max_p
                     break
 
                 all_rows.extend(page_rows)
-                logger.info(
-                    f"[SUCCESS] Page {page_count}: Got {len(page_rows)} rows (total: {len(all_rows)})")
+                logger.debug(f"Page {page_count}: {len(page_rows)} rows")
 
                 # Check pagination
                 paging = data.get('paging', {})
@@ -177,14 +174,12 @@ def fetch_all_pages(api_url: str, timeout: int = 15, max_retries: int = 5, max_p
 
                 # Check if we've reached the page limit
                 if page_count >= max_pages:
-                    logger.info(
-                        f"[LIMIT] Reached page limit ({max_pages}). Total pages: {page_count}, Total rows: {len(all_rows)}")
+                    logger.info(f"Retrieved {len(all_rows)} leaderboard entries")
                     status = "partial" if has_next and next_cursor else "complete"
                     break
 
                 if not has_next or not next_cursor:
-                    logger.info(
-                        f"[COMPLETE] Pagination complete. Total pages: {page_count}, Total rows: {len(all_rows)}")
+                    logger.info(f"Leaderboard fetch complete: {len(all_rows)} entries")
                     break
 
             except Exception as e:
@@ -281,7 +276,7 @@ def normalize_and_rank(rows: List[Dict]) -> List[Dict]:
     for i, entry in enumerate(normalized, 1):
         entry['rank'] = i
 
-    logger.info(f"[OK] Normalized and ranked {len(normalized)} entries")
+    logger.debug(f"Normalized {len(normalized)} entries")
     return normalized
 
 
@@ -548,11 +543,8 @@ def format_bidaily_discord_message(timestamp: str, comp: Dict, source_status: st
     lines.append(
         f"⏱ **Generated:** {current_time} | **Source:** {status_emoji}")
 
-    # Limit message length to avoid Discord's 2000 char limit
+    # Return full message - rich embeds support longer content
     message = "\n".join(lines)
-    if len(message) > 1900:  # Leave some buffer
-        message = message[:1900] + "..."
-
     return message
 
 
@@ -647,13 +639,8 @@ def format_discord_message(date_local: str, comp: Dict, source_status: str) -> s
     lines.append(
         f"⏱ **Generated:** {current_time} | **Source:** {status_emoji}")
 
-    # Join lines and check length
+    # Join lines - no truncation needed with rich embeds
     message = "\n".join(lines)
-
-    # Truncate if too long
-    if len(message) > 2000:
-        message = _truncate_message(lines)
-
     return message
 
 
@@ -753,7 +740,9 @@ def _truncate_name(name: str, max_length: int = 40) -> str:
 
 
 def _truncate_message(lines: List[str]) -> str:
-    """Truncate message to fit within Discord limits"""
+    """Legacy truncate function - now returns full message for rich embeds"""
+    # Return full message since we now use rich embeds that support longer content
+    return "\n".join(lines)
     # Try removing sections from bottom up
     sections_to_try = [
         ("📴 **Dropouts**", "dropouts"),
@@ -955,10 +944,10 @@ def _get_most_recent_snapshot(redis_client, current_timestamp: str) -> Tuple[Opt
 
 def send_discord(message: str, webhook_url: str) -> Dict:
     """
-    Send message to Discord using existing webhook sender
+    Send full leaderboard message to Discord using rich embeds
 
     Args:
-        message: Formatted message to send
+        message: Formatted message to send (can be longer than 2000 chars)
         webhook_url: Discord webhook URL
 
     Returns:
@@ -978,15 +967,83 @@ def send_discord(message: str, webhook_url: str) -> Dict:
             logger.info(
                 "[WEBHOOK] Sending leaderboard report via FALLBACK main webhook")
 
-        # Use existing Discord webhook sender
-        response = send_discord_message_webhook(message, webhook_url)
-
-        if response:
-            logger.info("[OK] Discord leaderboard report sent successfully!")
-            return {'success': True, 'response': response}
-        else:
-            logger.error("[ERROR] Failed to send Discord leaderboard report")
-            return {'success': False, 'error': 'Discord send failed'}
+        # Try to send as rich embed for full content
+        try:
+            from notifiers.discord_webhook_sender import DiscordWebhook
+            import asyncio
+            
+            # Extract title from message (first line)
+            lines = message.split('\n')
+            title = lines[0] if lines else "📊 Leaderboard Report"
+            description = '\n'.join(lines[1:]) if len(lines) > 1 else message
+            
+            # Create webhook with rich embed
+            webhook = DiscordWebhook(url=webhook_url)
+            
+            # Discord embed limits: description 4096 chars
+            max_description_length = 4000
+            
+            if len(description) <= max_description_length:
+                # Send as single embed
+                from discord_webhook import DiscordEmbed
+                embed = DiscordEmbed(
+                    title=title[:250],  # Title limit 256 chars
+                    description=description,
+                    color='00ff88'  # Green color
+                )
+                embed.set_footer(text=f"Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                webhook.add_embed(embed)
+                
+                response = webhook.execute()
+                success = response.status_code == 200
+            else:
+                # Split into multiple embeds
+                chunk_size = 3800  # Leave room for titles/footers
+                chunks = [description[i:i+chunk_size] 
+                         for i in range(0, len(description), chunk_size)]
+                
+                success = True
+                for i, chunk in enumerate(chunks):
+                    if chunk.strip():
+                        embed = DiscordEmbed(
+                            title=f"{title} (Part {i+1}/{len(chunks)})" if len(chunks) > 1 else title,
+                            description=chunk,
+                            color='00ff88'
+                        )
+                        embed.set_footer(text=f"Part {i+1}/{len(chunks)} • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                        
+                        webhook_part = DiscordWebhook(url=webhook_url)
+                        webhook_part.add_embed(embed)
+                        response = webhook_part.execute()
+                        
+                        if response.status_code != 200:
+                            success = False
+                            break
+            
+            if success:
+                logger.info("Leaderboard report sent to Discord")
+                return {'success': True, 'response': 'Rich embed sent'}
+            else:
+                # Fallback to regular message if embed fails
+                logger.warning("[FALLBACK] Rich embed failed, using regular message")
+                response = send_discord_message_webhook(message[:1900] + "\n*(truncated)*" if len(message) > 1900 else message, webhook_url)
+                if response:
+                    logger.info("Leaderboard report sent (fallback)")
+                    return {'success': True, 'response': response}
+                else:
+                    logger.error("[ERROR] Both rich embed and fallback failed")
+                    return {'success': False, 'error': 'Both embed and fallback failed'}
+                    
+        except ImportError:
+            # Fallback if discord_webhook not available
+            logger.warning("[FALLBACK] discord_webhook not available, using basic sender")
+            response = send_discord_message_webhook(message[:1900] + "\n*(truncated)*" if len(message) > 1900 else message, webhook_url)
+            if response:
+                logger.info("Leaderboard report sent (basic)")
+                return {'success': True, 'response': response}
+            else:
+                logger.error("[ERROR] Basic sender failed")
+                return {'success': False, 'error': 'Basic send failed'}
 
     except Exception as e:
         logger.error(f"💥 Discord send error: {e}")
@@ -1064,7 +1121,7 @@ async def leaderboard_bidaily_task(force_post: bool = False) -> Dict:
             }
 
         # 5. Normalize and rank data
-        logger.info("[REFRESH] Normalizing and ranking data...")
+        logger.debug("Normalizing data...")
         current_entries = normalize_and_rank(raw_data)
 
         if not current_entries:
@@ -1077,7 +1134,7 @@ async def leaderboard_bidaily_task(force_post: bool = False) -> Dict:
             }
 
         # 6. Store current snapshot in Redis
-        logger.info("[SAVE] Saving current snapshot to Redis...")
+        logger.debug("Saving snapshot...")
         current_key = f"leaderboard:snapshot:{current_timestamp}"
         redis_client.setex(current_key, 7 * 24 * 3600,
                            json.dumps(current_entries))  # Keep for 7 days
@@ -1097,11 +1154,11 @@ async def leaderboard_bidaily_task(force_post: bool = False) -> Dict:
             logger.info("🆕 No previous snapshot found - first run mode")
 
         # 8. Compare snapshots
-        logger.info("[SEARCH] Comparing snapshots...")
+        logger.debug("Comparing snapshots...")
         comparison = compare_snapshots(current_entries, previous_entries)
 
         # 9. Format Discord message with bi-daily context
-        logger.info("[NOTE] Formatting Discord message...")
+        logger.debug("Formatting message...")
         hour = local_now.hour
         time_context = "Morning Report (09:00 AEST)" if hour < 15 else "Evening Report (21:00 AEST)"
         message = format_bidaily_discord_message(
@@ -1185,7 +1242,7 @@ async def leaderboard_daily_task(force_post: bool = False) -> Dict:
         yesterday = local_now - timedelta(days=1)
         yesterday_str = yesterday.strftime("%Y-%m-%d")
 
-        logger.info(f"[TIMER] Processing leaderboard for {today_str} (AEST)")
+        logger.info(f"Processing leaderboard for {today_str}")
 
         # 2. Lock guard (unless forced)
         if not force_post:
